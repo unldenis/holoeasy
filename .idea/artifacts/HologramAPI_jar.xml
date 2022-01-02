@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="HologramAPI:jar">
+    <output-path>$USER_HOME$/OneDrive/Desktop/paper-server/plugins</output-path>
+    <root id="archive" name="HologramAPI.jar">
+      <element id="module-output" name="HologramAPI" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations-java5/20.1.0/annotations-java5-20.1.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
