@@ -41,3 +41,7 @@ main: com.github.unldenis.server.hub.ServerHub
 ## Example usage
 ```java
 ```
+
+
+https://user-images.githubusercontent.com/80055679/147889286-6d4006a0-677b-4066-a285-08e79d3fad9e.mp4
+
