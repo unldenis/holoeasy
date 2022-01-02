@@ -49,6 +49,7 @@ public class ExampleHolograms {
      */
     public ExampleHolograms(@NotNull Plugin plugin) {
         this.plugin = plugin;
+        // 70 is the maximum visible distance for holograms
         this.hologramPool = new HologramPool(plugin, 70);
     }
 
