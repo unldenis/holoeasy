@@ -28,7 +28,7 @@ dependencies {
 }
 ```
 Add ProtocolLib as dependency to your plugin.yml. It could look like this:
-```xml
+```yml
 name: Hub
 version: 1.0-SNAPSHOT
 api-version: "1.13"
