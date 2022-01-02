@@ -6,5 +6,25 @@ This library can only be used on spigot servers higher or on version 1.8.8. The 
 Add the repository and dependency to your plugin:
 Maven
 ```xml
-Ciao
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+<dependency>
+    <groupId>com.github.unldenis</groupId>
+    <artifactId>Hologram-Lib</artifactId>
+    <version>master-SNAPSHOT</version>
+</dependency>
+```
+Gradle
+```xml
+allprojects {
+  repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+  }
+}
+dependencies {
+        implementation 'com.github.unldenis:Hologram-Lib:master-SNAPSHOT'
+}
 ```
