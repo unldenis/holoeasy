@@ -36,3 +36,6 @@ depend: [ProtocolLib]
 author: unldenis
 main: com.github.unldenis.server.hub.ServerHub
 ```
+## Example usage
+```java
+```
