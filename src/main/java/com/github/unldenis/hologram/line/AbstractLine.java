@@ -103,9 +103,10 @@ public abstract class AbstractLine<T> {
     }
 
     public void removeAnimation() {
-        if(taskID != -1)
+        if(taskID != -1) {
             Bukkit.getScheduler().cancelTask(taskID);
-        taskID = -1;
+            taskID = -1;
+        }
     }
 
 }
