@@ -27,3 +27,12 @@ dependencies {
     implementation 'com.github.unldenis:Hologram-Lib:master-SNAPSHOT'
 }
 ```
+Add ProtocolLib as dependency to your plugin.yml. It could look like this:
+```xml
+name: Hub
+version: 1.0-SNAPSHOT
+api-version: "1.13"
+depend: [ProtocolLib]
+author: unldenis
+main: com.github.unldenis.server.hub.ServerHub
+```
