@@ -116,7 +116,6 @@ public class Hologram {
         private Collection lines = new CopyOnWriteArrayList<>();
         private Location location;
 
-
         @NotNull
         public Builder addLine(@NotNull String line) {
             Validate.notNull(line, "Line cannot be null");
