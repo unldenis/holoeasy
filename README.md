@@ -10,6 +10,7 @@ Maven
     <id>jitpack.io</id>
     <url>https://jitpack.io</url>
 </repository>
+
 <dependency>
     <groupId>com.github.unldenis</groupId>
     <artifactId>Hologram-Lib</artifactId>
@@ -23,6 +24,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
+
 dependencies {
     implementation 'com.github.unldenis:Hologram-Lib:master-SNAPSHOT'
 }
