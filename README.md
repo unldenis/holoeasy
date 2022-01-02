@@ -57,7 +57,7 @@ public class ExampleHolograms {
      *
      * @param location  The location the Hologram will be spawned at
      */
-    public void appendNPC(@NotNull Location location) {
+    public void appendHOLO(@NotNull Location location) {
         // building the NPC
         Hologram hologram = Hologram.builder()
                 .location(location)
@@ -91,7 +91,6 @@ public class ExampleHolograms {
         .runTaskTimer(plugin, 30L, 30L);
     }
 }
-
 ```
 https://user-images.githubusercontent.com/80055679/147889286-6d4006a0-677b-4066-a285-08e79d3fad9e.mp4
 
