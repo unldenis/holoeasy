@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.github.unldenis.hologram.placeholder.Placeholders;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +15,11 @@ import java.util.Optional;
 
 public class TextLine extends AbstractLine<String> {
 
-    public TextLine(@NotNull Collection<Player> seeingPlayers, @NotNull Plugin plugin, int entityID, @NotNull String obj) {
+    private final Placeholders placeholders;
+
+    public TextLine(@NotNull Collection<Player> seeingPlayers, @NotNull Plugin plugin, int entityID, @NotNull String obj, @NotNull Placeholders placeholders) {
         super(seeingPlayers, plugin, entityID, obj);
+        this.placeholders = placeholders;
     }
 
     @Override
@@ -26,7 +30,7 @@ public class TextLine extends AbstractLine<String> {
          */
         Optional<?> opt = Optional
                 .of(WrappedChatComponent
-                        .fromChatMessage(this.obj)[0].getHandle());
+                        .fromChatMessage(this.placeholders.parse(this.obj, player))[0].getHandle());
         PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.ENTITY_METADATA);
         packet.getIntegers().write(0, entityID);
         WrappedDataWatcher watcher = new WrappedDataWatcher();
@@ -55,7 +59,7 @@ public class TextLine extends AbstractLine<String> {
 
         Optional<?> opt = Optional
                 .of(WrappedChatComponent
-                        .fromChatMessage(this.obj)[0].getHandle());
+                        .fromChatMessage(this.placeholders.parse(this.obj, player))[0].getHandle());
 
         watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
 
