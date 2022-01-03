@@ -14,16 +14,13 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.ListIterator;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
 public class Hologram {
     private final Plugin plugin;
     private final Location location;
 
-    private final CopyOnWriteArrayList<AbstractLine<?>> lines = new CopyOnWriteArrayList<>();
+    private final AbstractLine<?>[] lines;
     private final Collection<Player> seeingPlayers = new CopyOnWriteArraySet<>();
 
     private Hologram(
@@ -33,22 +30,24 @@ public class Hologram {
     ) {
         this.plugin = plugin;
         this.location = location;
-        final ThreadLocalRandom random = ThreadLocalRandom.current();
+        this.lines = new AbstractLine[lines.length];
 
-        for(Object line: lines) {
-            if(line instanceof String) {
-                this.lines.add(new TextLine(this.seeingPlayers, plugin, random.nextInt(), (String) line));
-            }else if (line instanceof ItemStack) {
-                this.lines.add( new ItemLine(this.seeingPlayers, plugin, random.nextInt(), (ItemStack) line));
-            }
-        }
-        /*
-            Set locations
-         */
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
         Location cloned = this.location.clone().subtract(0, 0.28, 0);
-        ListIterator<AbstractLine<?>> abstractIterator = this.lines.listIterator(this.lines.size());
-        while (abstractIterator.hasPrevious()) {
-            abstractIterator.previous().setLocation(cloned.add(0.0, 0.28, 0).clone());
+
+        Object line;
+        AbstractLine<?> tempLine;
+        for(int j=0; j<lines.length; j++) {
+            line = lines[j];
+            if(line instanceof String) {
+                tempLine = new TextLine(this.seeingPlayers, plugin, random.nextInt(), (String) line);
+                tempLine.setLocation(cloned.add(0.0, 0.28, 0).clone());
+                this.lines[j] = tempLine;
+            }else if (line instanceof ItemStack) {
+                tempLine = new ItemLine(this.seeingPlayers, plugin, random.nextInt(), (ItemStack) line);
+                tempLine.setLocation(cloned.add(0.0, 0.28, 0).clone());
+                this.lines[j] = tempLine;
+            }
         }
     }
 
@@ -95,7 +94,7 @@ public class Hologram {
 
     @NotNull
     private AbstractLine<?> getLine(int index) {
-        return this.lines.get(index);
+        return this.lines[index];
     }
 
     protected boolean isShownFor(@NotNull Player player) {
@@ -113,20 +112,20 @@ public class Hologram {
 
     public static class Builder {
 
-        private Collection lines = new CopyOnWriteArrayList<>();
+        private final ConcurrentLinkedDeque<Object> lines = new ConcurrentLinkedDeque<>();
         private Location location;
 
         @NotNull
         public Builder addLine(@NotNull String line) {
             Validate.notNull(line, "Line cannot be null");
-            this.lines.add(line);
+            this.lines.addFirst(line);
             return this;
         }
 
         @NotNull
         public Builder addLine(@NotNull ItemStack item) {
             Validate.notNull(item, "Item cannot be null");
-            this.lines.add(item);
+            this.lines.addFirst(item);
             return this;
         }
 
