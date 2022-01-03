@@ -49,7 +49,6 @@ public class ExampleHolograms {
      */
     public ExampleHolograms(@NotNull Plugin plugin) {
         this.plugin = plugin;
-        // 70 is the maximum visible distance for holograms
         this.hologramPool = new HologramPool(plugin, 70);
     }
 
@@ -64,17 +63,19 @@ public class ExampleHolograms {
                 .location(location)
                 .addLine("Hello World!")
                 .addLine("Using Hologram-Lib")
+                .addLine("Hello %%player%%")
                 .addLine(new ItemStack(Material.IRON_BLOCK))
+                .addPlaceholder("%%player%%", Player::getName)
                 .build(hologramPool);
 
-        hologram.setAnimation(2, AnimationType.CIRCLE);
+        hologram.setAnimation(3, AnimationType.CIRCLE);
 
         // simple changing animating block and text
         timingBlock(hologram);
     }
-
+    
     private final static Material[] materials = new Material[] { Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK};
-
+    
     /**
      * Update the block and the first line of text of the hologram
      * @param hologram The hologram to update
@@ -86,12 +87,14 @@ public class ExampleHolograms {
             public void run() {
                 if(j==materials.length) j=0;
                 hologram.setLine(0, String.valueOf(j));
-                hologram.setLine(2, new ItemStack(materials[j++]));
+                hologram.setLine(3, new ItemStack(materials[j++]));
             }
         }
         .runTaskTimer(plugin, 30L, 30L);
     }
 }
 ```
+## Preview
 https://user-images.githubusercontent.com/80055679/147889286-6d4006a0-677b-4066-a285-08e79d3fad9e.mp4
-
+#### Placeholder Preview
+![2022-01-03_22 11 34](https://user-images.githubusercontent.com/80055679/147980899-fa7b8172-b0d8-4ab6-9eab-d33e9323fb63.png)
