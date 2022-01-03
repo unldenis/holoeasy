@@ -95,6 +95,5 @@ public class ExampleHolograms {
 }
 ```
 https://user-images.githubusercontent.com/80055679/147889286-6d4006a0-677b-4066-a285-08e79d3fad9e.mp4
-
-<br>
+## Placeholder Preview
 ![2022-01-03_22 11 34](https://user-images.githubusercontent.com/80055679/147980899-fa7b8172-b0d8-4ab6-9eab-d33e9323fb63.png)
