@@ -23,7 +23,7 @@ public class Hologram {
     private final Location location;
 
     protected final AbstractLine<?>[] lines;
-    private Collection<Player> seeingPlayers = new CopyOnWriteArraySet<>();
+    private final Collection<Player> seeingPlayers;
 
     private final Placeholders placeholders;
 
@@ -31,6 +31,7 @@ public class Hologram {
      * @param plugin The org.bukkit.Plugin
      * @param location The location of the hologram
      * @param placeholders Reference passage of placeholders
+     * @param seeingPlayers Visible player reference, used when changing lines or in animations
      * @param lines Inverted array of hologram lines
      * @deprecated Deprecated because you have to use the Builder of the class.
      */
@@ -40,11 +41,13 @@ public class Hologram {
             @NotNull Plugin plugin,
             @NotNull Location location,
             @Nullable Placeholders placeholders,
+            @NotNull Collection<Player> seeingPlayers,
             @NotNull Object... lines
     ) {
         this.plugin = plugin;
         this.location = location;
         this.placeholders = placeholders == null ? new Placeholders() : placeholders;
+        this.seeingPlayers = seeingPlayers;
         this.lines = new AbstractLine[lines.length];
 
         final ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -64,28 +67,6 @@ public class Hologram {
                 this.lines[j] = tempLine;
             }
         }
-    }
-
-    /**
-     *
-     * @param plugin The org.bukkit.Plugin
-     * @param location The location of the hologram
-     * @param placeholders Reference passage of placeholders
-     * @param lines Inverted array of hologram lines
-     * @param seeingPlayers Visible player reference, used when changing lines or in animations
-     * @deprecated Deprecated because you have to use the Builder of the class.
-     */
-    @Deprecated
-    @ApiStatus.Internal
-    public Hologram(
-            @NotNull Plugin plugin,
-            @NotNull Location location,
-            @Nullable Placeholders placeholders,
-            @NotNull Object[] lines,
-            @NotNull Collection<Player> seeingPlayers
-    ) {
-        this(plugin, location, placeholders, lines);
-        this.seeingPlayers = seeingPlayers;
     }
 
     public void setLine(int index, @NotNull ItemStack itemStack) {
@@ -181,7 +162,7 @@ public class Hologram {
             if(location==null || lines.isEmpty() || pool==null) {
                 throw new IllegalArgumentException("No location given or not completed");
             }
-            Hologram hologram = new Hologram(pool.getPlugin(), this.location, this.placeholders, this.lines.toArray());
+            Hologram hologram = new Hologram(pool.getPlugin(), this.location, this.placeholders, new CopyOnWriteArraySet<>(), this.lines.toArray());
             pool.takeCareOf(hologram);
             return hologram;
         }
