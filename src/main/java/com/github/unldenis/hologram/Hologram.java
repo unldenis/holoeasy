@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.concurrent.*;
@@ -38,12 +39,12 @@ public class Hologram {
     public Hologram(
             @NotNull Plugin plugin,
             @NotNull Location location,
-            @NotNull Placeholders placeholders,
+            @Nullable Placeholders placeholders,
             @NotNull Object... lines
     ) {
         this.plugin = plugin;
         this.location = location;
-        this.placeholders = placeholders;
+        this.placeholders = placeholders == null ? new Placeholders() : placeholders;
         this.lines = new AbstractLine[lines.length];
 
         final ThreadLocalRandom random = ThreadLocalRandom.current();
