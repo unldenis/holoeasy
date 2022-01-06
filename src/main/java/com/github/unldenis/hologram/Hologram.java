@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -25,7 +26,16 @@ public class Hologram {
 
     private final Placeholders placeholders;
 
-    private Hologram(
+    /**
+     * @param plugin The org.bukkit.Plugin
+     * @param location The location of the hologram
+     * @param placeholders Reference passage of placeholders
+     * @param lines Inverted array of hologram lines
+     * @deprecated Deprecated because you have to use the Builder of the class.
+     */
+    @Deprecated
+    @ApiStatus.Internal
+    public Hologram(
             @NotNull Plugin plugin,
             @NotNull Location location,
             @NotNull Placeholders placeholders,

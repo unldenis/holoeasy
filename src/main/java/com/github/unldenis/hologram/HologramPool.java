@@ -90,8 +90,7 @@ public class HologramPool implements Listener {
                     }
                 }
             }
-        }, 20, 2);
+        }, 20L, 2L);
     }
-
 
 }
