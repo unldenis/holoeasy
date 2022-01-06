@@ -80,6 +80,7 @@ public class HologramPool implements Listener {
                         continue;
                     } else if (!holoLoc.getWorld()
                             .isChunkLoaded(holoLoc.getBlockX() >> 4, holoLoc.getBlockZ() >> 4)) {
+                        Bukkit.broadcastMessage("Unloaded chunk of hologram");
                         if (isShown) {
                             hologram.hide(player);
                         }

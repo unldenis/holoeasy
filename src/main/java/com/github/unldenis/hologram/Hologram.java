@@ -6,7 +6,6 @@ import com.github.unldenis.hologram.line.ItemLine;
 import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.placeholder.Placeholders;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +20,7 @@ public class Hologram {
     private final Plugin plugin;
     private final Location location;
 
-    private final AbstractLine<?>[] lines;
+    protected final AbstractLine<?>[] lines;
     private final Collection<Player> seeingPlayers = new CopyOnWriteArraySet<>();
 
     private final Placeholders placeholders;
@@ -85,24 +84,20 @@ public class Hologram {
 
     protected void show(@NotNull Player player) {
         this.seeingPlayers.add(player);
-        Bukkit.getScheduler().runTask(plugin, ()->{
-            for(AbstractLine<?> line: this.lines) {
-                line.show(player);
-            }
-        });
+        for(AbstractLine<?> line: this.lines) {
+            line.show(player);
+        }
     }
 
     protected void hide(@NotNull Player player) {
+        for(AbstractLine<?> line: this.lines) {
+            line.hide(player);
+        }
         this.seeingPlayers.remove(player);
-        Bukkit.getScheduler().runTask(plugin, ()->{
-            for(AbstractLine<?> line: this.lines) {
-                line.hide(player);
-            }
-        });
     }
 
     @NotNull
-    private AbstractLine<?> getLine(int index) {
+    protected AbstractLine<?> getLine(int index) {
         return this.lines[Math.abs(index-this.lines.length+1)];
     }
 
