@@ -57,13 +57,17 @@ public class Hologram {
         AbstractLine<?> tempLine;
         for(int j=0; j<lines.length; j++) {
             line = lines[j];
+            double up = 0.28D;
+            if(j>0 && lines[j-1] instanceof ItemStack) {
+                up = 0.0D;
+            }
             if(line instanceof String) {
                 tempLine = new TextLine(this.seeingPlayers, plugin, random.nextInt(), (String) line, this.placeholders);
-                tempLine.setLocation(cloned.add(0.0, 0.28, 0).clone());
+                tempLine.setLocation(cloned.add(0.0, up, 0).clone());
                 this.lines[j] = tempLine;
             }else if (line instanceof ItemStack) {
                 tempLine = new ItemLine(this.seeingPlayers, plugin, random.nextInt(), (ItemStack) line);
-                tempLine.setLocation(cloned.add(0.0, 0.28, 0).clone());
+                tempLine.setLocation(cloned.add(0.0, 0.60D, 0).clone());
                 this.lines[j] = tempLine;
             }
         }
