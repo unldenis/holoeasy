@@ -23,7 +23,7 @@ public class Hologram {
     private final Location location;
 
     protected final AbstractLine<?>[] lines;
-    private final Collection<Player> seeingPlayers = new CopyOnWriteArraySet<>();
+    private Collection<Player> seeingPlayers = new CopyOnWriteArraySet<>();
 
     private final Placeholders placeholders;
 
@@ -64,6 +64,28 @@ public class Hologram {
                 this.lines[j] = tempLine;
             }
         }
+    }
+
+    /**
+     *
+     * @param plugin The org.bukkit.Plugin
+     * @param location The location of the hologram
+     * @param placeholders Reference passage of placeholders
+     * @param lines Inverted array of hologram lines
+     * @param seeingPlayers Visible player reference, used when changing lines or in animations
+     * @deprecated Deprecated because you have to use the Builder of the class.
+     */
+    @Deprecated
+    @ApiStatus.Internal
+    public Hologram(
+            @NotNull Plugin plugin,
+            @NotNull Location location,
+            @Nullable Placeholders placeholders,
+            @NotNull Object[] lines,
+            @NotNull Collection<Player> seeingPlayers
+    ) {
+        this(plugin, location, placeholders, lines);
+        this.seeingPlayers = seeingPlayers;
     }
 
     public void setLine(int index, @NotNull ItemStack itemStack) {
