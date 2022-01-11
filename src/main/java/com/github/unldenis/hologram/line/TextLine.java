@@ -28,19 +28,26 @@ public class TextLine extends AbstractLine<String> {
         /*
          * Entity Metadata
          */
-        Optional<?> opt = Optional
-                .of(WrappedChatComponent
-                        .fromChatMessage(this.placeholders.parse(this.obj, player))[0].getHandle());
         PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.ENTITY_METADATA);
         packet.getIntegers().write(0, entityID);
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
-        WrappedDataWatcher.WrappedDataWatcherObject nameVisible = new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class));
+        if(MINECRAFT_VERSION<9) {
+            watcher.setObject(0, (byte) 0x20);
+            watcher.setObject(2, (String) this.placeholders.parse(this.obj, player));
+            watcher.setObject(3, (byte) 1);
+        }else{
+            WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
+            watcher.setObject(visible, (byte) 0x20);
 
-        watcher.setObject(visible, (byte) 0x20);
-        watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
-        watcher.setObject(nameVisible, true);
+            Optional<?> opt = Optional
+                    .of(WrappedChatComponent
+                            .fromChatMessage(this.placeholders.parse(this.obj, player))[0].getHandle());
+            watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+
+            WrappedDataWatcher.WrappedDataWatcherObject nameVisible = new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class));
+            watcher.setObject(nameVisible, true);
+        }
 
         packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
         try {
@@ -57,11 +64,15 @@ public class TextLine extends AbstractLine<String> {
 
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        Optional<?> opt = Optional
-                .of(WrappedChatComponent
-                        .fromChatMessage(this.placeholders.parse(this.obj, player))[0].getHandle());
+        if(MINECRAFT_VERSION<9) {
+            watcher.setObject(2, this.placeholders.parse(this.obj, player));
+        }else{
+            Optional<?> opt = Optional
+                    .of(WrappedChatComponent
+                            .fromChatMessage(this.placeholders.parse(this.obj, player))[0].getHandle());
 
-        watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+            watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+        }
 
         packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
         try {

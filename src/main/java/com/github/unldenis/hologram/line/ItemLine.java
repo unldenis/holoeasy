@@ -31,9 +31,12 @@ public class ItemLine extends AbstractLine<ItemStack> {
         packetV.getIntegers().write(0, entityID);
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
-
-        watcher.setObject(visible, (byte) 0x20);
+        if(MINECRAFT_VERSION < 9) {
+            watcher.setObject(0, (byte) 0x20);
+        }else{
+            WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
+            watcher.setObject(visible, (byte) 0x20);
+        }
 
         packetV.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
         try {
@@ -44,16 +47,7 @@ public class ItemLine extends AbstractLine<ItemStack> {
         /*
          * Entity Equipment
          */
-        PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT);
-        packet.getIntegers().write(0,this.entityID);
-        List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = new ArrayList<>();
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, this.obj));
-        packet.getSlotStackPairLists().write(0, pairList);
-        try {
-            protocolManager.sendServerPacket(player, packet);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        update(player);
     }
 
     @Override
@@ -63,9 +57,14 @@ public class ItemLine extends AbstractLine<ItemStack> {
          */
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT);
         packet.getIntegers().write(0,this.entityID);
-        List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = new ArrayList<>();
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, this.obj));
-        packet.getSlotStackPairLists().write(0, pairList);
+        if(MINECRAFT_VERSION < 9) {
+            packet.getItemSlots().write(0, EnumWrappers.ItemSlot.HEAD);
+            packet.getItemModifier().write(0, this.obj);
+        }else{
+            List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = new ArrayList<>();
+            pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, this.obj));
+            packet.getSlotStackPairLists().write(0, pairList);
+        }
         try {
             protocolManager.sendServerPacket(player, packet);
         } catch (InvocationTargetException e) {
