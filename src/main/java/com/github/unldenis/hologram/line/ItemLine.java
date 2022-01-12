@@ -31,9 +31,9 @@ public class ItemLine extends AbstractLine<ItemStack> {
         packetV.getIntegers().write(0, entityID);
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        if(MINECRAFT_VERSION < 9) {
+        if (MINECRAFT_VERSION < 9) {
             watcher.setObject(0, (byte) 0x20);
-        }else{
+        } else {
             WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
             watcher.setObject(visible, (byte) 0x20);
         }
@@ -56,11 +56,13 @@ public class ItemLine extends AbstractLine<ItemStack> {
          * Entity Equipment
          */
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT);
-        packet.getIntegers().write(0,this.entityID);
-        if(MINECRAFT_VERSION < 9) {
-            packet.getItemSlots().write(0, EnumWrappers.ItemSlot.HEAD);
+        packet.getIntegers().write(0, this.entityID);
+        if (MINECRAFT_VERSION < 9) {
+
+            // Use legacy form to update the head slot.
+            packet.getIntegers().write(1, 4);
             packet.getItemModifier().write(0, this.obj);
-        }else{
+        } else {
             List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = new ArrayList<>();
             pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, this.obj));
             packet.getSlotStackPairLists().write(0, pairList);
