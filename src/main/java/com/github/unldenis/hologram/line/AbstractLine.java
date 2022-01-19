@@ -141,4 +141,12 @@ public abstract class AbstractLine<T> {
         return watcher;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractLine<?> that = (AbstractLine<?>) o;
+        return entityID == that.entityID && Objects.equals(obj, that.obj);
+    }
+
 }

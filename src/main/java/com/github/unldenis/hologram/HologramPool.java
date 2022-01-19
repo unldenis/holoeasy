@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
@@ -93,4 +93,17 @@ public class HologramPool implements Listener {
         }, 20L, 2L);
     }
 
+    /**
+     * Removes the given hologram by from the handled Holograms of this pool.
+     *
+     * @param hologram the hologram of the pool to remove.
+     */
+    public void remove(@NotNull Hologram hologram) {
+        Validate.notNull(hologram, "Hologram to remove cannot be null");
+        if(this.holograms.contains(hologram)) {
+            this.holograms.remove(hologram);
+            hologram.getSeeingPlayers()
+                    .forEach(hologram::hide);
+        }
+    }
 }

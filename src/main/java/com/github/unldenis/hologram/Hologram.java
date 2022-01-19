@@ -14,7 +14,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
 
@@ -124,8 +124,21 @@ public class Hologram {
     }
 
     @NotNull
+    protected Collection<Player> getSeeingPlayers() {
+        return seeingPlayers;
+    }
+
+    @NotNull
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hologram hologram = (Hologram) o;
+        return Objects.equals(location, hologram.location) && Arrays.equals(lines, hologram.lines);
     }
 
     public static class Builder {
