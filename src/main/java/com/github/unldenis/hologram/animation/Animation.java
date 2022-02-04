@@ -34,6 +34,10 @@ public abstract class Animation {
 
     public abstract void nextFrame(@NotNull Player player);
 
+    public abstract boolean async();
+
+    public abstract Animation clone();
+
     public void setProtocolManager(@NotNull ProtocolManager protocolManager) {
         this.protocolManager = protocolManager;
     }
@@ -41,7 +45,4 @@ public abstract class Animation {
     public void setEntityID(int entityID) {
         this.entityID = entityID;
     }
-
-    public abstract Animation clone();
-
 }

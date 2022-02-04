@@ -131,9 +131,13 @@ public abstract class AbstractLine<T> {
         animation.setEntityID(this.entityID);
         animation.setProtocolManager(this.protocolManager);
 
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin,
-                ()->{ this.animationPlayers.forEach(animation::nextFrame);
-                }, animation.delay(), animation.delay());
+        Runnable taskR = ()-> this.animationPlayers.forEach(animation::nextFrame);
+        BukkitTask task;
+        if(animation.async()) {
+            task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, taskR, animation.delay(), animation.delay());
+        } else {
+            task = Bukkit.getScheduler().runTaskTimer(plugin, taskR, animation.delay(), animation.delay());
+        }
         this.taskID = task.getTaskId();
     }
 

@@ -53,6 +53,11 @@ public class CircleAnimation extends Animation {
     }
 
     @Override
+    public boolean async() {
+        return true;
+    }
+
+    @Override
     public Animation clone() {
         return new CircleAnimation();
     }
