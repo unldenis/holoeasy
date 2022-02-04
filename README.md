@@ -68,7 +68,7 @@ public class ExampleHolograms {
                 .addPlaceholder("%%player%%", Player::getName)
                 .build(hologramPool);
 
-        hologram.setAnimation(3, AnimationType.CIRCLE);
+        hologram.setAnimation(3, Animation.CIRCLE);
 
         // simple changing animating block and text
         timingBlock(hologram);
