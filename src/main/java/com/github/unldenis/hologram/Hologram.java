@@ -19,7 +19,7 @@
 
 package com.github.unldenis.hologram;
 
-import com.github.unldenis.hologram.animation.AnimationType;
+import com.github.unldenis.hologram.animation.*;
 import com.github.unldenis.hologram.line.AbstractLine;
 import com.github.unldenis.hologram.line.ItemLine;
 import com.github.unldenis.hologram.line.TextLine;
@@ -106,9 +106,9 @@ public class Hologram {
         this.seeingPlayers.forEach(line::update);
     }
 
-    public void setAnimation(int index, @NotNull AnimationType animationType) {
+    public void setAnimation(int index, @NotNull Animation animationType) {
         Validate.notNull(animationType, "AnimationType cannot be null");
-        getLine(index).setAnimation(animationType);
+        getLine(index).setAnimation(animationType.clone());
     }
 
     public void removeAnimation(int index) {

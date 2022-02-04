@@ -25,8 +25,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.github.unldenis.hologram.animation.AbstractAnimation;
-import com.github.unldenis.hologram.animation.AnimationType;
+import com.github.unldenis.hologram.animation.*;
 import com.github.unldenis.hologram.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,7 +46,7 @@ public abstract class AbstractLine<T> {
     protected final int entityID;
     protected Location location;
     protected T obj;
-    protected Optional<AbstractAnimation> animation = Optional.empty();
+    protected Optional<Animation> animation = Optional.empty();
     private final Collection<Player> animationPlayers;
     private int taskID = -1;
     private WrappedDataWatcher defaultDataWatcher;
@@ -127,15 +126,14 @@ public abstract class AbstractLine<T> {
         }
     }
 
-    public void setAnimation(@NotNull AnimationType animationType) {
-        AbstractAnimation abstractAnimation = animationType.cloned();
-        this.animation = Optional.of(abstractAnimation);
-        abstractAnimation.setEntityID(this.entityID);
-        abstractAnimation.setProtocolManager(this.protocolManager);
+    public void setAnimation(@NotNull Animation animation) {
+        this.animation = Optional.of(animation);
+        animation.setEntityID(this.entityID);
+        animation.setProtocolManager(this.protocolManager);
 
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin,
-                ()->{ this.animationPlayers.forEach(abstractAnimation::nextFrame);
-                }, abstractAnimation.delay(), abstractAnimation.delay());
+                ()->{ this.animationPlayers.forEach(animation::nextFrame);
+                }, animation.delay(), animation.delay());
         this.taskID = task.getTaskId();
     }
 

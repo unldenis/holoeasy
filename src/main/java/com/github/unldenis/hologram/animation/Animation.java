@@ -23,7 +23,9 @@ import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractAnimation {
+public abstract class Animation {
+
+    public static final Animation CIRCLE = new CircleAnimation();
 
     protected ProtocolManager protocolManager;
     protected int entityID;
@@ -40,6 +42,6 @@ public abstract class AbstractAnimation {
         this.entityID = entityID;
     }
 
-    public abstract AbstractAnimation clone();
+    public abstract Animation clone();
 
 }

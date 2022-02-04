@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class CircleAnimation extends AbstractAnimation {
+public class CircleAnimation extends Animation {
 
     private float yaw=0;
 
@@ -53,7 +53,7 @@ public class CircleAnimation extends AbstractAnimation {
     }
 
     @Override
-    public AbstractAnimation clone() {
+    public Animation clone() {
         return new CircleAnimation();
     }
 
