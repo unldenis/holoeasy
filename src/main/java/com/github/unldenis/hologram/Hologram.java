@@ -20,12 +20,13 @@
 package com.github.unldenis.hologram;
 
 import com.github.unldenis.hologram.animation.*;
+import com.github.unldenis.hologram.event.*;
 import com.github.unldenis.hologram.line.AbstractLine;
 import com.github.unldenis.hologram.line.ItemLine;
 import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.placeholder.Placeholders;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -124,6 +125,8 @@ public class Hologram {
         for(AbstractLine<?> line: this.lines) {
             line.show(player);
         }
+        Bukkit.getScheduler().runTask(
+                plugin, ()->Bukkit.getPluginManager().callEvent(new PlayerHologramShowEvent(player, this)));
     }
 
     protected void hide(@NotNull Player player) {
@@ -131,6 +134,9 @@ public class Hologram {
             line.hide(player);
         }
         this.seeingPlayers.remove(player);
+
+        Bukkit.getScheduler().runTask(
+                plugin, ()->Bukkit.getPluginManager().callEvent(new PlayerHologramHideEvent(player, this)));
     }
 
     @NotNull
