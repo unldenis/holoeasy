@@ -40,7 +40,7 @@ main: com.github.unldenis.server.hub.ServerHub
 ```
 ## Example usage
 ```java
-public class ExampleHolograms {
+public class ExampleHolograms implements Listener {
 
     private final Plugin plugin;
     private final HologramPool hologramPool;
@@ -91,6 +91,26 @@ public class ExampleHolograms {
             }
         }
         .runTaskTimer(plugin, 30L, 30L);
+    }
+    
+    /**
+     * Doing something when a Hologram is shown for a certain player.
+     * @param event The event instance
+     */
+    @EventHandler
+    public void onHologramShow(PlayerHologramShowEvent event) {
+        Hologram holo = event.getHologram();
+        Player player = event.getPlayer();
+    }
+
+    /**
+     * Doing something when a Hologram is hidden for a certain player.
+     * @param event The event instance
+     */
+    @EventHandler
+    public void onHologramHide(PlayerHologramHideEvent event) {
+        Hologram holo = event.getHologram();
+        Player player = event.getPlayer();
     }
 }
 ```
