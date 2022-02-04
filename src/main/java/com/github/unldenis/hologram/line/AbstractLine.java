@@ -24,10 +24,10 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.utility.MinecraftVersion;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.github.unldenis.hologram.animation.AbstractAnimation;
 import com.github.unldenis.hologram.animation.AnimationType;
+import com.github.unldenis.hologram.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -43,31 +43,24 @@ import java.util.*;
 
 public abstract class AbstractLine<T> {
     private final Plugin plugin;
-    protected final int MINECRAFT_VERSION;
     protected final ProtocolManager protocolManager;
     protected final int entityID;
     protected Location location;
-
     protected T obj;
-
     protected Optional<AbstractAnimation> animation = Optional.empty();
-
     private final Collection<Player> animationPlayers;
     private int taskID = -1;
-
     private WrappedDataWatcher defaultDataWatcher;
 
     public AbstractLine(@NotNull Collection<Player> seeingPlayers, @NotNull Plugin plugin, int entityID, @NotNull T obj) {
         this.plugin = plugin;
-        this.MINECRAFT_VERSION = MinecraftVersion.getCurrentVersion().getMinor();
         this.protocolManager = ProtocolLibrary.getProtocolManager();
         this.entityID = entityID;
         this.obj = obj;
         this.animationPlayers = seeingPlayers; //copy rif
-        if(MINECRAFT_VERSION <9) {
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
             defaultDataWatcher = getDefaultWatcher(Bukkit.getWorlds().get(0));
         }
-
     }
 
     public void setLocation(@NotNull Location location) {
@@ -82,7 +75,7 @@ public abstract class AbstractLine<T> {
 
     public void hide(@NotNull Player player) {
         PacketContainer destroyEntity = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        if(MINECRAFT_VERSION < 9) {
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
             destroyEntity.getIntegerArrays().write(0, new int[] { this.entityID });
         }else{
             destroyEntity.getIntLists().write(0, Collections.singletonList(this.entityID));
@@ -101,7 +94,7 @@ public abstract class AbstractLine<T> {
          */
         final PacketContainer itemPacket = protocolManager.createPacket(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
 
-        if(MINECRAFT_VERSION < 9) {
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
             itemPacket.getIntegers().
                     write(0, this.entityID).
                     write(1, (int) EntityType.ARMOR_STAND.getTypeId()).

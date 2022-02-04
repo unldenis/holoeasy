@@ -24,6 +24,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.github.unldenis.hologram.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -50,7 +51,7 @@ public class ItemLine extends AbstractLine<ItemStack> {
         packetV.getIntegers().write(0, entityID);
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        if (MINECRAFT_VERSION < 9) {
+        if (VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
             watcher.setObject(0, (byte) 0x20);
         } else {
             WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
@@ -76,7 +77,7 @@ public class ItemLine extends AbstractLine<ItemStack> {
          */
         PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT);
         packet.getIntegers().write(0, this.entityID);
-        if (MINECRAFT_VERSION < 9) {
+        if (VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
 
             // Use legacy form to update the head slot.
             packet.getIntegers().write(1, 4);

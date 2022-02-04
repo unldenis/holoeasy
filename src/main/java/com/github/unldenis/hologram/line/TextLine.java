@@ -24,6 +24,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.github.unldenis.hologram.placeholder.Placeholders;
+import com.github.unldenis.hologram.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +52,7 @@ public class TextLine extends AbstractLine<String> {
         packet.getIntegers().write(0, entityID);
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        if(MINECRAFT_VERSION<9) {
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
             watcher.setObject(0, (byte) 0x20);
             watcher.setObject(2, (String) this.placeholders.parse(this.obj, player));
             watcher.setObject(3, (byte) 1);
@@ -83,7 +84,7 @@ public class TextLine extends AbstractLine<String> {
 
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        if(MINECRAFT_VERSION<9) {
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
             watcher.setObject(2, this.placeholders.parse(this.obj, player));
         }else{
             Optional<?> opt = Optional
