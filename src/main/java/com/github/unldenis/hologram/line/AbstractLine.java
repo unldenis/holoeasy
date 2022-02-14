@@ -148,6 +148,44 @@ public abstract class AbstractLine<T> {
         }
     }
 
+    /**
+     * Method used to teleport a certain line
+     * @param player player to teleport it to
+     * @since 1.2-SNAPSHOT
+     */
+    public void teleport(@NotNull Player player) {
+        byte yawAngle = this.getCompressAngle(location.getYaw());
+        byte pitchAngle = this.getCompressAngle(location.getPitch());
+        PacketContainer container = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
+        container.getIntegers()
+                .write(0, this.entityID);
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
+            container.getIntegers()
+                    .write(1, (int) Math.floor(location.getX() * 32.0D))
+                    .write(2, (int) Math.floor(location.getY() * 32.0D))
+                    .write(3, (int) Math.floor(location.getZ() * 32.0D));
+        } else {
+            container.getDoubles()
+                    .write(0, location.getX())
+                    .write(1, location.getY())
+                    .write(2, location.getZ());
+        }
+        container.getBytes()
+                .write(0, yawAngle)
+                .write(1, pitchAngle);
+        container.getBooleans()
+                .write(0, false);
+        try {
+            protocolManager.sendServerPacket(player, container);
+        } catch (InvocationTargetException invocationTargetException) {
+            invocationTargetException.printStackTrace();
+        }
+    }
+
+    public @NotNull Location getLocation() {
+        return location;
+    }
+
     private WrappedDataWatcher getDefaultWatcher(@NotNull World world) {
         Entity entity = world.spawnEntity(new Location(world, 0, 256, 0), EntityType.ARMOR_STAND);
         WrappedDataWatcher watcher = WrappedDataWatcher.getEntityWatcher(entity).deepClone();
@@ -162,5 +200,10 @@ public abstract class AbstractLine<T> {
         AbstractLine<?> that = (AbstractLine<?>) o;
         return entityID == that.entityID && Objects.equals(obj, that.obj);
     }
+
+    protected byte getCompressAngle(double angle) {
+        return (byte) (angle * 256F / 360F);
+    }
+
 
 }

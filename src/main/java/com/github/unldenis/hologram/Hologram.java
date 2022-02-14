@@ -40,7 +40,7 @@ import java.util.function.Function;
 
 public class Hologram {
     private final Plugin plugin;
-    private final Location location;
+    private Location location;
 
     protected final AbstractLine<?>[] lines;
     private final Collection<Player> seeingPlayers;
@@ -91,6 +91,46 @@ public class Hologram {
                 this.lines[j] = tempLine;
             }
         }
+    }
+
+    /**
+     * Method used to teleport the hologram.
+     * Note that this method runs on the main-thread.
+     * @param to location to teleport it
+     * @since 1.2-SNAPSHOT
+     */
+    @ApiStatus.Experimental
+    @ApiStatus.AvailableSince("1.2-SNAPSHOT")
+    public void teleport(@NotNull Location to) {
+        Validate.notNull(to, "Destination cannot be null");
+        // Clone the given location
+        this.location = to.clone();
+        // Obtain the Y position of the first line and then calculate the distance to all lines to maintain this distance
+        double baseY = this.lines[0].getLocation().getY();
+        // Get position Y where to teleport the first line
+        double destY = (this.location.getY()-0.28D) + (this.lines[0] instanceof TextLine ? 0.28D : 0.60D);
+        // Teleport the first line
+        this.teleportLine(destY, this.lines[0]);
+        AbstractLine<?> tempLine;
+        for(int j=1; j<this.lines.length; j++) {
+            tempLine = this.lines[j];
+            /*
+            Teleport from the second line onwards.
+            The final height is found by adding to that of the first line the difference that was present when it was already spawned
+            */
+            this.teleportLine(destY + Math.abs(baseY - tempLine.getLocation().getY()), tempLine);
+        }
+    }
+
+    /**
+        Private method of teleporting a certain line.
+        Note that the position of this class must already have changed.
+     */
+    private void teleportLine(double destY, AbstractLine<?> tempLine) {
+        Location dest = this.location.clone();
+        dest.setY(destY);
+        tempLine.setLocation(dest);
+        this.seeingPlayers.forEach(tempLine::teleport);
     }
 
     public void setLine(int index, @NotNull ItemStack itemStack) {
