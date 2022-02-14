@@ -1,4 +1,5 @@
 # Hologram-Lib
+[![](https://jitpack.io/v/unldenis/Hologram-Lib.svg)](https://jitpack.io/#unldenis/Hologram-Lib) <br>
 Asynchronous, high-performance Minecraft Hologram library for 1.8-1.18 servers.
 ## Requirements
 This library can only be used on spigot servers higher or on version 1.8.8. The plugin <a href="https://www.spigotmc.org/resources/protocollib.1997/">ProtocolLib</a> is required on your server.
@@ -40,7 +41,7 @@ main: com.github.unldenis.server.hub.ServerHub
 ```
 ## Example usage
 ```java
-public class ExampleHolograms {
+public class ExampleHolograms implements Listener {
 
     private final Plugin plugin;
     private final HologramPool hologramPool;
@@ -91,6 +92,26 @@ public class ExampleHolograms {
             }
         }
         .runTaskTimer(plugin, 30L, 30L);
+    }
+    
+    /**
+     * Doing something when a Hologram is shown for a certain player.
+     * @param event The event instance
+     */
+    @EventHandler
+    public void onHologramShow(PlayerHologramShowEvent event) {
+        Hologram holo = event.getHologram();
+        Player player = event.getPlayer();
+    }
+
+    /**
+     * Doing something when a Hologram is hidden for a certain player.
+     * @param event The event instance
+     */
+    @EventHandler
+    public void onHologramHide(PlayerHologramHideEvent event) {
+        Hologram holo = event.getHologram();
+        Player player = event.getPlayer();
     }
 }
 ```
