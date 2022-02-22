@@ -70,7 +70,6 @@ public class Hologram {
         this.seeingPlayers = seeingPlayers;
         this.lines = new AbstractLine[lines.length];
 
-        final ThreadLocalRandom random = ThreadLocalRandom.current();
         Location cloned = this.location.clone().subtract(0, 0.28, 0);
 
         Object line;
@@ -82,11 +81,11 @@ public class Hologram {
                 up = 0.0D;
             }
             if(line instanceof String) {
-                tempLine = new TextLine(this.seeingPlayers, plugin, random.nextInt(), (String) line, this.placeholders);
+                tempLine = new TextLine(this.seeingPlayers, plugin, HologramPool.IDs_COUNTER.getAndIncrement(), (String) line, this.placeholders);
                 tempLine.setLocation(cloned.add(0.0, up, 0).clone());
                 this.lines[j] = tempLine;
             }else if (line instanceof ItemStack) {
-                tempLine = new ItemLine(this.seeingPlayers, plugin, random.nextInt(), (ItemStack) line);
+                tempLine = new ItemLine(this.seeingPlayers, plugin, HologramPool.IDs_COUNTER.getAndIncrement(), (ItemStack) line);
                 tempLine.setLocation(cloned.add(0.0, 0.60D, 0).clone());
                 this.lines[j] = tempLine;
             }

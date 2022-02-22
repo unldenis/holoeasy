@@ -34,9 +34,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.*;
 
 
 public class HologramPool implements Listener {
+
+    public static AtomicInteger IDs_COUNTER = new AtomicInteger(new Random().nextInt());
 
     private final Plugin plugin;
     private final double spawnDistance;
