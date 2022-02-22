@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.*;
 
 public class HologramPool implements Listener {
 
-    public static AtomicInteger IDs_COUNTER = new AtomicInteger(new Random().nextInt());
+    protected static AtomicInteger IDs_COUNTER = new AtomicInteger(new Random().nextInt());
 
     private final Plugin plugin;
     private final double spawnDistance;
