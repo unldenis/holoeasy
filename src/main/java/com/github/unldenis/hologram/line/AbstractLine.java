@@ -19,51 +19,33 @@
 
 package com.github.unldenis.hologram.line;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.github.unldenis.hologram.animation.*;
-import com.github.unldenis.hologram.util.*;
+import com.github.unldenis.hologram.packet.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class AbstractLine<T> {
-    private final Plugin plugin;
-    protected final ProtocolManager protocolManager;
+    protected final Plugin plugin;
     protected final int entityID;
     protected Location location;
     protected T obj;
     protected Optional<Animation> animation = Optional.empty();
-    private final Collection<Player> animationPlayers;
     private int taskID = -1;
-    private WrappedDataWatcher defaultDataWatcher;
 
-    public AbstractLine(@NotNull Collection<Player> seeingPlayers, @NotNull Plugin plugin, int entityID, @NotNull T obj) {
+    private final EntityDestroyPacket entityDestroyPacket;
+
+    public AbstractLine(@NotNull Plugin plugin, int entityID, @NotNull T obj) {
         this.plugin = plugin;
-        this.protocolManager = ProtocolLibrary.getProtocolManager();
         this.entityID = entityID;
         this.obj = obj;
-        this.animationPlayers = seeingPlayers; //copy rif
-        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
-            defaultDataWatcher = getDefaultWatcher(Bukkit.getWorlds().get(0));
-        }
-    }
-
-    public void setLocation(@NotNull Location location) {
-        this.location = location;
+        entityDestroyPacket = new EntityDestroyPacket(entityID);
+        entityDestroyPacket.load();
     }
 
     public void set(T newObj) {
@@ -73,65 +55,31 @@ public abstract class AbstractLine<T> {
     public abstract void update(@NotNull Player player);
 
     public void hide(@NotNull Player player) {
-        PacketContainer destroyEntity = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
-        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
-            destroyEntity.getIntegerArrays().write(0, new int[] { this.entityID });
-        }else{
-            destroyEntity.getIntLists().write(0, Collections.singletonList(this.entityID));
-        }
-        try {
-            protocolManager.sendServerPacket(player, destroyEntity);
-        } catch (InvocationTargetException invocationTargetException) {
-            invocationTargetException.printStackTrace();
-        }
-
+        entityDestroyPacket.send(player);
     }
 
     public void show(@NotNull Player player) {
-        /*
-         * Entity Living Spawn
-         */
-        final PacketContainer itemPacket = protocolManager.createPacket(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
-
-        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
-            itemPacket.getIntegers().
-                    write(0, this.entityID).
-                    write(1, (int) EntityType.ARMOR_STAND.getTypeId()).
-                    write(2, (int) (this.location.getX() * 32)).
-                    write(3, (int) (this.location.getY() * 32)).
-                    write(4, (int) (this.location.getZ() * 32));
-            itemPacket.getDataWatcherModifier().
-                    write(0, this.defaultDataWatcher);
-        }else{
-            final int entityType = 1;
-            final int extraData = 1;
-            StructureModifier<Integer> itemInts = itemPacket.getIntegers();
-            itemInts.write(0, this.entityID);
-            itemInts.write(1, entityType);
-            itemInts.write(2, extraData);
-
-            StructureModifier<UUID> itemIDs = itemPacket.getUUIDs();
-            itemIDs.write(0, UUID.randomUUID());
-
-            StructureModifier<Double> itemDoubles = itemPacket.getDoubles();
-            itemDoubles.write(0, this.location.getX());
-            itemDoubles.write(1, this.location.getY()/*+1.2*/);
-            itemDoubles.write(2, this.location.getZ());
-        }
-
-        try {
-            protocolManager.sendServerPacket(player, itemPacket);
-        } catch (InvocationTargetException invocationTargetException) {
-            invocationTargetException.printStackTrace();
-        }
+        new SpawnEntityLivingPacket(entityID, location, plugin)
+                .load()
+                .send(player);
     }
 
-    public void setAnimation(@NotNull Animation animation) {
+    /**
+     * Method used to teleport a certain line
+     * @param player player to teleport it to
+     * @since 1.2-SNAPSHOT
+     */
+    public void teleport(@NotNull Player player) {
+        new EntityTeleportPacket(entityID, location)
+                .load()
+                .send(player);
+    }
+
+    public void setAnimation(@NotNull Animation animation, @NotNull Collection<Player> seeingPlayers) {
         this.animation = Optional.of(animation);
         animation.setEntityID(this.entityID);
-        animation.setProtocolManager(this.protocolManager);
 
-        Runnable taskR = ()-> this.animationPlayers.forEach(animation::nextFrame);
+        Runnable taskR = ()-> seeingPlayers.forEach(animation::nextFrame);
         BukkitTask task;
         if(animation.async()) {
             task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, taskR, animation.delay(), animation.delay());
@@ -148,49 +96,12 @@ public abstract class AbstractLine<T> {
         }
     }
 
-    /**
-     * Method used to teleport a certain line
-     * @param player player to teleport it to
-     * @since 1.2-SNAPSHOT
-     */
-    public void teleport(@NotNull Player player) {
-        byte yawAngle = this.getCompressAngle(location.getYaw());
-        byte pitchAngle = this.getCompressAngle(location.getPitch());
-        PacketContainer container = new PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT);
-        container.getIntegers()
-                .write(0, this.entityID);
-        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
-            container.getIntegers()
-                    .write(1, (int) Math.floor(location.getX() * 32.0D))
-                    .write(2, (int) Math.floor(location.getY() * 32.0D))
-                    .write(3, (int) Math.floor(location.getZ() * 32.0D));
-        } else {
-            container.getDoubles()
-                    .write(0, location.getX())
-                    .write(1, location.getY())
-                    .write(2, location.getZ());
-        }
-        container.getBytes()
-                .write(0, yawAngle)
-                .write(1, pitchAngle);
-        container.getBooleans()
-                .write(0, false);
-        try {
-            protocolManager.sendServerPacket(player, container);
-        } catch (InvocationTargetException invocationTargetException) {
-            invocationTargetException.printStackTrace();
-        }
+    public void setLocation(@NotNull Location location) {
+        this.location = location;
     }
 
     public @NotNull Location getLocation() {
         return location;
-    }
-
-    private WrappedDataWatcher getDefaultWatcher(@NotNull World world) {
-        Entity entity = world.spawnEntity(new Location(world, 0, 256, 0), EntityType.ARMOR_STAND);
-        WrappedDataWatcher watcher = WrappedDataWatcher.getEntityWatcher(entity).deepClone();
-        entity.remove();
-        return watcher;
     }
 
     @Override
@@ -200,10 +111,5 @@ public abstract class AbstractLine<T> {
         AbstractLine<?> that = (AbstractLine<?>) o;
         return entityID == that.entityID && Objects.equals(obj, that.obj);
     }
-
-    protected byte getCompressAngle(double angle) {
-        return (byte) (angle * 256F / 360F);
-    }
-
 
 }

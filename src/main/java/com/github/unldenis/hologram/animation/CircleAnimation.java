@@ -20,7 +20,7 @@
 package com.github.unldenis.hologram.animation;
 
 
-import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.*;
 import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +46,7 @@ public class CircleAnimation extends Animation {
                 .write(1, (byte) 0);
         pc.getBooleans().write(0, true);
         try {
-            protocolManager.sendServerPacket(player, pc);
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, pc);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }

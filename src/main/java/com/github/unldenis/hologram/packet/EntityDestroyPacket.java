@@ -17,26 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.unldenis.hologram.animation;
+package com.github.unldenis.hologram.packet;
 
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import com.comphenix.protocol.*;
+import com.github.unldenis.hologram.util.*;
+import org.bukkit.plugin.*;
+import org.jetbrains.annotations.*;
 
-public abstract class Animation {
+import java.util.*;
 
-    public static final Animation CIRCLE = new CircleAnimation();
+public class EntityDestroyPacket extends AbstractPacket {
 
-    protected int entityID;
+    public EntityDestroyPacket( int entityID) {
+        super(entityID, PacketType.Play.Server.ENTITY_DESTROY);
+    }
 
-    public abstract long delay();
-
-    public abstract void nextFrame(@NotNull Player player);
-
-    public abstract boolean async();
-
-    public abstract Animation clone();
-
-    public void setEntityID(int entityID) {
-        this.entityID = entityID;
+    @Override
+    public @NotNull AbstractPacket load() {
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
+            packetContainer.getIntegerArrays().write(0, new int[] { this.entityID });
+        }else{
+            packetContainer.getIntLists().write(0, Collections.singletonList(this.entityID));
+        }
+        return this;
     }
 }

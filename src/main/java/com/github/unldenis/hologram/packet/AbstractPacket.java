@@ -17,26 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.unldenis.hologram.animation;
+package com.github.unldenis.hologram.packet;
 
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import com.comphenix.protocol.*;
+import com.comphenix.protocol.events.*;
+import org.bukkit.entity.*;
+import org.jetbrains.annotations.*;
 
-public abstract class Animation {
+import java.lang.reflect.*;
 
-    public static final Animation CIRCLE = new CircleAnimation();
+public abstract class AbstractPacket {
 
-    protected int entityID;
+    protected final int entityID;
+    protected final PacketContainer packetContainer;
 
-    public abstract long delay();
-
-    public abstract void nextFrame(@NotNull Player player);
-
-    public abstract boolean async();
-
-    public abstract Animation clone();
-
-    public void setEntityID(int entityID) {
+    public AbstractPacket(int entityID, @NotNull PacketType packetType) {
         this.entityID = entityID;
+        this.packetContainer = new PacketContainer(packetType);
     }
+
+    public abstract @NotNull AbstractPacket load();
+
+    public void send(@NotNull Player player) {
+        try {
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, this.packetContainer);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -81,11 +81,11 @@ public class Hologram {
                 up = 0.0D;
             }
             if(line instanceof String) {
-                tempLine = new TextLine(this.seeingPlayers, plugin, HologramPool.IDs_COUNTER.getAndIncrement(), (String) line, this.placeholders);
+                tempLine = new TextLine(plugin, HologramPool.IDs_COUNTER.getAndIncrement(), (String) line, this.placeholders);
                 tempLine.setLocation(cloned.add(0.0, up, 0).clone());
                 this.lines[j] = tempLine;
             }else if (line instanceof ItemStack) {
-                tempLine = new ItemLine(this.seeingPlayers, plugin, HologramPool.IDs_COUNTER.getAndIncrement(), (ItemStack) line);
+                tempLine = new ItemLine(plugin, HologramPool.IDs_COUNTER.getAndIncrement(), (ItemStack) line);
                 tempLine.setLocation(cloned.add(0.0, 0.60D, 0).clone());
                 this.lines[j] = tempLine;
             }
@@ -148,7 +148,7 @@ public class Hologram {
 
     public void setAnimation(int index, @NotNull Animation animationType) {
         Validate.notNull(animationType, "AnimationType cannot be null");
-        getLine(index).setAnimation(animationType.clone());
+        getLine(index).setAnimation(animationType.clone(), seeingPlayers);
     }
 
     public void removeAnimation(int index) {
