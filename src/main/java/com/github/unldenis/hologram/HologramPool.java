@@ -95,8 +95,10 @@ public class HologramPool implements Listener {
                     Location playerLoc = player.getLocation();
                     boolean isShown = hologram.isShownFor(player);
 
-                    if (!holoLoc.getWorld().equals(playerLoc.getWorld()) && isShown) {
-                        hologram.hide(player);
+                    if (!holoLoc.getWorld().equals(playerLoc.getWorld())) {
+                        if(isShown) {
+                            hologram.hide(player);
+                        }
                         continue;
                     } else if (!holoLoc.getWorld()
                             .isChunkLoaded(holoLoc.getBlockX() >> 4, holoLoc.getBlockZ() >> 4) && isShown) {
