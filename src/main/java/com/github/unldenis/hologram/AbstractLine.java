@@ -17,21 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.unldenis.hologram.line;
+package com.github.unldenis.hologram;
 
 import com.github.unldenis.hologram.animation.*;
 import com.github.unldenis.hologram.packet.*;
+import org.apache.commons.lang.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public abstract class AbstractLine<T> {
-    protected final Plugin plugin;
+    protected final Hologram hologram;
     protected final int entityID;
     protected Location location;
     protected T obj;
@@ -40,26 +40,23 @@ public abstract class AbstractLine<T> {
 
     private final EntityDestroyPacket entityDestroyPacket;
 
-    public AbstractLine(@NotNull Plugin plugin, int entityID, @NotNull T obj) {
-        this.plugin = plugin;
-        this.entityID = entityID;
+    public AbstractLine(
+            @NotNull Hologram hologram,
+            @NotNull T obj
+    ) {
+        this.hologram = hologram;
+        this.entityID = HologramPool.IDs_COUNTER.getAndIncrement();
         this.obj = obj;
         entityDestroyPacket = new EntityDestroyPacket(entityID);
         entityDestroyPacket.load();
     }
 
-    public void set(T newObj) {
-        this.obj = newObj;
-    }
-
-    public abstract void update(@NotNull Player player);
-
-    public void hide(@NotNull Player player) {
+    protected void hide(@NotNull Player player) {
         entityDestroyPacket.send(player);
     }
 
-    public void show(@NotNull Player player) {
-        new SpawnEntityLivingPacket(entityID, location, plugin)
+    protected void show(@NotNull Player player) {
+        new SpawnEntityLivingPacket(entityID, location, hologram.getPlugin())
                 .load()
                 .send(player);
     }
@@ -69,22 +66,38 @@ public abstract class AbstractLine<T> {
      * @param player player to teleport it to
      * @since 1.2-SNAPSHOT
      */
-    public void teleport(@NotNull Player player) {
+    protected void teleport(@NotNull Player player) {
         new EntityTeleportPacket(entityID, location)
                 .load()
                 .send(player);
     }
 
-    public void setAnimation(@NotNull Animation animation, @NotNull Collection<Player> seeingPlayers) {
+    protected void setLocation(@NotNull Location location) {
+        this.location = location;
+    }
+
+
+    public void set(T newObj) {
+        Validate.notNull(newObj, "New line cannot be null");
+        this.obj = newObj;
+        hologram.seeingPlayers.forEach(this::update);
+    }
+
+    public abstract void update(@NotNull Player player);
+
+    public void setAnimation(@NotNull Animation a) {
+        Validate.notNull(animation, "Animation cannot be null");
+        Animation animation = a.clone();
+
         this.animation = Optional.of(animation);
         animation.setEntityID(this.entityID);
 
-        Runnable taskR = ()-> seeingPlayers.forEach(animation::nextFrame);
+        Runnable taskR = ()-> hologram.seeingPlayers.forEach(animation::nextFrame);
         BukkitTask task;
         if(animation.async()) {
-            task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, taskR, animation.delay(), animation.delay());
+            task = Bukkit.getScheduler().runTaskTimerAsynchronously(hologram.getPlugin(), taskR, animation.delay(), animation.delay());
         } else {
-            task = Bukkit.getScheduler().runTaskTimer(plugin, taskR, animation.delay(), animation.delay());
+            task = Bukkit.getScheduler().runTaskTimer(hologram.getPlugin(), taskR, animation.delay(), animation.delay());
         }
         this.taskID = task.getTaskId();
     }
@@ -96,13 +109,10 @@ public abstract class AbstractLine<T> {
         }
     }
 
-    public void setLocation(@NotNull Location location) {
-        this.location = location;
-    }
-
     public @NotNull Location getLocation() {
         return location;
     }
+
 
     @Override
     public boolean equals(Object o) {

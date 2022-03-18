@@ -25,7 +25,7 @@
 
     <groupId>com.github.unldenis.hologram</groupId>
     <artifactId>hologram-lib</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -60,8 +60,9 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
-            <artifactId>annotations-java5</artifactId>
-            <version>20.1.0</version>
+            <artifactId>annotations</artifactId>
+            <version>23.0.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

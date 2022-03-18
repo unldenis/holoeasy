@@ -19,32 +19,29 @@
 
 package com.github.unldenis.hologram.line;
 
+import com.github.unldenis.hologram.*;
 import com.github.unldenis.hologram.packet.*;
 import com.github.unldenis.hologram.placeholder.Placeholders;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class TextLine extends AbstractLine<String> {
 
-    private final Placeholders placeholders;
-
-    public TextLine(@NotNull Plugin plugin, int entityID, @NotNull String obj, @NotNull Placeholders placeholders) {
-        super(plugin, entityID, obj);
-        this.placeholders = placeholders;
+    public TextLine(@NotNull Hologram hologram,@NotNull String obj) {
+        super(hologram, obj);
     }
 
     @Override
-    public void show(@NotNull Player player) {
+    protected void show(@NotNull Player player) {
         super.show(player);
-        new EntityMetadataPacket(entityID, obj, player, placeholders, true)
+        new EntityMetadataPacket(entityID, obj, player, hologram.getPlaceholders(), true)
                 .load()
                 .send(player);
     }
 
     @Override
     public void update(@NotNull Player player) {
-        new EntityMetadataPacket(entityID, obj, player, placeholders, false)
+        new EntityMetadataPacket(entityID, obj, player, hologram.getPlaceholders(), false)
                 .load()
                 .send(player);
     }

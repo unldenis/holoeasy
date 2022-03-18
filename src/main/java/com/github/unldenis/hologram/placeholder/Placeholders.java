@@ -39,11 +39,11 @@ public class Placeholders {
 
     @NotNull
     public String parse(@NotNull String line, @NotNull Player player) {
-        String cloned = line;
+        String c = line;
         for(Map.Entry<String, Function<Player, String>> entry: placeholders.entrySet()) {
-            cloned = cloned.replaceAll(entry.getKey(), entry.getValue().apply(player));
+            c = c.replaceAll(entry.getKey(), entry.getValue().apply(player));
         }
-        return cloned;
+        return c;
     }
 }
 
