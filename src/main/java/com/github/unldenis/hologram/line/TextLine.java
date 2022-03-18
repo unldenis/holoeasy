@@ -40,7 +40,7 @@ public class TextLine extends AbstractLine<String> {
     }
 
     @Override
-    public void update(@NotNull Player player) {
+    protected void update(@NotNull Player player) {
         new EntityMetadataPacket(entityID, obj, player, hologram.getPlaceholders(), false)
                 .load()
                 .send(player);

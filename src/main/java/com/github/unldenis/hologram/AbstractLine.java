@@ -26,7 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
@@ -76,14 +76,18 @@ public abstract class AbstractLine<T> {
         this.location = location;
     }
 
+    protected abstract void update(@NotNull Player player);
 
     public void set(T newObj) {
         Validate.notNull(newObj, "New line cannot be null");
         this.obj = newObj;
-        hologram.seeingPlayers.forEach(this::update);
+        this.update();
     }
 
-    public abstract void update(@NotNull Player player);
+    @ApiStatus.AvailableSince("1.2.6")
+    public void update() {
+        hologram.seeingPlayers.forEach(this::update);
+    }
 
     public void setAnimation(@NotNull Animation a) {
         Validate.notNull(animation, "Animation cannot be null");
@@ -108,6 +112,7 @@ public abstract class AbstractLine<T> {
             taskID = -1;
         }
     }
+
 
     public @NotNull Location getLocation() {
         return location;

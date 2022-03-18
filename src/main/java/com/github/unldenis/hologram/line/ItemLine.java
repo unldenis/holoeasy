@@ -43,7 +43,7 @@ public class ItemLine extends AbstractLine<ItemStack> {
     }
 
     @Override
-    public void update(@NotNull Player player) {
+    protected void update(@NotNull Player player) {
         new EntityEquipmentPacket(entityID, obj)
                 .load()
                 .send(player);
