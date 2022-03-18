@@ -159,7 +159,7 @@ public class Hologram {
         return location;
     }
 
-    protected void show(@NotNull Player player) {
+    public void show(@NotNull Player player) {
         this.seeingPlayers.add(player);
         for(AbstractLine<?> line: this.lines) {
             line.show(player);
@@ -168,7 +168,7 @@ public class Hologram {
                 plugin, ()->Bukkit.getPluginManager().callEvent(new PlayerHologramShowEvent(player, this)));
     }
 
-    protected void hide(@NotNull Player player) {
+    public void hide(@NotNull Player player) {
         for(AbstractLine<?> line: this.lines) {
             line.hide(player);
         }
@@ -179,16 +179,16 @@ public class Hologram {
     }
 
     @NotNull
-    protected AbstractLine<?> getLine(int index) {
+    public AbstractLine<?> getLine(int index) {
         return this.lines[Math.abs(index-this.lines.length+1)];
     }
 
-    protected boolean isShownFor(@NotNull Player player) {
+    public boolean isShownFor(@NotNull Player player) {
         return this.seeingPlayers.contains(player);
     }
 
     @NotNull
-    protected Collection<Player> getSeeingPlayers() {
+    public Collection<Player> getSeeingPlayers() {
         return seeingPlayers;
     }
 
