@@ -69,14 +69,13 @@ public class ExampleHolograms implements Listener {
                 .addPlaceholder("%%player%%", Player::getName)
                 .build(hologramPool);
 
-        hologram.setAnimation(3, Animation.CIRCLE);
-
+        hologram.getLines().get(3).setAnimation(Animation.CIRCLE);
         // simple changing animating block and text
         timingBlock(hologram);
     }
-    
+
     private final static Material[] materials = new Material[] { Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK};
-    
+
     /**
      * Update the block and the first line of text of the hologram
      * @param hologram The hologram to update
@@ -84,16 +83,18 @@ public class ExampleHolograms implements Listener {
     private void timingBlock(Hologram hologram) {
         new BukkitRunnable() {
             int j=1;
+            final TextLine firstLine = (TextLine) hologram.getLines().get(0);
+            final ItemLine itemLine = (ItemLine) hologram.getLines().get(3);
             @Override
             public void run() {
                 if(j==materials.length) j=0;
-                hologram.setLine(0, String.valueOf(j));
-                hologram.setLine(3, new ItemStack(materials[j++]));
+                firstLine.set(String.valueOf(j));
+                itemLine.set(new ItemStack(materials[j++]));
             }
         }
         .runTaskTimer(plugin, 30L, 30L);
     }
-    
+
     /**
      * Doing something when a Hologram is shown for a certain player.
      * @param event The event instance
