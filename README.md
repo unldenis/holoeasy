@@ -39,6 +39,9 @@ depend: [ProtocolLib]
 author: unldenis
 main: com.github.unldenis.server.hub.ServerHub
 ```
+## Support
+The libraries that integrate Hologram-Lib
+- <a href="https://github.com/unldenis/NPC-Lib/tree/hologramlib-integration">NPC-Lib</a>
 ## Example usage
 ```java
 public class ExampleHolograms implements Listener {
