@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TextLine extends AbstractLine<String> {
 
-    public TextLine(@NotNull Hologram hologram,@NotNull String obj) {
+    public TextLine(@NotNull Hologram hologram, @NotNull String obj) {
         super(hologram, obj);
     }
 
