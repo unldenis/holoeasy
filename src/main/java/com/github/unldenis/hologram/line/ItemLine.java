@@ -19,31 +19,31 @@
 
 package com.github.unldenis.hologram.line;
 
+import com.github.unldenis.hologram.*;
 import com.github.unldenis.hologram.packet.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemLine extends AbstractLine<ItemStack> {
 
     private final EntityMetadataPacket entityMetadataPacket;
 
-    public ItemLine(@NotNull Plugin plugin, int entityID, @NotNull ItemStack obj) {
-        super(plugin, entityID, obj);
+    public ItemLine(@NotNull Hologram hologram, @NotNull ItemStack obj) {
+        super(hologram, obj);
         entityMetadataPacket = new EntityMetadataPacket(entityID);
         entityMetadataPacket.load();
     }
 
     @Override
-    public void show(@NotNull Player player) {
+    protected void show(@NotNull Player player) {
         super.show(player);
         entityMetadataPacket.send(player);
         this.update(player);
     }
 
     @Override
-    public void update(@NotNull Player player) {
+    protected void update(@NotNull Player player) {
         new EntityEquipmentPacket(entityID, obj)
                 .load()
                 .send(player);
