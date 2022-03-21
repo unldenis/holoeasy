@@ -66,7 +66,7 @@ public class Hologram {
         this.placeholders = placeholders == null ? new Placeholders() : placeholders;
         this.seeingPlayers = seeingPlayers;
 
-        List<AbstractLine<?>> tempReversed = new LinkedList<>();
+        LinkedList<AbstractLine<?>> tempReversed = new LinkedList<>();
         Location cloned = this.location.clone().subtract(0, 0.28, 0);
         for(int j=0; j< l.length; j++) {
             Object line = l[j];
@@ -77,14 +77,13 @@ public class Hologram {
             if(line instanceof String) {
                 TextLine tempLine = new TextLine(this, (String) line);
                 tempLine.setLocation(cloned.add(0.0, up, 0).clone());
-                tempReversed.add(tempLine);
+                tempReversed.addFirst(tempLine);
             }else if (line instanceof ItemStack) {
                 ItemLine tempLine = new ItemLine(this, (ItemStack) line);
                 tempLine.setLocation(cloned.add(0.0, 0.60D, 0).clone());
-                tempReversed.add(tempLine);
+                tempReversed.addFirst(tempLine);
             }
         }
-        Collections.reverse(tempReversed);
         this.lines = Collections.unmodifiableList(tempReversed);
     }
 
