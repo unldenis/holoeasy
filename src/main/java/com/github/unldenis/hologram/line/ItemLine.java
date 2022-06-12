@@ -23,7 +23,7 @@ import com.github.unldenis.hologram.*;
 import com.github.unldenis.hologram.packet.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 public class ItemLine extends AbstractLine<ItemStack> {
 
@@ -47,5 +47,12 @@ public class ItemLine extends AbstractLine<ItemStack> {
         new EntityEquipmentPacket(entityID, obj)
                 .load()
                 .send(player);
+    }
+
+    @Override
+    @NotNull
+    @Unmodifiable
+    public ItemStack get() {
+        return obj.clone();
     }
 }

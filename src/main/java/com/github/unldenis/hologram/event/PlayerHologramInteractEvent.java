@@ -17,33 +17,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.unldenis.hologram.line;
+package com.github.unldenis.hologram.event;
 
 import com.github.unldenis.hologram.*;
-import com.github.unldenis.hologram.packet.*;
-import com.github.unldenis.hologram.placeholder.Placeholders;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.entity.*;
+import org.bukkit.event.*;
+import org.jetbrains.annotations.*;
 
-public class TextLine extends AbstractLine<String> {
+/**
+ * @since 1.2.7-SNAPSHOT
+ */
+public class PlayerHologramInteractEvent extends PlayerHologramEvent {
 
-    public TextLine(@NotNull Hologram hologram,@NotNull String obj) {
-        super(hologram, obj);
+    private static final HandlerList HANDLERS = new HandlerList();
+
+    private final TextLine line;
+
+    public PlayerHologramInteractEvent(
+            @NotNull Player player,
+            @NotNull Hologram hologram,
+            @NotNull TextLine line
+    ) {
+        super(player, hologram);
+        this.line = line;
     }
 
+    @NotNull
+    public TextLine getLine() {
+        return line;
+    }
+
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
+
+    @NotNull
     @Override
-    protected void show(@NotNull Player player) {
-        super.show(player);
-        new EntityMetadataPacket(entityID, obj, player, hologram.getPlaceholders(), true)
-                .load()
-                .send(player);
+    public HandlerList getHandlers() {
+        return HANDLERS;
     }
 
-    @Override
-    protected void update(@NotNull Player player) {
-        new EntityMetadataPacket(entityID, obj, player, hologram.getPlaceholders(), false)
-                .load()
-                .send(player);
-    }
 
 }

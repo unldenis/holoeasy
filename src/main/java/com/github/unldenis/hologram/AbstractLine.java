@@ -78,6 +78,10 @@ public abstract class AbstractLine<T> {
 
     protected abstract void update(@NotNull Player player);
 
+    @NotNull
+    @Unmodifiable
+    public abstract T get();
+
     public void set(T newObj) {
         Validate.notNull(newObj, "New line cannot be null");
         this.obj = newObj;
@@ -113,11 +117,15 @@ public abstract class AbstractLine<T> {
         }
     }
 
-
-    public @NotNull Location getLocation() {
-        return location;
+    @NotNull
+    @Unmodifiable
+    public Location getLocation() {
+        return location.clone();
     }
 
+    public Hologram getHologram() {
+        return hologram;
+    }
 
     @Override
     public boolean equals(Object o) {

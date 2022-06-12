@@ -20,15 +20,16 @@
 package com.github.unldenis.hologram;
 
 
+import com.github.unldenis.hologram.event.*;
+import com.github.unldenis.hologram.util.*;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,13 +44,21 @@ public class HologramPool implements Listener {
 
     private final Plugin plugin;
     private final double spawnDistance;
+    private final float minHitDistance;
+    private final float maxHitDistance;
 
     private final Collection<Hologram> holograms = new CopyOnWriteArraySet<>();
 
-    public HologramPool(@NotNull Plugin plugin, double spawnDistance) {
+    public HologramPool(@NotNull Plugin plugin, double spawnDistance, float minHitDistance, float maxHitDistance) {
         Validate.notNull(plugin, "Plugin cannot be null");
+        if(minHitDistance < 0)
+            throw new IllegalArgumentException("minHitDistance must be positive");
+        if(maxHitDistance > 120)
+            throw new IllegalArgumentException("maxHitDistance cannot be greater than 120");
         this.plugin = plugin;
         this.spawnDistance = spawnDistance*spawnDistance;
+        this.minHitDistance = minHitDistance;
+        this.maxHitDistance = maxHitDistance;
 
         Bukkit.getPluginManager().registerEvents(this, plugin);
 
@@ -70,6 +79,32 @@ public class HologramPool implements Listener {
         holograms.stream()
                 .filter(h->h.isShownFor(player))
                 .forEach(h->h.hide(player));
+    }
+
+
+    @EventHandler
+    public void handleInteract(PlayerInteractEvent e) {
+        final Player player = e.getPlayer();
+        if(e.getAction() != Action.LEFT_CLICK_AIR)
+            return;
+FST:    for(Hologram hologram: holograms) {
+            if(hologram.isShownFor(player)) {
+                for(AbstractLine<?> line: hologram.lines) {
+                    if(line instanceof TextLine) {
+                        TextLine tL = (TextLine) line;
+                        if(tL.isClickable() && tL.hitbox != null) {
+                            AABB.Vec3D intersects = tL.hitbox.intersectsRay(new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
+                            if(intersects != null) {
+                                Bukkit.getScheduler().runTask(
+                                        plugin,
+                                        ()->Bukkit.getPluginManager().callEvent(new PlayerHologramInteractEvent(player, hologram, tL)));
+                                break FST;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected Plugin getPlugin() {
