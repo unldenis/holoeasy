@@ -72,7 +72,7 @@ public class ExampleHolograms implements Listener {
                 .addPlaceholder("%%player%%", Player::getName)
                 .build(hologramPool);
 
-        hologram.getLines().get(3).setAnimation(Animation.CIRCLE);
+        hologram.getLines().get(3).setAnimation(Animation.AnimationType.CIRCLE);
         // simple changing animating block and text
         timingBlock(hologram);
     }
