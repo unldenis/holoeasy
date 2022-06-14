@@ -22,6 +22,7 @@ package com.github.unldenis.hologram.animation;
 
 import com.comphenix.protocol.*;
 import com.comphenix.protocol.events.PacketContainer;
+import com.github.unldenis.hologram.util.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,22 +34,23 @@ public class CircleAnimation extends Animation {
 
     @Override
     public long delay() {
-        return 2L;
+        return 3L;
     }
 
     @Override
     public void nextFrame(@NotNull Player player) {
         this.yaw+=10L;
-        PacketContainer pc = new PacketContainer(PacketType.Play.Server.ENTITY_LOOK);
-        pc.getIntegers().write(0, this.entityID);
-        pc.getBytes()
-                .write(0, (byte)getCompressedAngle(yaw))
-                .write(1, (byte) 0);
-        pc.getBooleans().write(0, true);
-        try {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, pc);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
+            lookv1_8_8(player);
+        } else {
+            PacketContainer pc = new PacketContainer(PacketType.Play.Server.ENTITY_LOOK);
+            pc.getIntegers().write(0, this.entityID);
+            pc.getBytes()
+                    .write(0, fixAngle(yaw))
+                    .write(1, (byte) 0);
+            pc.getBooleans().write(0, true);
+            send(player, pc);
         }
     }
 
@@ -62,7 +64,43 @@ public class CircleAnimation extends Animation {
         return new CircleAnimation();
     }
 
-    private int getCompressedAngle(float value) {
-        return (int)(value * 256.0F / 360.0F);
+    public void lookv1_8_8(Player player) {
+
+        PacketContainer rotationPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_HEAD_ROTATION);
+
+        rotationPacket.getIntegers().write(0, entityID);
+        rotationPacket.getBytes().write(0, fixAngle(yaw));
+
+        PacketContainer teleportPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_TELEPORT);
+
+        teleportPacket.getIntegers().write(0, entityID);
+
+        teleportPacket.getIntegers().write(1, fixCoordinate(location.getX()));
+        teleportPacket.getIntegers().write(2, fixCoordinate(location.getY()));
+        teleportPacket.getIntegers().write(3, fixCoordinate(location.getZ()));
+
+        teleportPacket.getBytes().write(0, fixAngle(yaw));
+        teleportPacket.getBytes().write(1, fixAngle(0f));
+
+        teleportPacket.getBooleans().write(0, true);
+
+        send(player, rotationPacket);
+        send(player, teleportPacket);
+    }
+
+    private int fixCoordinate(double v) {
+        return (int) Math.floor(v * 32.0D);
+    }
+
+    private byte fixAngle(float f) {
+        return  (byte) (f * 256F / 360F);
+    }
+
+    private void send(@NotNull Player player, PacketContainer packetContainer) {
+        try {
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packetContainer);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }

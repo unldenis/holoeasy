@@ -99,6 +99,7 @@ public abstract class AbstractLine<T> {
 
         this.animation = Optional.of(animation);
         animation.setEntityID(this.entityID);
+        animation.setLocation(this.location);
 
         Runnable taskR = ()-> hologram.seeingPlayers.forEach(animation::nextFrame);
         BukkitTask task;
@@ -108,6 +109,11 @@ public abstract class AbstractLine<T> {
             task = Bukkit.getScheduler().runTaskTimer(hologram.getPlugin(), taskR, animation.delay(), animation.delay());
         }
         this.taskID = task.getTaskId();
+    }
+
+    public void setAnimation(Animation.AnimationType animationType) {
+        Validate.notNull(animationType, "AnimationType cannot be null");
+        setAnimation(animationType.type);
     }
 
     public void removeAnimation() {
