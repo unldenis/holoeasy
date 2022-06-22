@@ -19,26 +19,25 @@
 
 package com.github.unldenis.hologram.packet;
 
-import com.comphenix.protocol.*;
 import com.github.unldenis.hologram.util.*;
-import org.bukkit.plugin.*;
 import org.jetbrains.annotations.*;
 
-import java.util.*;
+public class PacketsFactory {
 
-public class EntityDestroyPacket extends AbstractPacket {
+    private static final IPackets instance;
 
-    public EntityDestroyPacket( int entityID) {
-        super(entityID, PacketType.Play.Server.ENTITY_DESTROY);
+    static {
+        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
+            instance = new IPackets.PacketsV1_8();
+        } else if(VersionUtil.isBetween(VersionUtil.VersionEnum.V1_9, VersionUtil.VersionEnum.V1_18)) {
+            instance = new IPackets.PacketsV1_9V1_18();
+        } else {
+            instance = new IPackets.PacketsV1_19();
+        }
     }
 
-    @Override
-    public @NotNull AbstractPacket load() {
-        if(VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
-            packetContainer.getIntegerArrays().write(0, new int[] { this.entityID });
-        }else{
-            packetContainer.getIntLists().write(0, Collections.singletonList(this.entityID));
-        }
-        return this;
+    @NotNull
+    public static IPackets get(){
+        return instance;
     }
 }

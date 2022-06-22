@@ -23,9 +23,9 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Animation {
+public interface Animation {
 
-    public enum AnimationType {
+    enum AnimationType {
         CIRCLE(new CircleAnimation());
 
         public final Animation type;
@@ -36,23 +36,12 @@ public abstract class Animation {
 
     }
 
-    protected int entityID;
-    protected Location location;
+    long delay();
 
-    public abstract long delay();
+    void nextFrame(@NotNull Player player, int entityID, Location location);
 
-    public abstract void nextFrame(@NotNull Player player);
+    boolean async();
 
-    public abstract boolean async();
-
-    public abstract Animation clone();
-
-    public void setEntityID(int entityID) {
-        this.entityID = entityID;
-    }
-
-    public void setLocation(@NotNull Location location) {
-        this.location = location;
-    }
+    Animation newInstance();
 
 }

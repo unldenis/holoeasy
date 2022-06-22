@@ -26,24 +26,17 @@ import org.jetbrains.annotations.*;
 
 import java.lang.reflect.*;
 
-public abstract class AbstractPacket {
+public class PacketContainerSendable extends PacketContainer {
 
-    protected final int entityID;
-    protected final PacketContainer packetContainer;
-
-    public AbstractPacket(int entityID, @NotNull PacketType packetType) {
-        this.entityID = entityID;
-        this.packetContainer = new PacketContainer(packetType);
+    public PacketContainerSendable(PacketType type) {
+        super(type);
     }
-
-    public abstract @NotNull AbstractPacket load();
 
     public void send(@NotNull Player player) {
         try {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, this.packetContainer);
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, this);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
     }
-
 }

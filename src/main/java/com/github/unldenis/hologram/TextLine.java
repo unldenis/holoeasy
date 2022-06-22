@@ -38,15 +38,15 @@ public class TextLine extends AbstractLine<String> {
     @Override
     protected void show(@NotNull Player player) {
         super.show(player);
-        new EntityMetadataPacket(entityID, obj, player, hologram.getPlaceholders(), true)
-                .load()
+        PacketsFactory.get()
+                .metadataPacket(entityID, obj, player, hologram.getPlaceholders(), true)
                 .send(player);
     }
 
     @Override
     protected void update(@NotNull Player player) {
-        new EntityMetadataPacket(entityID, obj, player, hologram.getPlaceholders(), false)
-                .load()
+        PacketsFactory.get()
+                .metadataPacket(entityID, obj, player, hologram.getPlaceholders(), false)
                 .send(player);
     }
 

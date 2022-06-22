@@ -25,7 +25,7 @@
 
     <groupId>com.github.unldenis.hologram</groupId>
     <artifactId>hologram-lib</artifactId>
-    <version>1.2.8-SNAPSHOT</version>
+    <version>1.2.9-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.7.0</version>
+            <version>4.8.0</version>
             <scope>provided</scope>
         </dependency>
         <!--This adds the Spigot API artifact to the build -->

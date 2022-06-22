@@ -27,12 +27,11 @@ import org.jetbrains.annotations.*;
 
 public class ItemLine extends AbstractLine<ItemStack> {
 
-    private final EntityMetadataPacket entityMetadataPacket;
+    private final PacketContainerSendable entityMetadataPacket;
 
     public ItemLine(@NotNull Hologram hologram, @NotNull ItemStack obj) {
         super(hologram, obj);
-        entityMetadataPacket = new EntityMetadataPacket(entityID);
-        entityMetadataPacket.load();
+        entityMetadataPacket = PacketsFactory.get().metadataPacket(entityID);
     }
 
     @Override
@@ -44,8 +43,8 @@ public class ItemLine extends AbstractLine<ItemStack> {
 
     @Override
     protected void update(@NotNull Player player) {
-        new EntityEquipmentPacket(entityID, obj)
-                .load()
+        PacketsFactory.get()
+                .equipmentPacket(entityID, obj)
                 .send(player);
     }
 

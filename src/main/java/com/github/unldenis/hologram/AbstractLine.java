@@ -38,7 +38,7 @@ public abstract class AbstractLine<T> {
     protected Optional<Animation> animation = Optional.empty();
     private int taskID = -1;
 
-    private final EntityDestroyPacket entityDestroyPacket;
+    private final PacketContainerSendable entityDestroyPacket;
 
     public AbstractLine(
             @NotNull Hologram hologram,
@@ -47,8 +47,7 @@ public abstract class AbstractLine<T> {
         this.hologram = hologram;
         this.entityID = HologramPool.IDs_COUNTER.getAndIncrement();
         this.obj = obj;
-        entityDestroyPacket = new EntityDestroyPacket(entityID);
-        entityDestroyPacket.load();
+        entityDestroyPacket = PacketsFactory.get().destroyPacket(entityID);
     }
 
     protected void hide(@NotNull Player player) {
@@ -56,8 +55,8 @@ public abstract class AbstractLine<T> {
     }
 
     protected void show(@NotNull Player player) {
-        new SpawnEntityLivingPacket(entityID, location, hologram.getPlugin())
-                .load()
+        PacketsFactory.get()
+                .spawnPacket(entityID, location, hologram.getPlugin())
                 .send(player);
     }
 
@@ -67,8 +66,8 @@ public abstract class AbstractLine<T> {
      * @since 1.2-SNAPSHOT
      */
     protected void teleport(@NotNull Player player) {
-        new EntityTeleportPacket(entityID, location)
-                .load()
+        PacketsFactory.get()
+                .teleportPacket(entityID, location)
                 .send(player);
     }
 
@@ -95,13 +94,11 @@ public abstract class AbstractLine<T> {
 
     public void setAnimation(@NotNull Animation a) {
         Validate.notNull(animation, "Animation cannot be null");
-        Animation animation = a.clone();
+        Animation animation = a.newInstance();
 
         this.animation = Optional.of(animation);
-        animation.setEntityID(this.entityID);
-        animation.setLocation(this.location);
 
-        Runnable taskR = ()-> hologram.seeingPlayers.forEach(animation::nextFrame);
+        Runnable taskR = ()-> hologram.seeingPlayers.forEach(player -> animation.nextFrame(player, entityID, location));
         BukkitTask task;
         if(animation.async()) {
             task = Bukkit.getScheduler().runTaskTimerAsynchronously(hologram.getPlugin(), taskR, animation.delay(), animation.delay());
