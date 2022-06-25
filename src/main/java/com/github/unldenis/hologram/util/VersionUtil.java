@@ -31,9 +31,8 @@ public class VersionUtil {
     static {
         String bpName = Bukkit.getServer().getClass().getPackage().getName();
         VERSION = bpName.substring(bpName.lastIndexOf(".") + 1);
-
         String clean = VERSION.substring(0, VERSION.length() - 3);
-        CLEAN_VERSION = VersionUtil.VersionEnum.valueOf(clean);
+        CLEAN_VERSION = VersionUtil.VersionEnum.valueOf(clean.toUpperCase());
     }
 
     public static boolean isCompatible(@NotNull VersionEnum ve){
@@ -66,7 +65,7 @@ public class VersionUtil {
         V1_16(9),
         V1_17(10),
         V1_18(11),
-        v1_19(12);
+        V1_19(12);
 
         private final int order;
 
