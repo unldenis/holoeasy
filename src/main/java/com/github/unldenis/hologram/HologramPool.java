@@ -69,18 +69,20 @@ public class HologramPool implements Listener {
     public void handleRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         holograms.stream()
-                .filter(h->h.isShownFor(player))
-                .forEach(h->h.hide(player));
+            .filter(h -> h.isShownFor(player))
+            .forEach(h -> h.hide(player));
     }
 
     @EventHandler
     public void handleQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         holograms.stream()
-                .filter(h->h.isShownFor(player))
-                .forEach(h->h.hide(player));
+            .filter(h -> h.isShownFor(player) || h.isExcluded(player))
+            .forEach(h -> {
+                h.removeSeeingPlayer(player);
+                h.removeExcludedPlayer(player);
+            });
     }
-
 
     @EventHandler
     public void handleInteract(PlayerInteractEvent e) {
@@ -142,9 +144,9 @@ FST:    for(Hologram hologram: holograms) {
                     }
                     boolean inRange = holoLoc.distanceSquared(playerLoc) <= this.spawnDistance;
 
-                    if (!inRange && isShown) {
+                    if ((hologram.isExcluded(player) || !inRange) && isShown) {
                         hologram.hide(player);
-                    } else if (inRange && !isShown) {
+                    } else if (!hologram.isExcluded(player) && inRange && !isShown) {
                         hologram.show(player);
                     }
                 }
