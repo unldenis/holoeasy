@@ -60,8 +60,9 @@ public class ExampleHolograms implements Listener {
      * Appends a new Hologram to the pool.
      *
      * @param location  The location the Hologram will be spawned at
+     * @param excludedPlayer A player which will not see the Hologram for 10 seconds
      */
-    public void appendHOLO(@NotNull Location location) {
+    public void appendHOLO(@NotNull Location location, Player excludedPlayer) {
         // building the NPC
         Hologram hologram = Hologram.builder()
                 .location(location)
@@ -75,6 +76,14 @@ public class ExampleHolograms implements Listener {
         hologram.getLines().get(3).setAnimation(Animation.AnimationType.CIRCLE);
         // simple changing animating block and text
         timingBlock(hologram);
+
+        if (excludedPlayer != null) {
+            // adding the excluded player which will not see the Hologram
+            hologram.addExcludedPlayer(excludedPlayer);
+
+            // shows 10 seconds after theHologram
+            Bukkit.getScheduler().runTaskLater(plugin, () -> hologram.removeExcludedPlayer(excludedPlayer), 20L * 10);
+        }
     }
 
     private final static Queue<Material> materials = new ArrayDeque<>() {
