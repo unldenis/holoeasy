@@ -19,23 +19,23 @@
 
 package com.github.unldenis.hologram.event;
 
-import com.github.unldenis.hologram.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.player.*;
-import org.jetbrains.annotations.*;
+import com.github.unldenis.hologram.Hologram;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class PlayerHologramEvent extends PlayerEvent {
 
-    private final Hologram hologram;
+  private final Hologram hologram;
 
-    public PlayerHologramEvent(@NotNull Player player, @NotNull Hologram hologram) {
-        super(player);
-        this.hologram = hologram;
-    }
+  public PlayerHologramEvent(@NotNull Player player, @NotNull Hologram hologram) {
+    super(player);
+    this.hologram = hologram;
+  }
 
-    @NotNull
-    public Hologram getHologram() {
-        return hologram;
-    }
+  @NotNull
+  public Hologram getHologram() {
+    return hologram;
+  }
 
 }

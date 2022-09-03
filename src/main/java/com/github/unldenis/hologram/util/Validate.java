@@ -17,31 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.unldenis.hologram.animation;
+package com.github.unldenis.hologram.util;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+public final class Validate {
 
-public interface Animation {
-
-  long delay();
-
-  void nextFrame(@NotNull Player player, int entityID, Location location);
-
-  boolean async();
-
-  Animation newInstance();
-
-  enum AnimationType {
-    CIRCLE(new CircleAnimation());
-
-    public final Animation type;
-
-    AnimationType(Animation type) {
-      this.type = type;
+  public static <T> T notNull(T object, String message) {
+    if (object == null) {
+      throw new NullPointerException(message);
     }
-
+    return object;
   }
 
 }

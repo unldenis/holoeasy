@@ -19,26 +19,26 @@
 
 package com.github.unldenis.hologram.event;
 
-import com.github.unldenis.hologram.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.*;
-import org.jetbrains.annotations.*;
+import com.github.unldenis.hologram.Hologram;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerHologramHideEvent extends PlayerHologramEvent {
 
-    private static final HandlerList HANDLERS = new HandlerList();
+  private static final HandlerList HANDLERS = new HandlerList();
 
-    public PlayerHologramHideEvent(@NotNull Player player, @NotNull Hologram hologram) {
-        super(player, hologram);
-    }
+  public PlayerHologramHideEvent(@NotNull Player player, @NotNull Hologram hologram) {
+    super(player, hologram);
+  }
 
-    public static HandlerList getHandlerList() {
-        return HANDLERS;
-    }
+  public static HandlerList getHandlerList() {
+    return HANDLERS;
+  }
 
-    @NotNull
-    @Override
-    public HandlerList getHandlers() {
-        return HANDLERS;
-    }
+  @NotNull
+  @Override
+  public HandlerList getHandlers() {
+    return HANDLERS;
+  }
 }
