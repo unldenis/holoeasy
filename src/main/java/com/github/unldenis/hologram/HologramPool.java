@@ -25,6 +25,7 @@ import com.github.unldenis.hologram.util.AABB;
 import com.github.unldenis.hologram.util.Validate;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -98,23 +99,30 @@ public class HologramPool implements Listener {
     }
     FST:
     for (Hologram hologram : holograms) {
-      if (hologram.isShownFor(player)) {
-        for (AbstractLine<?> line : hologram.lines) {
-          if (line instanceof TextLine) {
-            TextLine tL = (TextLine) line;
-            if (tL.isClickable() && tL.hitbox != null) {
-              AABB.Vec3D intersects = tL.hitbox.intersectsRay(
-                  new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
-              if (intersects != null) {
-                Bukkit.getScheduler().runTask(
-                    plugin,
-                    () -> Bukkit.getPluginManager()
-                        .callEvent(new PlayerHologramInteractEvent(player, hologram, tL)));
-                break FST;
-              }
-            }
-          }
+      if (!hologram.isShownFor(player)) {
+        continue;
+      }
+      for (AbstractLine<?> line : hologram.lines) {
+        if (!(line instanceof TextLine)) {
+          continue;
         }
+
+        TextLine tL = (TextLine) line;
+        if (!tL.isClickable() || tL.hitbox == null) {
+          continue;
+        }
+
+        AABB.Vec3D intersects = tL.hitbox.intersectsRay(
+            new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
+        if (intersects == null) {
+          continue;
+        }
+
+        Bukkit.getScheduler().runTask(
+            plugin,
+            () -> Bukkit.getPluginManager()
+                .callEvent(new PlayerHologramInteractEvent(player, hologram, tL)));
+        break FST;
       }
     }
   }
@@ -141,7 +149,7 @@ public class HologramPool implements Listener {
           Location playerLoc = player.getLocation();
           boolean isShown = hologram.isShownFor(player);
 
-          if (!holoLoc.getWorld().equals(playerLoc.getWorld())) {
+          if (!Objects.equals(holoLoc.getWorld(), playerLoc.getWorld())) {
             if (isShown) {
               hologram.hide(player);
             }

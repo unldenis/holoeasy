@@ -240,6 +240,11 @@ public class Hologram {
     }
 
     @NotNull
+    public Builder addLine(@NotNull String line) {
+      return addLine(line, false);
+    }
+
+    @NotNull
     public Builder addLine(@NotNull ItemStack item) {
       Validate.notNull(item, "Item cannot be null");
       this.lines.addFirst(new Object[]{item});
@@ -261,7 +266,7 @@ public class Hologram {
 
     @NotNull
     public Hologram build(@NotNull HologramPool pool) {
-      if (location == null || lines.isEmpty() || pool == null) {
+      if (location == null || lines.isEmpty()) {
         throw new IllegalArgumentException("No location given or not completed");
       }
       Hologram hologram = new Hologram(pool.getPlugin(), this.location, this.placeholders,
