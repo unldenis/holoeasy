@@ -282,5 +282,63 @@ public interface IPackets {
       packet.getDoubles().write(2, location.getZ());
       return packet;
     }
+        @Override
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player,
+                                                  Placeholders placeholders, boolean setInvisible, boolean setSmall) {
+
+      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
+      packet.getIntegers().write(0, entityID);
+      WrappedDataWatcher watcher = new WrappedDataWatcher();
+
+      try {
+        Class.forName("com.comphenix.protocol.wrappers.WrappedDataValue");
+
+        packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
+        final List<WrappedDataValue> wrappedDataValueList = new ArrayList<>();
+
+        if (setInvisible) {
+          wrappedDataValueList.add(new WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte.class), (byte) 0x20));
+
+        }
+        if (placeholders != null) {
+          Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(
+                  placeholders.parse(nameTag, player))[0].getHandle());
+
+          wrappedDataValueList.add(new WrappedDataValue(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true), opt));
+          wrappedDataValueList.add(new WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean.class), true));
+
+        }
+        if (setSmall) {
+          wrappedDataValueList.add(new WrappedDataValue(15, WrappedDataWatcher.Registry.get(Byte.class), (byte) 0x01));
+        }
+
+        packet.getDataValueCollectionModifier().write(0, wrappedDataValueList);
+
+      } catch (ClassNotFoundException e) {
+        if (setInvisible) {
+          WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(
+                  0, WrappedDataWatcher.Registry.get(Byte.class));
+          watcher.setObject(visible, (byte) 0x20);
+        }
+        if (placeholders != null) {
+          Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(
+                  placeholders.parse(nameTag, player))[0].getHandle());
+          watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2,
+                  WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+
+          WrappedDataWatcher.WrappedDataWatcherObject nameVisible = new WrappedDataWatcher.WrappedDataWatcherObject(
+                  3, WrappedDataWatcher.Registry.get(Boolean.class));
+          watcher.setObject(nameVisible, true);
+        }
+        if (setSmall) {
+          WrappedDataWatcher.WrappedDataWatcherObject small = new WrappedDataWatcher.WrappedDataWatcherObject(
+                  15, WrappedDataWatcher.Registry.get(Byte.class));
+          watcher.setObject(small, (byte) 0x01);
+
+        }
+        packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
+      }
+      return packet;
+    }
   }
 }
