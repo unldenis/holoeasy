@@ -80,7 +80,7 @@ public class Hologram {
       }
       Object val = line[0];
       if (val instanceof String) {
-        TextLine tempLine = new TextLine(this, (String) val, (boolean) line[1]);
+        TextLine tempLine = new TextLine(this, (String) val);
         tempLine.setLocation(cloned.add(0.0, up, 0).clone());
         tempReversed.addFirst(tempLine);
       } else if (val instanceof ItemStack) {
@@ -233,15 +233,10 @@ public class Hologram {
     private Location location;
 
     @NotNull
-    public Builder addLine(@NotNull String line, boolean clickable) {
-      Validate.notNull(line, "Line cannot be null");
-      this.lines.addFirst(new Object[]{line, clickable});
-      return this;
-    }
-
-    @NotNull
     public Builder addLine(@NotNull String line) {
-      return addLine(line, false);
+      Validate.notNull(line, "Line cannot be null");
+      this.lines.addFirst(new Object[]{line});
+      return this;
     }
 
     @NotNull

@@ -9,8 +9,5 @@
         <module name="hologram-lib" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="hologram-lib" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

@@ -20,20 +20,15 @@
 package com.github.unldenis.hologram;
 
 import com.github.unldenis.hologram.packet.PacketsFactory;
-import com.github.unldenis.hologram.util.AABB;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class TextLine extends AbstractLine<String> {
 
-  private final boolean clickable;
-  protected AABB hitbox;
   private boolean isEmpty;
 
-  public TextLine(@NotNull Hologram hologram, @NotNull String obj, boolean clickable) {
+  public TextLine(@NotNull Hologram hologram, @NotNull String obj) {
     super(hologram, obj);
-    this.clickable = clickable;
   }
 
   @Override
@@ -93,22 +88,4 @@ public class TextLine extends AbstractLine<String> {
     return hologram.getPlaceholders().parse(obj, player);
   }
 
-  @Override
-  protected void setLocation(@NotNull Location location) {
-    super.setLocation(location);
-    if (clickable) {
-      double chars = obj.length();
-      double size = 0.105;
-      double dist = size * (chars / 2d);
-
-      hitbox = new AABB(
-          new AABB.Vec3D(-dist, -0.039, -dist),
-          new AABB.Vec3D(dist, +0.039, dist));
-      hitbox.translate(AABB.Vec3D.fromLocation(location.clone().add(0, 1.40, 0)));
-    }
-  }
-
-  public boolean isClickable() {
-    return clickable;
-  }
 }
