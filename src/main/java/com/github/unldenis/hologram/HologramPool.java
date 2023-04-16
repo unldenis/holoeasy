@@ -69,10 +69,9 @@ public class HologramPool implements Listener {
   public void handleQuit(PlayerQuitEvent event) {
     Player player = event.getPlayer();
     holograms.stream()
-        .filter(h -> h.isShownFor(player) || h.isExcluded(player))
+        .filter(h -> h.isShownFor(player))
         .forEach(h -> {
           h.removeSeeingPlayer(player);
-          h.removeExcludedPlayer(player);
         });
   }
 
@@ -110,9 +109,9 @@ public class HologramPool implements Listener {
           }
           boolean inRange = holoLoc.distanceSquared(playerLoc) <= this.spawnDistance;
 
-          if ((hologram.isExcluded(player) || !inRange) && isShown) {
+          if (!inRange && isShown) {
             hologram.hide(player);
-          } else if (!hologram.isExcluded(player) && inRange && !isShown) {
+          } else if (inRange && !isShown) {
             hologram.show(player);
           }
         }

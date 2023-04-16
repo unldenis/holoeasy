@@ -46,7 +46,6 @@ public class Hologram {
 
   protected final List<AbstractLine<?>> lines;
   protected final Set<Player> seeingPlayers = new CopyOnWriteArraySet<>();
-  protected final Set<Player> excludedPlayers = new CopyOnWriteArraySet<>();
   private final Plugin plugin;
   private final Placeholders placeholders;
   private Location location;
@@ -166,23 +165,6 @@ public class Hologram {
 
   public boolean isShownFor(@NotNull Player player) {
     return this.seeingPlayers.contains(player);
-  }
-
-  public void addExcludedPlayer(@NotNull Player player) {
-    this.excludedPlayers.add(player);
-  }
-
-  public void removeExcludedPlayer(@NotNull Player player) {
-    this.excludedPlayers.remove(player);
-  }
-
-  @NotNull
-  public Set<Player> getExcludedPlayers() {
-    return excludedPlayers;
-  }
-
-  public boolean isExcluded(@NotNull Player player) {
-    return this.excludedPlayers.contains(player);
   }
 
   @NotNull
