@@ -24,14 +24,6 @@ import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
 import com.github.unldenis.hologram.line.ItemLine;
 import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.util.Validate;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.function.Function;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -42,214 +34,241 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Function;
+
 public class Hologram {
 
-  protected final List<AbstractLine<?>> lines;
-  protected final Set<Player> seeingPlayers = new CopyOnWriteArraySet<>();
-  private final Plugin plugin;
-  private final Placeholders placeholders;
-  private Location location;
+    protected final List<AbstractLine<?>> lines;
+    protected final Set<Player> seeingPlayers = new CopyOnWriteArraySet<>();
+    private final Plugin plugin;
+    private final Placeholders placeholders;
+    private Location location;
 
-  /**
-   * @param plugin       The org.bukkit.Plugin
-   * @param location     The location of the hologram
-   * @param placeholders Reference passage of placeholders
-   * @param l            Inverted array of hologram lines
-   * @deprecated Deprecated because you have to use the Builder of the class.
-   */
-  @Deprecated
-  @ApiStatus.Internal
-  public Hologram(
-      @NotNull Plugin plugin,
-      @NotNull Location location,
-      @Nullable Placeholders placeholders,
-      @NotNull Object[]... l
-  ) {
-    this.plugin = plugin;
-    this.location = location;
-    this.placeholders = placeholders == null ? new Placeholders() : placeholders;
+    /**
+     * @param plugin       The org.bukkit.Plugin
+     * @param location     The location of the hologram
+     * @param placeholders Reference passage of placeholders
+     * @param l            Inverted array of hologram lines
+     * @deprecated Deprecated because you have to use the Builder of the class.
+     */
+    @Deprecated
+    @ApiStatus.Internal
+    public Hologram(
+            @NotNull Plugin plugin,
+            @NotNull Location location,
+            @Nullable Placeholders placeholders,
+            @NotNull Object[]... l
+    ) {
+        this.plugin = plugin;
+        this.location = location;
+        this.placeholders = placeholders == null ? new Placeholders() : placeholders;
 
-    LinkedList<AbstractLine<?>> tempReversed = new LinkedList<>();
-    Location cloned = this.location.clone().subtract(0, 0.28, 0);
-    for (int j = 0; j < l.length; j++) {
-      Object[] line = l[j];
-      double up = 0.28D;
-      if (j > 0 && l[j - 1].length == 1 /* ItemStack */) {
-        up = 0.0D;
-      }
-      Object val = line[0];
-      if (val instanceof String) {
-        TextLine tempLine = new TextLine(this, (String) val);
-        tempLine.setLocation(cloned.add(0.0, up, 0).clone());
-        tempReversed.addFirst(tempLine);
-      } else if (val instanceof ItemStack) {
-        ItemLine tempLine = new ItemLine(this, (ItemStack) val);
-        tempLine.setLocation(cloned.add(0.0, 0.60D, 0).clone());
-        tempReversed.addFirst(tempLine);
-      }
+        LinkedList<AbstractLine<?>> tempReversed = new LinkedList<>();
+        Location cloned = this.location.clone().subtract(0, 0.28, 0);
+        for (int j = 0; j < l.length; j++) {
+            Object[] line = l[j];
+            double up = 0.28D;
+            if (j > 0 && l[j - 1].length == 1 /* ItemStack */) {
+                up = 0.0D;
+            }
+            Object val = line[0];
+            if (val instanceof String) {
+                TextLine tempLine = new TextLine(this, (String) val);
+                tempLine.setLocation(cloned.add(0.0, up, 0).clone());
+                tempReversed.addFirst(tempLine);
+            } else if (val instanceof ItemStack) {
+                ItemLine tempLine = new ItemLine(this, (ItemStack) val);
+                tempLine.setLocation(cloned.add(0.0, 0.60D, 0).clone());
+                tempReversed.addFirst(tempLine);
+            }
+        }
+        this.lines = Collections.unmodifiableList(tempReversed);
     }
-    this.lines = Collections.unmodifiableList(tempReversed);
-  }
 
-  @NotNull
-  public static Builder builder() {
-    return new Builder();
-  }
+    @NotNull
+    public static Builder builder() {
+        return new Builder();
+    }
 
-  /**
-   * Method used to teleport the hologram. Note that this method runs on the main-thread.
-   *
-   * @param to location to teleport it
-   * @since 1.2-SNAPSHOT
-   */
-  @ApiStatus.Experimental
-  @ApiStatus.AvailableSince("1.2-SNAPSHOT")
-  public void teleport(@NotNull Location to) {
-    Validate.notNull(to, "Destination cannot be null");
-    AbstractLine<?> firstLine = this.lines.get(0);
-    // Clone the given location
-    this.location = to.clone();
-    // Obtain the Y position of the first line and then calculate the distance to all lines to maintain this distance
-    double baseY = firstLine.getLocation().getY();
-    // Get position Y where to teleport the first line
-    double destY = (this.location.getY() - 0.28D) + (firstLine instanceof TextLine ? 0.28D : 0.60D);
-    // Teleport the first line
-    this.teleportLine(destY, firstLine);
-    AbstractLine<?> tempLine;
-    for (int j = 1; j < this.lines.size(); j++) {
-      tempLine = this.lines.get(j);
+    /**
+     * Method used to teleport the hologram. Note that this method runs on the main-thread.
+     *
+     * @param to location to teleport it
+     * @since 1.2-SNAPSHOT
+     */
+    @ApiStatus.Experimental
+    @ApiStatus.AvailableSince("1.2-SNAPSHOT")
+    public void teleport(@NotNull Location to) {
+        Validate.notNull(to, "Destination cannot be null");
+        AbstractLine<?> firstLine = this.lines.get(0);
+        // Clone the given location
+        this.location = to.clone();
+        // Obtain the Y position of the first line and then calculate the distance to all lines to maintain this distance
+        double baseY = firstLine.getLocation().getY();
+        // Get position Y where to teleport the first line
+        double destY = (this.location.getY() - 0.28D) + (firstLine instanceof TextLine ? 0.28D : 0.60D);
+        // Teleport the first line
+        this.teleportLine(destY, firstLine);
+        AbstractLine<?> tempLine;
+        for (int j = 1; j < this.lines.size(); j++) {
+            tempLine = this.lines.get(j);
             /*
             Teleport from the second line onwards.
             The final height is found by adding to that of the first line the difference that was present when it was already spawned
             */
-      this.teleportLine(destY + Math.abs(baseY - tempLine.getLocation().getY()), tempLine);
+            this.teleportLine(destY + Math.abs(baseY - tempLine.getLocation().getY()), tempLine);
+        }
     }
-  }
 
-  /**
-   * Private method of teleporting a certain line. Note that the position of this class must already
-   * have changed.
-   */
-  private void teleportLine(double destY, AbstractLine<?> tempLine) {
-    Location dest = this.location.clone();
-    dest.setY(destY);
-    tempLine.setLocation(dest);
-    this.seeingPlayers.forEach(tempLine::teleport);
-  }
+    public void fixLineSpacing() {
+        AbstractLine<?> firstLine = this.lines.get(0);
+        firstLine.setLocation(this.location);
 
-  protected void show(@NotNull Player player) {
-    this.seeingPlayers.add(player);
-    for (AbstractLine<?> line : this.lines) {
-      line.show(player);
+        double destY = this.location.getY();
+        double lastY = destY;
+        boolean lastWasItem = firstLine instanceof ItemLine;
+
+        // Fix the rest of the lines
+        AbstractLine<?> tempLine;
+        for (int j = 1; j < this.lines.size(); j++) {
+            tempLine = this.lines.get(j);
+
+            lastY -= (lastWasItem ? 0.60D : 0.28D);
+            lastWasItem = tempLine instanceof ItemLine;
+
+            Location newLocation = tempLine.getLocation().clone();
+            newLocation.setY(lastY);
+            tempLine.setLocation(newLocation);
+        }
     }
-    Bukkit.getScheduler().runTask(
-        plugin,
-        () -> Bukkit.getPluginManager().callEvent(new PlayerHologramShowEvent(player, this)));
-  }
 
-  protected void hide(@NotNull Player player) {
-    for (AbstractLine<?> line : this.lines) {
-      line.hide(player);
+    /**
+     * Private method of teleporting a certain line. Note that the position of this class must already
+     * have changed.
+     */
+    private void teleportLine(double destY, AbstractLine<?> tempLine) {
+        Location dest = this.location.clone();
+        dest.setY(destY);
+        tempLine.setLocation(dest);
+        this.seeingPlayers.forEach(tempLine::teleport);
     }
-    this.seeingPlayers.remove(player);
 
-    Bukkit.getScheduler().runTask(
-        plugin,
-        () -> Bukkit.getPluginManager().callEvent(new PlayerHologramHideEvent(player, this)));
-  }
-
-  @NotNull
-  protected Plugin getPlugin() {
-    return plugin;
-  }
-
-  public boolean isShownFor(@NotNull Player player) {
-    return this.seeingPlayers.contains(player);
-  }
-
-  @NotNull
-  @Unmodifiable
-  public List<AbstractLine<?>> getLines() {
-    return lines;
-  }
-
-  protected void removeSeeingPlayer(Player player) {
-    this.seeingPlayers.remove(player);
-  }
-
-  @NotNull
-  @Unmodifiable
-  public Set<Player> getSeeingPlayers() {
-    return Collections.unmodifiableSet(seeingPlayers);
-  }
-
-  @NotNull
-  @Unmodifiable
-  public Location getLocation() {
-    return location.clone();
-  }
-
-  @NotNull
-  public Placeholders getPlaceholders() {
-    return placeholders;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    protected void show(@NotNull Player player) {
+        this.seeingPlayers.add(player);
+        for (AbstractLine<?> line : this.lines) {
+            line.show(player);
+        }
+        Bukkit.getScheduler().runTask(
+                plugin,
+                () -> Bukkit.getPluginManager().callEvent(new PlayerHologramShowEvent(player, this)));
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Hologram hologram = (Hologram) o;
-    return Objects.equals(location, hologram.location) && Objects.equals(lines, hologram.lines);
-  }
 
-  public static class Builder {
+    protected void hide(@NotNull Player player) {
+        for (AbstractLine<?> line : this.lines) {
+            line.hide(player);
+        }
+        this.seeingPlayers.remove(player);
 
-    private static final Object[][] CACHE_ARR = new Object[0][0];
-
-    private final ConcurrentLinkedDeque<Object[]> lines = new ConcurrentLinkedDeque<>();
-    private final Placeholders placeholders = new Placeholders();
-    private Location location;
-
-    @NotNull
-    public Builder addLine(@NotNull String line) {
-      Validate.notNull(line, "Line cannot be null");
-      this.lines.addFirst(new Object[]{line});
-      return this;
+        Bukkit.getScheduler().runTask(
+                plugin,
+                () -> Bukkit.getPluginManager().callEvent(new PlayerHologramHideEvent(player, this)));
     }
 
     @NotNull
-    public Builder addLine(@NotNull ItemStack item) {
-      Validate.notNull(item, "Item cannot be null");
-      this.lines.addFirst(new Object[]{item});
-      return this;
+    protected Plugin getPlugin() {
+        return plugin;
+    }
+
+    public boolean isShownFor(@NotNull Player player) {
+        return this.seeingPlayers.contains(player);
     }
 
     @NotNull
-    public Builder location(@NotNull Location location) {
-      Validate.notNull(location, "Location cannot be null");
-      this.location = location;
-      return this;
+    @Unmodifiable
+    public List<AbstractLine<?>> getLines() {
+        return lines;
+    }
+
+    protected void removeSeeingPlayer(Player player) {
+        this.seeingPlayers.remove(player);
     }
 
     @NotNull
-    public Builder addPlaceholder(@NotNull String key, @NotNull Function<Player, String> result) {
-      this.placeholders.add(key, result);
-      return this;
+    @Unmodifiable
+    public Set<Player> getSeeingPlayers() {
+        return Collections.unmodifiableSet(seeingPlayers);
     }
 
     @NotNull
-    public Hologram build(@NotNull HologramPool pool) {
-      if (location == null || lines.isEmpty()) {
-        throw new IllegalArgumentException("No location given or not completed");
-      }
-      Hologram hologram = new Hologram(pool.getPlugin(), this.location, this.placeholders,
-          this.lines.toArray(CACHE_ARR));
-      pool.takeCareOf(hologram);
-      return hologram;
+    @Unmodifiable
+    public Location getLocation() {
+        return location.clone();
     }
-  }
+
+    @NotNull
+    public Placeholders getPlaceholders() {
+        return placeholders;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Hologram hologram = (Hologram) o;
+        return Objects.equals(location, hologram.location) && Objects.equals(lines, hologram.lines);
+    }
+
+    public static class Builder {
+
+        private static final Object[][] CACHE_ARR = new Object[0][0];
+
+        private final ConcurrentLinkedDeque<Object[]> lines = new ConcurrentLinkedDeque<>();
+        private final Placeholders placeholders = new Placeholders();
+        private Location location;
+
+        @NotNull
+        public Builder addLine(@NotNull String line) {
+            Validate.notNull(line, "Line cannot be null");
+            this.lines.addFirst(new Object[]{line});
+            return this;
+        }
+
+        @NotNull
+        public Builder addLine(@NotNull ItemStack item) {
+            Validate.notNull(item, "Item cannot be null");
+            this.lines.addFirst(new Object[]{item});
+            return this;
+        }
+
+        @NotNull
+        public Builder location(@NotNull Location location) {
+            Validate.notNull(location, "Location cannot be null");
+            this.location = location;
+            return this;
+        }
+
+        @NotNull
+        public Builder addPlaceholder(@NotNull String key, @NotNull Function<Player, String> result) {
+            this.placeholders.add(key, result);
+            return this;
+        }
+
+        @NotNull
+        public Hologram build(@NotNull HologramPool pool) {
+            if (location == null || lines.isEmpty()) {
+                throw new IllegalArgumentException("No location given or not completed");
+            }
+            Hologram hologram = new Hologram(pool.getPlugin(), this.location, this.placeholders,
+                    this.lines.toArray(CACHE_ARR));
+            pool.takeCareOf(hologram);
+            return hologram;
+        }
+    }
 }
