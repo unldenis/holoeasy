@@ -126,7 +126,7 @@ public interface IPackets {
         watcher.setObject(3, (byte) 1);
       }
       if (setSmall) {
-        watcher.setObject(15, (byte) 0x01);
+        watcher.setObject(10, (byte) 0x01);
       }
       packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
       return packet;
