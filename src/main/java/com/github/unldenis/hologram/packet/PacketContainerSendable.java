@@ -22,7 +22,6 @@ package com.github.unldenis.hologram.packet;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
-import java.lang.reflect.InvocationTargetException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,10 +32,6 @@ public class PacketContainerSendable extends PacketContainer {
   }
 
   public void send(@NotNull Player player) {
-    try {
-      ProtocolLibrary.getProtocolManager().sendServerPacket(player, this);
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
-    }
+    ProtocolLibrary.getProtocolManager().sendServerPacket(player, this);
   }
 }

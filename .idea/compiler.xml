@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="hologram-lib" />
+        <module name="HologramAPI" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="hologram-lib" target="1.8" />
+      <module name="HologramAPI" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
