@@ -20,8 +20,8 @@
 package com.github.unldenis.hologram.animation;
 
 
+import com.github.unldenis.hologram.line.Line;
 import com.github.unldenis.hologram.packet.PacketsFactory;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,22 +36,17 @@ public class CircleAnimation implements Animation {
   }
 
   @Override
-  public void nextFrame(@NotNull Player player, int entityID, Location location) {
+  public void nextFrame(@NotNull Player player, Line line) {
     this.yaw += 10L;
 
     PacketsFactory.get()
-        .rotatePackets(entityID, location, yaw)
+        .rotatePackets(line.getEntityID(), line.getLocation(), yaw)
         .forEach(p -> p.send(player));
   }
 
   @Override
   public boolean async() {
     return true;
-  }
-
-  @Override
-  public Animation newInstance() {
-    return new CircleAnimation();
   }
 
 }

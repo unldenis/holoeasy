@@ -20,7 +20,7 @@
 package com.github.unldenis.hologram.event;
 
 import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.TextLine;
+import com.github.unldenis.hologram.line.TextLine;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;

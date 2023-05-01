@@ -19,7 +19,8 @@
 
 package com.github.unldenis.hologram.animation;
 
-import org.bukkit.Location;
+import com.github.unldenis.hologram.line.Line;
+import java.util.function.Supplier;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,18 +28,16 @@ public interface Animation {
 
   long delay();
 
-  void nextFrame(@NotNull Player player, int entityID, Location location);
+  void nextFrame(@NotNull Player player, Line line);
 
   boolean async();
 
-  Animation newInstance();
-
   enum AnimationType {
-    CIRCLE(new CircleAnimation());
+    CIRCLE(() -> new CircleAnimation());
 
-    public final Animation type;
+    public final Supplier<Animation> type;
 
-    AnimationType(Animation type) {
+    AnimationType(Supplier<Animation> type) {
       this.type = type;
     }
 

@@ -21,11 +21,14 @@ package com.github.unldenis.hologram.packet;
 
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
+import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.util.BukkitFuture;
 import java.util.ArrayList;
@@ -53,11 +56,10 @@ public interface IPackets {
 
   PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet);
 
-  PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player,
-      Placeholders placeholders, boolean setInvisible, boolean setSmall);
+  PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall);
 
   default PacketContainerSendable metadataPacket(int entityID) {
-    return metadataPacket(entityID, null, null, null, true, true);
+    return metadataPacket(entityID, null, null, true, true);
   }
 
   PacketContainerSendable teleportPacket(int entityID, Location location);
@@ -114,16 +116,15 @@ public interface IPackets {
     }
 
     @Override
-    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player,
-        Placeholders placeholders, boolean setInvisible, boolean setSmall) {
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
       packet.getIntegers().write(0, entityID);
       WrappedDataWatcher watcher = new WrappedDataWatcher();
       if (setInvisible) {
         watcher.setObject(0, (byte) 0x20);
       }
-      if (placeholders != null) {
-        watcher.setObject(2, placeholders.parse(nameTag, player));
+      if (nameTag != null) {
+        watcher.setObject(2, nameTag);
         watcher.setObject(3, (byte) 1);
       }
       if (setSmall) {
@@ -215,8 +216,7 @@ public interface IPackets {
     }
 
     @Override
-    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player,
-        Placeholders placeholders, boolean setInvisible, boolean setSmall) {
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
       packet.getIntegers().write(0, entityID);
       WrappedDataWatcher watcher = new WrappedDataWatcher();
@@ -225,9 +225,8 @@ public interface IPackets {
             0, WrappedDataWatcher.Registry.get(Byte.class));
         watcher.setObject(visible, (byte) 0x20);
       }
-      if (placeholders != null) {
-        Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(
-            placeholders.parse(nameTag, player))[0].getHandle());
+      if (nameTag != null) {
+        Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(nameTag)[0].getHandle());
         watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2,
             WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
 
@@ -284,8 +283,7 @@ public interface IPackets {
       return packet;
     }
         @Override
-    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player,
-                                                  Placeholders placeholders, boolean setInvisible, boolean setSmall) {
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
 
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
       packet.getIntegers().write(0, entityID);
@@ -301,9 +299,9 @@ public interface IPackets {
           wrappedDataValueList.add(new WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte.class), (byte) 0x20));
 
         }
-        if (placeholders != null) {
+        if (nameTag != null) {
           Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(
-                  placeholders.parse(nameTag, player))[0].getHandle());
+              nameTag)[0].getHandle());
 
           wrappedDataValueList.add(new WrappedDataValue(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true), opt));
           wrappedDataValueList.add(new WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean.class), true));
@@ -321,9 +319,9 @@ public interface IPackets {
                   0, WrappedDataWatcher.Registry.get(Byte.class));
           watcher.setObject(visible, (byte) 0x20);
         }
-        if (placeholders != null) {
+        if (nameTag != null) {
           Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(
-                  placeholders.parse(nameTag, player))[0].getHandle());
+              nameTag)[0].getHandle());
           watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2,
                   WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
 

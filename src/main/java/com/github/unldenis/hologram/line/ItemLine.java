@@ -1,60 +1,77 @@
-/*
- * Hologram-Lib - Asynchronous, high-performance Minecraft Hologram
- * library for 1.8-1.18 servers.
- * Copyright (C) unldenis <https://github.com/unldenis>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package com.github.unldenis.hologram.line;
 
-import com.github.unldenis.hologram.AbstractLine;
-import com.github.unldenis.hologram.Hologram;
 import com.github.unldenis.hologram.packet.PacketContainerSendable;
 import com.github.unldenis.hologram.packet.PacketsFactory;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 
-public class ItemLine extends AbstractLine<ItemStack> {
+public final class ItemLine implements ILine<ItemStack> {
 
+  private final Line line;
   private final PacketContainerSendable entityMetadataPacket;
 
-  public ItemLine(@NotNull Hologram hologram, @NotNull ItemStack obj) {
-    super(hologram, obj);
-    entityMetadataPacket = PacketsFactory.get().metadataPacket(entityID);
+  private ItemStack obj;
+
+  public ItemLine(Line line, ItemStack obj) {
+    this.line = line;
+    this.entityMetadataPacket = PacketsFactory.get().metadataPacket(line.getEntityID());
+
+    this.obj = obj;
   }
 
   @Override
-  protected void show(@NotNull Player player) {
-    super.show(player);
+  public Type getType() {
+    return EType.ITEM_LINE;
+  }
+
+  @Override
+  public int getEntityId() {
+    return line.getEntityID();
+  }
+
+  @Override
+  public Location getLocation() {
+    return line.getLocation();
+  }
+
+  @Override
+  public void setLocation(Location location) {
+    line.setLocation(location);
+  }
+
+  @Override
+  public ItemStack getObj() {
+    return obj.clone();
+  }
+
+  @Override
+  public void setObj(ItemStack obj) {
+    this.obj = obj;
+  }
+
+  @Override
+  public void hide(Player player) {
+    line.destroy(player);
+  }
+
+  @Override
+  public void teleport(Player player) {
+    line.teleport(player);
+  }
+
+  @Override
+  public void show(Player player) {
+    line.spawn(player);
     entityMetadataPacket.send(player);
     this.update(player);
   }
 
   @Override
-  protected void update(@NotNull Player player) {
+  public void update(Player player) {
     PacketsFactory.get()
-        .equipmentPacket(entityID, obj)
+        .equipmentPacket(line.getEntityID(), this.obj)
         .send(player);
   }
 
-  @Override
-  @NotNull
-  @Unmodifiable
-  public ItemStack get() {
-    return obj.clone();
-  }
 }
