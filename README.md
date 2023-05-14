@@ -38,6 +38,18 @@ api-version: "1.13"
 depend: [ProtocolLib]
 author: unldenis
 ```
+## Line solutions in HologramLib
+|                       	| Animation 	| Hologram Integration 	| Clickable  	|
+|-----------------------	|-----------	|----------------------	|------------	|
+| [Line]()              	|           	|                      	|            	|
+| [TextLine]()          	|           	| ✅                    	| ✅(w/ Pool) 	|
+| [TextALine]()         	| ✅         	| ✅                    	|            	|
+| [ClickableTextLine]() 	|           	| ✅                    	| ✅          	|
+| [ItemLine]()          	|           	| ✅                    	|            	|
+| [ItemALine]()         	| ✅         	| ✅                    	|            	|
+These are the lines provided by the library, thanks to the composition of various parts. The library is structured so that you too can create your own custom hologram. 
+
+To be integrated into a Hologram composed of multiple lines you need to implement ILine.
 ## Support
 The libraries that integrate Hologram-Lib
 - <a href="https://github.com/unldenis/NPC-Lib/tree/hologramlib-integration">unldenis/NPC-Lib</a>
