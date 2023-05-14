@@ -1,15 +1,18 @@
 package com.github.unldenis.hologram;
 
 
-import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.line.hologram.IHologramLoader;
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
+import com.github.unldenis.hologram.line.ILine;
+import com.github.unldenis.hologram.line.hologram.IHologramLoader;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceLists;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceSets;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -19,8 +22,8 @@ public final class Hologram {
 
   private final Plugin plugin;
   private final IHologramLoader loader;
-  private final LinkedList<ILine<?>> hLines;
-  private final Set<Player> seeingPlayers = new CopyOnWriteArraySet<>();
+  private final List<ILine<?>> hLines = ReferenceLists.synchronize(new ReferenceArrayList<>());
+  private final Set<Player> seeingPlayers = ReferenceSets.synchronize(new ReferenceOpenHashSet<>());
 
   private Location location;
 
@@ -29,7 +32,6 @@ public final class Hologram {
   public Hologram(Plugin plugin, Location location, IHologramLoader loader) {
     this.plugin = plugin;
     this.loader = loader;
-    this.hLines = new LinkedList<>();
 
     this.location = location;
   }
@@ -37,7 +39,8 @@ public final class Hologram {
   public void load(ILine<?>... lines) {
     this.hLines.clear();
     this.loader.load(this, lines);
-    this.hashCode = Arrays.hashCode(hLines.stream().map(ILine::getEntityId).toArray(Integer[]::new));
+    this.hashCode = Arrays.hashCode(
+        hLines.stream().map(ILine::getEntityId).toArray(Integer[]::new));
   }
 
   public void teleport(Location to) {
@@ -79,7 +82,7 @@ public final class Hologram {
     return location;
   }
 
-  public LinkedList<ILine<?>> getLines() {
+  public List<ILine<?>> getLines() {
     return hLines;
   }
 

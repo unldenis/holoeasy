@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 public class ItemALine implements ILine<ItemStack>, IAnimated {
 
@@ -21,6 +22,11 @@ public class ItemALine implements ILine<ItemStack>, IAnimated {
 
   public ItemLine getItemLine() {
     return itemLine;
+  }
+
+  @Override
+  public Plugin getPlugin() {
+    return itemLine.getPlugin();
   }
 
   @Override

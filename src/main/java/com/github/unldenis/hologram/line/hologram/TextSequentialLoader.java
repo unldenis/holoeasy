@@ -2,8 +2,8 @@ package com.github.unldenis.hologram.line.hologram;
 
 import com.github.unldenis.hologram.Hologram;
 import com.github.unldenis.hologram.line.ILine;
+import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.TextLine;
-import com.github.unldenis.hologram.line.animated.TextALine;
 import org.bukkit.Location;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 
@@ -27,13 +27,13 @@ public class TextSequentialLoader implements IHologramLoader {
       if(!line.getType().isText()) {
         throw new RuntimeException("This method load supports only TextLine & TextALine.");
       }
-      TextLine tL = line instanceof TextLine ? (TextLine) line : ((TextALine) line).asTextLine();
+      TextLine tL = ((ITextLine) line).asTextLine();
 
       // add to lines
       tL.setLocation(cloned.clone());
 
       if(add) {
-        hologram.getLines().addFirst(tL);
+        hologram.getLines().add(0, tL);
       } else {
         hologram.getSeeingPlayers().forEach(tL::teleport);
       }

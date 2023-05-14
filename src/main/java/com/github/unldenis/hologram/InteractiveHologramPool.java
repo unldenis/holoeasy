@@ -2,8 +2,8 @@ package com.github.unldenis.hologram;
 
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent;
 import com.github.unldenis.hologram.line.ILine;
+import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.TextLine;
-import com.github.unldenis.hologram.line.animated.TextALine;
 import com.github.unldenis.hologram.util.AABB;
 import java.util.Collection;
 import org.bukkit.Bukkit;
@@ -70,8 +70,13 @@ public class InteractiveHologramPool implements Listener, IHologramPool {
           continue;
         }
 
-        TextLine tL = line instanceof TextLine ? (TextLine) line : ((TextALine) line).asTextLine();
-        if(!tL.isClickable() && tL.getHitbox() == null) {
+        ITextLine iTextLine = (ITextLine) line;
+        if(!iTextLine.isClickable()) {
+          continue;
+        }
+
+        TextLine tL = iTextLine.asTextLine();
+        if(tL.getHitbox() == null) {
           continue;
         }
 
@@ -84,7 +89,7 @@ public class InteractiveHologramPool implements Listener, IHologramPool {
         Bukkit.getScheduler().runTask(
             getPlugin(),
             () -> Bukkit.getPluginManager()
-                .callEvent(new PlayerHologramInteractEvent(player, hologram, tL)));
+                .callEvent(new PlayerHologramInteractEvent(player, hologram, iTextLine)));
         break FST;
       }
     }

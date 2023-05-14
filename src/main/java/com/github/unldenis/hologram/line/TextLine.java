@@ -6,13 +6,13 @@ import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.util.AABB;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-public final class TextLine implements ILine<String> {
+public final class TextLine implements ITextLine {
 
   private final Line line;
   private final Placeholders placeholders;
   private final boolean clickable;
-
 
   private String obj;
   private boolean isEmpty;
@@ -26,16 +26,32 @@ public final class TextLine implements ILine<String> {
     this.obj = obj;
   }
 
-  public String parse(Player player) {
-    return placeholders.parse(this.obj, player);
+  public TextLine(Line line, String obj, Placeholders placeholders) {
+    this(line, obj, placeholders, false);
   }
 
+  @Override
   public boolean isClickable() {
     return clickable;
   }
 
+  @Override
+  public String parse(Player player) {
+    return placeholders.parse(this.obj, player);
+  }
+
+  @Override
+  public TextLine asTextLine() {
+    return this;
+  }
+
   public AABB getHitbox() {
     return hitbox;
+  }
+
+  @Override
+  public Plugin getPlugin() {
+    return line.getPlugin();
   }
 
   @Override

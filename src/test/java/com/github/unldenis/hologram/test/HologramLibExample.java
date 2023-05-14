@@ -8,6 +8,8 @@ import com.github.unldenis.hologram.animation.Animation.AnimationType;
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
+import com.github.unldenis.hologram.experimental.ClickableTextLine;
+import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.ItemLine;
 import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.line.Line;
@@ -24,6 +26,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 
 public class HologramLibExample implements Listener {
 
@@ -88,7 +91,7 @@ public class HologramLibExample implements Listener {
     // create new line structure (armorstand)
     Line line = new Line(plugin);
     // compose an TextLine hologram
-    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholders, false);
+    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholders);
 
     // create new line structure (armorstand)
     Line line2 = new Line(plugin);
@@ -124,7 +127,7 @@ public class HologramLibExample implements Listener {
     // create new line structure (armorstand)
     Line line = new Line(plugin, loc);
     // compose an TextLine hologram
-    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholders, false);
+    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholders);
     // show to player
     textLine.show(player);
 
@@ -132,6 +135,28 @@ public class HologramLibExample implements Listener {
     Bukkit.getScheduler().runTaskLater(plugin, () -> textLine.hide(player), 20L * 30);
 
     return textLine;
+  }
+
+  // Only lines & Clickable
+  /**
+   * ClickableTextLine is useful if you need to hear clicks but without using a pool.
+   * @see HologramLibExample#thirdExample(Location, Player)
+   */
+  @Experimental
+  public ClickableTextLine fourthExample(Location loc, Player player) {
+    // create new line structure (armorstand)
+    Line line = new Line(plugin, loc);
+    // compose an TextLine hologram
+    TextLine textLine = new TextLine(line, "Click me", placeholders);
+    // compose an experimental ClickableTextLine hologram
+    ClickableTextLine clickableTextLine = new ClickableTextLine(textLine, 0.5f, 5f);
+    // show to player
+    clickableTextLine.show(player);
+
+    // hide after 30 seconds to player
+    Bukkit.getScheduler().runTaskLater(plugin, () -> clickableTextLine.hide(player), 20L * 30);
+
+    return clickableTextLine;
   }
 
   @EventHandler
@@ -157,9 +182,10 @@ public class HologramLibExample implements Listener {
   @EventHandler
   public void onHologramInteract(PlayerHologramInteractEvent e) {
     Player player = e.getPlayer();
-    TextLine line = e.getLine();
+    ITextLine line = e.getLine();
     player.sendMessage("Click at " + line.parse(player));
   }
+
 
 
 }

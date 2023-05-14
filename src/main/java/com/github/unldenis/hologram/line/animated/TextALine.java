@@ -2,14 +2,15 @@ package com.github.unldenis.hologram.line.animated;
 
 import com.github.unldenis.hologram.animation.Animation;
 
-import com.github.unldenis.hologram.line.ILine;
+import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.TextLine;
 import java.util.Collection;
 import java.util.Optional;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-public final class TextALine implements ILine<String>, IAnimated {
+public final class TextALine implements ITextLine, IAnimated {
 
   private final TextLine textLine;
   private final IAnimated animatedLine;
@@ -19,8 +20,24 @@ public final class TextALine implements ILine<String>, IAnimated {
     this.animatedLine = animatedLine;
   }
 
+  @Override
+  public boolean isClickable() {
+    return false;
+  }
+
+  @Override
+  public String parse(Player player) {
+    return textLine.parse(player);
+  }
+
+  @Override
   public TextLine asTextLine() {
     return textLine;
+  }
+
+  @Override
+  public Plugin getPlugin() {
+    return textLine.getPlugin();
   }
 
   @Override

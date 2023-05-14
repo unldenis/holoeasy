@@ -25,10 +25,10 @@ public class TextItemStandardLoader implements IHologramLoader {
 
       if(line.getType().isText()) {
         line.setLocation(cloned.add(0, up, 0).clone());
-        hologram.getLines().addFirst(line);
+        hologram.getLines().add(0, line);
       } else if(line.getType().isItem()) {
         line.setLocation(cloned.add(0, 0.6D, 0).clone());
-        hologram.getLines().addFirst(line);
+        hologram.getLines().add(0, line);
       } else {
         throw new RuntimeException("This method load does not support line type " + line.getType().name());
       }

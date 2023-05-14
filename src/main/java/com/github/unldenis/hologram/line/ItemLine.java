@@ -5,6 +5,7 @@ import com.github.unldenis.hologram.packet.PacketsFactory;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 public final class ItemLine implements ILine<ItemStack> {
 
@@ -18,6 +19,11 @@ public final class ItemLine implements ILine<ItemStack> {
     this.entityMetadataPacket = PacketsFactory.get().metadataPacket(line.getEntityID());
 
     this.obj = obj;
+  }
+
+  @Override
+  public Plugin getPlugin() {
+    return line.getPlugin();
   }
 
   @Override
