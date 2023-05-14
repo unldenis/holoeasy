@@ -47,6 +47,7 @@ author: unldenis
 | [ClickableTextLine]() 	|           	| ✅                    	| ✅          	|
 | [ItemLine]()          	|           	| ✅                    	|            	|
 | [ItemALine]()         	| ✅         	| ✅                    	|            	|
+
 These are the lines provided by the library, thanks to the composition of various parts. The library is structured so that you too can create your own custom hologram. 
 
 To be integrated into a Hologram composed of multiple lines you need to implement ILine.
