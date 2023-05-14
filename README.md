@@ -53,7 +53,7 @@ These are the lines provided by the library, thanks to the composition of variou
 To be integrated into a Hologram composed of multiple lines you need to implement ILine.
 ## Support
 The libraries that integrate Hologram-Lib
-- <a href="https://github.com/unldenis/NPC-Lib/tree/hologramlib-integration">unldenis/NPC-Lib</a>
+- <a href="https://github.com/unldenis/Hologram-Lib/blob/master/src/test/java/com/github/unldenis/hologram/test/HologramLibExample.java">unldenis/NPC-Lib</a>
 ## Example usage
 ```java
   public Hologram firstExample(Location loc) {
