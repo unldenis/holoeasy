@@ -8,10 +8,12 @@
         <outputRelativeToContentRoot value="true" />
         <module name="hologram-lib" />
         <module name="HologramAPI" />
+        <module name="Hologram-Lib" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="hologram-lib" target="1.8" />
+      <module name="Hologram-Lib" target="1.8" />
       <module name="HologramAPI" target="1.8" />
     </bytecodeTargetLevel>
   </component>
