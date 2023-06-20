@@ -17,30 +17,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.unldenis.hologram.animation;
+package com.github.unldenis.hologram.event;
 
-import com.github.unldenis.hologram.line.Line;
-import java.util.function.Supplier;
+import com.github.unldenis.hologram.Hologram;
+import com.github.unldenis.hologram.line.ITextLine;
+import com.github.unldenis.hologram.line.TextLine;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public interface Animation {
+/**
+ * @since 1.2.7-SNAPSHOT
+ */
+public class PlayerHologramInteractEvent extends PlayerHologramEvent {
 
-  long delay();
+  private static final HandlerList HANDLERS = new HandlerList();
 
-  void nextFrame(@NotNull Player player, Line line);
+  private final ITextLine line;
 
-  boolean async();
-
-  enum AnimationType {
-    CIRCLE(() -> new CircleAnimation());
-
-    public final Supplier<Animation> type;
-
-    AnimationType(Supplier<Animation> type) {
-      this.type = type;
-    }
-
+  public PlayerHologramInteractEvent(
+      @NotNull Player player,
+      @NotNull Hologram hologram,
+      @NotNull ITextLine line
+  ) {
+    super(player, hologram);
+    this.line = line;
   }
+
+  public static HandlerList getHandlerList() {
+    return HANDLERS;
+  }
+
+  @NotNull
+  public ITextLine getLine() {
+    return line;
+  }
+
+  @NotNull
+  @Override
+  public HandlerList getHandlers() {
+    return HANDLERS;
+  }
+
 
 }

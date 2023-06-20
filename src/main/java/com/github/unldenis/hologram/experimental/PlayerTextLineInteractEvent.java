@@ -17,30 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.unldenis.hologram.animation;
+package com.github.unldenis.hologram.experimental;
 
-import com.github.unldenis.hologram.line.Line;
-import java.util.function.Supplier;
+
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.NotNull;
 
-public interface Animation {
+@Experimental
+public class PlayerTextLineInteractEvent extends PlayerEvent {
 
-  long delay();
+  private static final HandlerList HANDLERS = new HandlerList();
 
-  void nextFrame(@NotNull Player player, Line line);
+  private final ClickableTextLine line;
 
-  boolean async();
-
-  enum AnimationType {
-    CIRCLE(() -> new CircleAnimation());
-
-    public final Supplier<Animation> type;
-
-    AnimationType(Supplier<Animation> type) {
-      this.type = type;
-    }
-
+  public PlayerTextLineInteractEvent(
+      @NotNull Player player,
+      @NotNull ClickableTextLine line
+  ) {
+    super(player);
+    this.line = line;
   }
 
+  public static HandlerList getHandlerList() {
+    return HANDLERS;
+  }
+
+  @NotNull
+  public ClickableTextLine getLine() {
+    return line;
+  }
+
+  @NotNull
+  @Override
+  public HandlerList getHandlers() {
+    return HANDLERS;
+  }
 }
