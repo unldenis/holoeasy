@@ -1,9 +1,6 @@
 package com.github.unldenis.hologram.test;
 
-import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.HologramPool;
-import com.github.unldenis.hologram.IHologramPool;
-import com.github.unldenis.hologram.InteractiveHologramPool;
+import com.github.unldenis.hologram.*;
 import com.github.unldenis.hologram.animation.Animation.AnimationType;
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent;
@@ -11,8 +8,8 @@ import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
 import com.github.unldenis.hologram.experimental.ClickableTextLine;
 import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.ItemLine;
-import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.line.Line;
+import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.line.animated.ItemALine;
 import com.github.unldenis.hologram.line.animated.StandardAnimatedLine;
 import com.github.unldenis.hologram.line.hologram.TextItemStandardLoader;
@@ -140,6 +137,7 @@ public class HologramLibExample implements Listener {
   // Only lines & Clickable
   /**
    * ClickableTextLine is useful if you need to hear clicks but without using a pool.
+   *
    * @see HologramLibExample#thirdExample(Location, Player)
    */
   @Experimental
@@ -159,6 +157,24 @@ public class HologramLibExample implements Listener {
     return clickableTextLine;
   }
 
+  /**
+   * Using the builder you can easily create basic holograms in a single line of code.
+   * The builder will take care of creating the hologram, loading it and adding it to the pool.
+   * <p>
+   * You can check the {@link HologramBuilder} class for more information.
+   *
+   * @param loc The location where the hologram will be created
+   */
+  public void builderExample(Location loc) {
+    Hologram hologram = HologramBuilder.create(plugin, loc, placeholders) // initialize the builder
+            .addTextLine("Hello") // add a text line
+            .addTextLine("%%player%%") // add another text line
+            .addClickableTextLine("Click me", 0.5f, 5f) // add a clickable text line
+            .addItemLine(new ItemStack(Material.GOLD_BLOCK)) // add an item line
+            .addItemLine(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE) // add an item line with animation
+            .loadAndBuild(pool); // load and build the hologram
+  }
+
   @EventHandler
   public void onHologramShow(PlayerHologramShowEvent event) {
     Hologram holo = event.getHologram();
@@ -167,6 +183,7 @@ public class HologramLibExample implements Listener {
 
   /**
    * Doing something when a Hologram is hidden for a certain player.
+   *
    * @param event The event instance
    */
   @EventHandler
@@ -177,6 +194,7 @@ public class HologramLibExample implements Listener {
 
   /**
    * Doing something when a Hologram is left-clicked by a certain player.
+   *
    * @param e The event instance
    */
   @EventHandler
@@ -185,7 +203,6 @@ public class HologramLibExample implements Listener {
     ITextLine line = e.getLine();
     player.sendMessage("Click at " + line.parse(player));
   }
-
 
 
 }
