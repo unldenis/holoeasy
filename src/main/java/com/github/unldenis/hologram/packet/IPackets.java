@@ -21,15 +21,11 @@ package com.github.unldenis.hologram.packet;
 
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
-import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.util.BukkitFuture;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -181,22 +177,93 @@ public interface IPackets {
     }
   }
 
-  class PacketsV1_9V1_18 implements IPackets {
+  class PacketsV1_9V1_12 implements IPackets {
 
     @Override
     public PacketContainerSendable spawnPacket(int entityID, Location location, Plugin plugin) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
-      final int entityType = 1;
+      packet.getModifier().writeDefaults();
+
+      final int entityType = 30;
       final int extraData = 1;
       packet.getIntegers().write(0, entityID);
       packet.getIntegers().write(1, entityType);
       packet.getIntegers().write(2, extraData);
       packet.getUUIDs().write(0, UUID.randomUUID());
       packet.getDoubles().write(0, location.getX());
-      packet.getDoubles().write(1, location.getY()/*+1.2*/);
+      packet.getDoubles().write(1, location.getY());
       packet.getDoubles().write(2, location.getZ());
       return packet;
     }
+
+    @Override
+    public PacketContainerSendable destroyPacket(int entityID) {
+      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_DESTROY);
+      packet.getIntegerArrays().write(0, new int[]{entityID});
+      return packet;
+    }
+
+    @Override
+    public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet) {
+      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
+
+      packet.getIntegers().write(0, entityID);
+      packet.getItemModifier().write(0, helmet);
+      packet.getItemSlots().write(0, EnumWrappers.ItemSlot.HEAD);
+
+      return packet;
+    }
+
+    @Override
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
+      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
+      packet.getModifier().writeDefaults();
+      packet.getIntegers().write(0, entityID);
+
+      WrappedDataWatcher watcher = new WrappedDataWatcher();
+      if (setInvisible) {
+        WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
+        watcher.setObject(visible, (byte) 0x20);
+      }
+      if (nameTag != null) {
+        watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.get(String.class)), nameTag);
+
+        WrappedDataWatcher.WrappedDataWatcherObject nameVisible = new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class));
+        watcher.setObject(nameVisible, true);
+      }
+      if (setSmall) {
+        WrappedDataWatcher.WrappedDataWatcherObject small = new WrappedDataWatcher.WrappedDataWatcherObject(10, WrappedDataWatcher.Registry.get(Byte.class));
+        watcher.setObject(small, (byte) 0x01);
+      }
+
+      packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
+      return packet;
+    }
+
+    @Override
+    public PacketContainerSendable teleportPacket(int entityID, Location location) {
+      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_TELEPORT);
+      packet.getIntegers().write(0, entityID);
+      packet.getDoubles().write(0, location.getX());
+      packet.getDoubles().write(1, location.getY());
+      packet.getDoubles().write(2, location.getZ());
+      packet.getBytes().write(0, this.getCompressAngle(location.getYaw()));
+      packet.getBytes().write(1, this.getCompressAngle(location.getPitch()));
+      packet.getBooleans().write(0, false);
+      return packet;
+    }
+
+    @Override
+    public List<PacketContainerSendable> rotatePackets(int entityID, Location from, float yaw) {
+      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_LOOK);
+      packet.getIntegers().write(0, entityID);
+      packet.getBytes().write(0, this.getCompressAngle(yaw)).write(1, (byte) 0);
+      packet.getBooleans().write(0, true);
+      return Collections.singletonList(packet);
+    }
+  }
+
+  class PacketsV1_13V1_18 extends PacketsV1_9V1_12 {
 
     @Override
     public PacketContainerSendable destroyPacket(int entityID) {
@@ -243,31 +310,9 @@ public interface IPackets {
       packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
       return packet;
     }
-
-    @Override
-    public PacketContainerSendable teleportPacket(int entityID, Location location) {
-      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_TELEPORT);
-      packet.getIntegers().write(0, entityID);
-      packet.getDoubles().write(0, location.getX());
-      packet.getDoubles().write(1, location.getY());
-      packet.getDoubles().write(2, location.getZ());
-      packet.getBytes().write(0, this.getCompressAngle(location.getYaw()));
-      packet.getBytes().write(1, this.getCompressAngle(location.getPitch()));
-      packet.getBooleans().write(0, false);
-      return packet;
-    }
-
-    @Override
-    public List<PacketContainerSendable> rotatePackets(int entityID, Location from, float yaw) {
-      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_LOOK);
-      packet.getIntegers().write(0, entityID);
-      packet.getBytes().write(0, this.getCompressAngle(yaw)).write(1, (byte) 0);
-      packet.getBooleans().write(0, true);
-      return Collections.singletonList(packet);
-    }
   }
 
-  class PacketsV1_19 extends PacketsV1_9V1_18 {
+  class PacketsV1_19 extends PacketsV1_13V1_18 {
 
     @Override
     public PacketContainerSendable spawnPacket(int entityID, Location location, Plugin plugin) {
