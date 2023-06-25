@@ -23,15 +23,11 @@ public class HologramBuilder {
   private final Hologram hologram;
   private final List<ILine<?>> lines;
 
-  private HologramBuilder(Plugin plugin, Location location, Placeholders placeholders) {
+  protected HologramBuilder(Plugin plugin, Location location, Placeholders placeholders) {
     this.plugin = plugin;
     this.placeholders = placeholders;
     this.hologram = new Hologram(plugin, location, new TextItemStandardLoader());
     this.lines = new LinkedList<>();
-  }
-
-  public static HologramBuilder create(Plugin plugin, Location location, Placeholders placeholders) {
-    return new HologramBuilder(plugin, location, placeholders);
   }
 
   public HologramBuilder addTextLine(String text) {
@@ -51,14 +47,19 @@ public class HologramBuilder {
   public HologramBuilder addItemLine(ItemStack item, Animation.AnimationType animationType) {
     Line line = new Line(plugin);
     ItemLine itemLine = new ItemLine(line, item);
+
     ItemALine itemALine = new ItemALine(itemLine, new StandardAnimatedLine(line));
     itemALine.setAnimation(animationType, hologram);
+
     lines.add(itemALine);
     return this;
   }
 
   public HologramBuilder addClickableTextLine(String text) {
-    return addClickableTextLine(text, 0.5f, 5f);
+    Line line = new Line(plugin);
+    TextLine textLine = new TextLine(line, text, placeholders, true);
+    lines.add(textLine);
+    return this;
   }
 
   public HologramBuilder addClickableTextLine(String text, float minHitDistance, float maxHitDistance) {

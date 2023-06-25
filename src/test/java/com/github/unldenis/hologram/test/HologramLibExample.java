@@ -166,7 +166,7 @@ public class HologramLibExample implements Listener {
    * @param loc The location where the hologram will be created
    */
   public void builderExample(Location loc) {
-    Hologram hologram = HologramBuilder.create(plugin, loc, placeholders) // initialize the builder
+    Hologram hologram = Hologram.builder(plugin, loc, placeholders) // initialize the builder
             .addTextLine("Hello") // add a text line
             .addTextLine("%%player%%") // add another text line
             .addClickableTextLine("Click me", 0.5f, 5f) // add a clickable text line

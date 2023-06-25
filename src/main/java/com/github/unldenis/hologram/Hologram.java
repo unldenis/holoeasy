@@ -5,6 +5,7 @@ import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
 import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
+import com.github.unldenis.hologram.placeholder.Placeholders;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceLists;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
@@ -88,6 +89,10 @@ public final class Hologram {
 
   public Set<Player> getSeeingPlayers() {
     return seeingPlayers;
+  }
+
+  public static HologramBuilder builder(Plugin plugin, Location location, Placeholders placeholders) {
+    return new HologramBuilder(plugin, location, placeholders);
   }
 
   @Override
