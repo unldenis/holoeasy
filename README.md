@@ -15,7 +15,7 @@ Maven
 <dependency>
     <groupId>com.github.unldenis</groupId>
     <artifactId>Hologram-Lib</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 Gradle
