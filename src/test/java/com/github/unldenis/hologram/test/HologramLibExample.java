@@ -43,7 +43,7 @@ public class HologramLibExample implements Listener {
     this.pool = new InteractiveHologramPool(_pool, 0.5f, 5f);
 
     // create placeholders
-    this.placeholders = new Placeholders();
+    this.placeholders = new Placeholders(Placeholders.STRING | Placeholders.PAPI);
     this.placeholders.add("%%player%%", Player::getName);
 
     Bukkit.getPluginManager().registerEvents(this, plugin);

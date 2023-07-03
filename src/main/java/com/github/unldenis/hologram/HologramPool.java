@@ -1,9 +1,9 @@
 package com.github.unldenis.hologram;
 
+import com.github.unldenis.hologram.collection.ReferenceHashSet;
 import com.github.unldenis.hologram.util.Validate;
 import com.google.common.collect.ImmutableList;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ReferenceSets;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ public final class HologramPool implements Listener, IHologramPool {
 
   private final Plugin plugin;
   private final double spawnDistance;
-  private final Set<Hologram> holograms = ReferenceSets.synchronize(new ReferenceOpenHashSet<>());
+  private final Set<Hologram> holograms = Collections.synchronizedSet(new ReferenceHashSet<>());
 
   public HologramPool(Plugin plugin, double spawnDistance) {
     this.plugin = plugin;

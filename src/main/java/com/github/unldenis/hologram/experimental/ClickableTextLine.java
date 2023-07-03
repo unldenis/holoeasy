@@ -1,10 +1,9 @@
 package com.github.unldenis.hologram.experimental;
 
+import com.github.unldenis.hologram.collection.IntHashSet;
 import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.util.AABB;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -22,7 +21,7 @@ public class ClickableTextLine implements Listener, ITextLine {
   private final float minHitDistance, maxHitDistance;
   private AABB hitbox;
 
-  private final Set<Integer> playersClickable = new IntOpenHashSet();
+  private final IntHashSet playersClickable = new IntHashSet();
 
   public ClickableTextLine(TextLine line, float minHitDistance, float maxHitDistance) {
     this.line = line;

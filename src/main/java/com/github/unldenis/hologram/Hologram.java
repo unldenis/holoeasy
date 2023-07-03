@@ -1,16 +1,15 @@
 package com.github.unldenis.hologram;
 
 
+import com.github.unldenis.hologram.collection.ReferenceArrayList;
+import com.github.unldenis.hologram.collection.ReferenceHashSet;
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
 import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
 import com.github.unldenis.hologram.placeholder.Placeholders;
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
-import it.unimi.dsi.fastutil.objects.ReferenceLists;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ReferenceSets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -23,8 +22,8 @@ public final class Hologram {
 
   private final Plugin plugin;
   private final IHologramLoader loader;
-  private final List<ILine<?>> hLines = ReferenceLists.synchronize(new ReferenceArrayList<>());
-  private final Set<Player> seeingPlayers = ReferenceSets.synchronize(new ReferenceOpenHashSet<>());
+  private final List<ILine<?>> hLines = Collections.synchronizedList(new ReferenceArrayList<>());
+  private final Set<Player> seeingPlayers = Collections.synchronizedSet(new ReferenceHashSet<>());
 
   private Location location;
 

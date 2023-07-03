@@ -66,6 +66,7 @@ public class HologramBuilder {
     Line line = new Line(plugin);
     TextLine textLine = new TextLine(line, text, placeholders);
     ClickableTextLine clickableTextLine = new ClickableTextLine(textLine, minHitDistance, maxHitDistance);
+
     lines.add(clickableTextLine);
     return this;
   }

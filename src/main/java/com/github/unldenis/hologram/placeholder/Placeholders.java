@@ -23,10 +23,20 @@ import com.github.unldenis.hologram.util.Validate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class Placeholders {
+
+  public static final int STRING           = 0b00000001;
+  public static final int PAPI             = 0b00000010;
+
+  private final int flags;
+
+  public Placeholders(int flags) {
+    this.flags = flags;
+  }
 
   private final Map<String, Function<Player, String>> placeholders = new ConcurrentHashMap<>();
 
@@ -39,11 +49,25 @@ public class Placeholders {
   @NotNull
   public String parse(@NotNull String line, @NotNull Player player) {
     String c = line;
-    for (Map.Entry<String, Function<Player, String>> entry : placeholders.entrySet()) {
-      c = c.replaceAll(entry.getKey(), entry.getValue().apply(player));
+    if(isString()) {
+      for (Map.Entry<String, Function<Player, String>> entry : placeholders.entrySet()) {
+        c = c.replaceAll(entry.getKey(), entry.getValue().apply(player));
+      }
+    }
+    if(isPapi()) {
+      c = PlaceholderAPI.setPlaceholders(player, c);
     }
     return c;
   }
+
+  private boolean isString() {
+    return (flags & STRING) != 0;
+  }
+  private boolean isPapi() {
+    return (flags & PAPI) != 0;
+  }
+
+
 }
 
 
