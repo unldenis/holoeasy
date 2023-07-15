@@ -3,6 +3,7 @@ package com.github.unldenis.hologram;
 import com.github.unldenis.hologram.animation.Animation;
 import com.github.unldenis.hologram.experimental.ClickableTextLine;
 import com.github.unldenis.hologram.line.ILine;
+import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.ItemLine;
 import com.github.unldenis.hologram.line.Line;
 import com.github.unldenis.hologram.line.TextLine;
@@ -19,15 +20,28 @@ import java.util.List;
 
 public class HologramBuilder {
   private final Plugin plugin;
-  private final Placeholders placeholders;
   private final Hologram hologram;
   private final List<ILine<?>> lines;
 
-  protected HologramBuilder(Plugin plugin, Location location, Placeholders placeholders) {
+  // no placeholder
+  private Placeholders placeholders = new Placeholders(0x00);
+
+  protected HologramBuilder(Plugin plugin, Location location) {
     this.plugin = plugin;
-    this.placeholders = placeholders;
     this.hologram = new Hologram(plugin, location, new TextItemStandardLoader());
     this.lines = new LinkedList<>();
+  }
+
+  public HologramBuilder placeholders(Placeholders placeholders) {
+    // update already added lines
+    for(ILine<?> line: lines) {
+      if(line.getType().isText()) {
+        ((ITextLine) line).getPlaceholders().add(placeholders);
+      }
+    }
+    //
+    this.placeholders = placeholders;
+    return this;
   }
 
   public HologramBuilder addTextLine(String text) {

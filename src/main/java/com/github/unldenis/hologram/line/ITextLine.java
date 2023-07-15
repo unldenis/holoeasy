@@ -1,5 +1,6 @@
 package com.github.unldenis.hologram.line;
 
+import com.github.unldenis.hologram.placeholder.Placeholders;
 import org.bukkit.entity.Player;
 
 public interface ITextLine extends ILine<String> {
@@ -9,4 +10,7 @@ public interface ITextLine extends ILine<String> {
   String parse(Player player);
 
   TextLine asTextLine();
+
+  Placeholders getPlaceholders();
+
 }

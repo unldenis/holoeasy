@@ -46,6 +46,11 @@ public class Placeholders {
     placeholders.put(key, result);
   }
 
+  public void add(@NotNull Placeholders p) {
+    Validate.notNull(placeholders, "Placeholders cannot be null");
+    placeholders.putAll(p.placeholders);
+  }
+
   @NotNull
   public String parse(@NotNull String line, @NotNull Player player) {
     String c = line;

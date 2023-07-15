@@ -10,7 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 public final class Line {
 
-  private static final AtomicInteger IDs_COUNTER = new AtomicInteger(new Random().nextInt());
+  public static final AtomicInteger IDs_COUNTER = new AtomicInteger(new Random().nextInt());
 
   private final Plugin plugin;
   private final int entityID;

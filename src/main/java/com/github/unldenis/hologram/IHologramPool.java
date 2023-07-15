@@ -10,7 +10,7 @@ public interface IHologramPool {
 
   Plugin getPlugin();
 
-  void remove(@NotNull Hologram hologram);
+  boolean remove(@NotNull Hologram hologram);
 
   Collection<Hologram> getHolograms();
 

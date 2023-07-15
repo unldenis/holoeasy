@@ -1,5 +1,5 @@
-package com.github.unldenis.hologram;
-
+import com.github.unldenis.hologram.Hologram;
+import com.github.unldenis.hologram.IHologramPool;
 import com.github.unldenis.hologram.util.Validate;
 import com.google.common.collect.ImmutableList;
 import java.util.Objects;
@@ -15,13 +15,16 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-public final class HologramPool implements Listener, IHologramPool {
+/**
+ * A normal pool with a difference, is no longer checked if the chunk is active for testing.
+ */
+public final class HologramPoolMock implements Listener, IHologramPool {
 
   private final Plugin plugin;
   private final double spawnDistance;
   private final Set<Hologram> holograms = new CopyOnWriteArraySet<>();      // writes are slow and Iterators are fast and consistent.
 
-  public HologramPool(Plugin plugin, double spawnDistance) {
+  public HologramPoolMock(Plugin plugin, double spawnDistance) {
     this.plugin = plugin;
     this.spawnDistance = spawnDistance;
 
@@ -109,10 +112,10 @@ public final class HologramPool implements Listener, IHologramPool {
               hologram.hide(player);
             }
             continue;
-          } else if (!holoLoc.getWorld()
-              .isChunkLoaded(holoLoc.getBlockX() >> 4, holoLoc.getBlockZ() >> 4) && isShown) {
-            hologram.hide(player);
-            continue;
+//          } else if (!holoLoc.getWorld()
+//              .isChunkLoaded(holoLoc.getBlockX() >> 4, holoLoc.getBlockZ() >> 4) && isShown) {
+//            hologram.hide(player);
+//            continue;
           }
           boolean inRange = holoLoc.distanceSquared(playerLoc) <= this.spawnDistance;
 

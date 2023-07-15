@@ -45,8 +45,8 @@ public class InteractiveHologramPool implements Listener, IHologramPool {
   }
 
   @Override
-  public void remove(@NotNull Hologram hologram) {
-    pool.remove(hologram);
+  public boolean remove(@NotNull Hologram hologram) {
+    return pool.remove(hologram);
   }
 
   @Override

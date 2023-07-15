@@ -7,6 +7,7 @@ import com.github.unldenis.hologram.util.AABB;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 public final class TextLine implements ITextLine {
 
@@ -18,9 +19,9 @@ public final class TextLine implements ITextLine {
   private boolean isEmpty;
   private AABB hitbox;
 
-  public TextLine(Line line, String obj, Placeholders placeholders, boolean clickable) {
+  public TextLine(Line line, String obj, @Nullable Placeholders placeholders, boolean clickable) {
     this.line = line;
-    this.placeholders = placeholders;
+    this.placeholders = placeholders == null ? new Placeholders(0x00) : placeholders;
     this.clickable = clickable;
 
     this.obj = obj;
@@ -28,6 +29,10 @@ public final class TextLine implements ITextLine {
 
   public TextLine(Line line, String obj, Placeholders placeholders) {
     this(line, obj, placeholders, false);
+  }
+
+  public TextLine(Line line, String obj) {
+    this(line, obj, null);
   }
 
   @Override
@@ -43,6 +48,11 @@ public final class TextLine implements ITextLine {
   @Override
   public TextLine asTextLine() {
     return this;
+  }
+
+  @Override
+  public Placeholders getPlaceholders() {
+    return placeholders;
   }
 
   public AABB getHitbox() {

@@ -3,6 +3,7 @@ package com.github.unldenis.hologram.experimental;
 import com.github.unldenis.hologram.collection.IntHashSet;
 import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.TextLine;
+import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.util.AABB;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -54,6 +55,11 @@ public class ClickableTextLine implements Listener, ITextLine {
   @Override
   public TextLine asTextLine() {
     return line;
+  }
+
+  @Override
+  public Placeholders getPlaceholders() {
+    return line.getPlaceholders();
   }
 
   @Override

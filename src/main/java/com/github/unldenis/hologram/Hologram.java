@@ -1,18 +1,15 @@
 package com.github.unldenis.hologram;
 
-
-import com.github.unldenis.hologram.collection.ReferenceArrayList;
-import com.github.unldenis.hologram.collection.ReferenceHashSet;
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
 import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
-import com.github.unldenis.hologram.placeholder.Placeholders;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -22,8 +19,8 @@ public final class Hologram {
 
   private final Plugin plugin;
   private final IHologramLoader loader;
-  private final List<ILine<?>> hLines = Collections.synchronizedList(new ReferenceArrayList<>());
-  private final Set<Player> seeingPlayers = Collections.synchronizedSet(new ReferenceHashSet<>());
+  private final List<ILine<?>> hLines = new CopyOnWriteArrayList<>();       // writes are slow and Iterators are fast and consistent.
+  private final Set<Player> seeingPlayers = ConcurrentHashMap.newKeySet();  // faster writes
 
   private Location location;
 
@@ -73,11 +70,6 @@ public final class Hologram {
         () -> Bukkit.getPluginManager().callEvent(new PlayerHologramHideEvent(player, this)));
   }
 
-  void removeSeeingPlayer(Player player) {
-    this.seeingPlayers.remove(player);
-  }
-
-
   public Location getLocation() {
     return location;
   }
@@ -90,8 +82,8 @@ public final class Hologram {
     return seeingPlayers;
   }
 
-  public static HologramBuilder builder(Plugin plugin, Location location, Placeholders placeholders) {
-    return new HologramBuilder(plugin, location, placeholders);
+  public static HologramBuilder builder(Plugin plugin, Location location) {
+    return new HologramBuilder(plugin, location);
   }
 
   @Override

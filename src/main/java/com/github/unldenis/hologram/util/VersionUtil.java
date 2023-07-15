@@ -53,7 +53,7 @@ public class VersionUtil {
 
 
   public enum VersionEnum {
-
+    MOCKBUK(0), // MockBukkit Test
     V1_8(1),
     V1_9(2),
     V1_10(3),

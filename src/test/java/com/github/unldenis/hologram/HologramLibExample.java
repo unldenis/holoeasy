@@ -1,6 +1,5 @@
-package com.github.unldenis.hologram.test;
+package com.github.unldenis.hologram;
 
-import com.github.unldenis.hologram.*;
 import com.github.unldenis.hologram.animation.Animation.AnimationType;
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent;
@@ -60,7 +59,7 @@ public class HologramLibExample implements Listener {
     // create new line structure (armorstand)
     Line line = new Line(plugin);
     // compose an TextLine hologram
-    TextLine textLine = new TextLine(line, "Hello", placeholders, true);
+    TextLine textLine = new TextLine(line, "Hello", null, true);
 
     // create new line structure (armorstand)
     Line line2 = new Line(plugin);
@@ -145,7 +144,7 @@ public class HologramLibExample implements Listener {
     // create new line structure (armorstand)
     Line line = new Line(plugin, loc);
     // compose an TextLine hologram
-    TextLine textLine = new TextLine(line, "Click me", placeholders);
+    TextLine textLine = new TextLine(line, "Click me");
     // compose an experimental ClickableTextLine hologram
     ClickableTextLine clickableTextLine = new ClickableTextLine(textLine, 0.5f, 5f);
     // show to player
@@ -165,14 +164,15 @@ public class HologramLibExample implements Listener {
    *
    * @param loc The location where the hologram will be created
    */
-  public void builderExample(Location loc) {
-    Hologram hologram = Hologram.builder(plugin, loc, placeholders) // initialize the builder
-            .addTextLine("Hello") // add a text line
-            .addTextLine("%%player%%") // add another text line
-            .addClickableTextLine("Click me", 0.5f, 5f) // add a clickable text line
-            .addItemLine(new ItemStack(Material.GOLD_BLOCK)) // add an item line
-            .addItemLine(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE) // add an item line with animation
-            .loadAndBuild(pool); // load and build the hologram
+  public Hologram builderExample(Location loc) {
+    return Hologram.builder(plugin, loc) // initialize the builder
+            .addTextLine("Hello")                                                      // add a text line
+            .addTextLine("%%player%%")                                                 // add another text line
+            .addClickableTextLine("Click me", 0.5f, 5f)  // add a clickable text line
+            .addItemLine(new ItemStack(Material.GOLD_BLOCK))                           // add an item line
+            .addItemLine(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)  // add an item line with animation
+            .placeholders(placeholders)                                                // add placeholders
+            .loadAndBuild(pool);                                                       // load and build the hologram
   }
 
   @EventHandler
