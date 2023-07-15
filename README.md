@@ -67,7 +67,7 @@ public Hologram builderExample(Location loc) {
     .loadAndBuild(pool);                                                       // load and build the hologram
 }
 ```
-Click [here](https://github.com/unldenis/Hologram-Lib/blob/master/src/test/java/com/github/unldenis/hologram/test/HologramLibExample.java) if you want to see the full guided example.
+Click [here](https://github.com/unldenis/Hologram-Lib/blob/master/src/test/java/com/github/unldenis/hologram/HologramLibExample.java) if you want to see the full guided example.
 ## Preview
 https://user-images.githubusercontent.com/80055679/147889286-6d4006a0-677b-4066-a285-08e79d3fad9e.mp4
 #### Placeholder Preview
