@@ -56,28 +56,16 @@ The libraries that integrate Hologram-Lib
 - <a href="https://github.com/unldenis/NPC-Lib/tree/hologramlib-integration">unldenis/NPC-Lib</a>
 ## Example usage
 ```java
-  public Hologram firstExample(Location loc) {
-    // create new line structure (armorstand)
-    Line line = new Line(plugin);
-    // compose an TextLine hologram
-    TextLine textLine = new TextLine(line, "Hello", placeholders, true);
-
-    // create new line structure (armorstand)
-    Line line2 = new Line(plugin);
-    // compose this second TextLine hologram
-    TextLine textLine2 = new TextLine(line2, "%%player%%", placeholders, true);
-
-    // append to hologram that will make all the hard work for you
-    // the TextSequentialLoader loader will load lines(text only) one after the other. It is an experimental function.
-    Hologram hologram = new Hologram(plugin, loc, new TextSequentialLoader());
-    // remember to call this method or hologram will not be visible
-    hologram.load(textLine, textLine2);
-
-    // add hologram to pool
-    pool.takeCareOf(hologram);
-
-    return hologram;
-    }
+public Hologram builderExample(Location loc) {
+  return Hologram.builder(plugin, loc) // initialize the builder
+    .addTextLine("Hello")                                                      // add a text line
+    .addTextLine("%%player%%")                                                 // add another text line
+    .addClickableTextLine("Click me", 0.5f, 5f)  // add a clickable text line
+    .addItemLine(new ItemStack(Material.GOLD_BLOCK))                           // add an item line
+    .addItemLine(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)  // add an item line with animation
+    .placeholders(placeholders)                                                // add placeholders
+    .loadAndBuild(pool);                                                       // load and build the hologram
+}
 ```
 Click [here](https://github.com/unldenis/Hologram-Lib/blob/master/src/test/java/com/github/unldenis/hologram/test/HologramLibExample.java) if you want to see the full guided example.
 ## Preview
