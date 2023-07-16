@@ -19,7 +19,9 @@
 
 package com.github.unldenis.hologram.packet;
 
+import com.github.unldenis.hologram.packet.IPackets.PacketsV1_17_V18;
 import com.github.unldenis.hologram.util.VersionUtil;
+import com.github.unldenis.hologram.util.VersionUtil.VersionEnum;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketsFactory {
@@ -27,12 +29,14 @@ public class PacketsFactory {
   private static final IPackets instance;
 
   static {
-    if (VersionUtil.isCompatible(VersionUtil.VersionEnum.V1_8)) {
+    if (VersionUtil.isCompatible(VersionEnum.V1_8)) {
       instance = new IPackets.PacketsV1_8();
-    } else if (VersionUtil.isBetween(VersionUtil.VersionEnum.V1_9, VersionUtil.VersionEnum.V1_12)) {
+    } else if (VersionUtil.isBetween(VersionEnum.V1_9, VersionEnum.V1_12)) {
       instance = new IPackets.PacketsV1_9V1_12();
-    } else if (VersionUtil.isBetween(VersionUtil.VersionEnum.V1_13, VersionUtil.VersionEnum.V1_18)) {
-      instance = new IPackets.PacketsV1_13V1_18();
+    } else if (VersionUtil.isBetween(VersionEnum.V1_13, VersionEnum.V1_16)) {
+      instance = new IPackets.PacketsV1_13V1_16();
+    } else if (VersionUtil.isBetween(VersionEnum.V1_17, VersionEnum.V1_18)) {
+      instance = new PacketsV1_17_V18();
     } else {
       instance = new IPackets.PacketsV1_19();
     }

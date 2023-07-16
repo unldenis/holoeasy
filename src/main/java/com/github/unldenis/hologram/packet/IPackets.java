@@ -263,14 +263,7 @@ public interface IPackets {
     }
   }
 
-  class PacketsV1_13V1_18 extends PacketsV1_9V1_12 {
-
-    @Override
-    public PacketContainerSendable destroyPacket(int entityID) {
-      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_DESTROY);
-      packet.getIntLists().write(0, Collections.singletonList(entityID));
-      return packet;
-    }
+  class PacketsV1_13V1_16 extends PacketsV1_9V1_12 {
 
     @Override
     public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet) {
@@ -312,7 +305,16 @@ public interface IPackets {
     }
   }
 
-  class PacketsV1_19 extends PacketsV1_13V1_18 {
+  class PacketsV1_17_V18 extends PacketsV1_13V1_16 {
+    @Override
+    public PacketContainerSendable destroyPacket(int entityID) {
+      PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_DESTROY);
+      packet.getIntLists().write(0, Collections.singletonList(entityID));
+      return packet;
+    }
+  }
+
+  class PacketsV1_19 extends PacketsV1_17_V18 {
 
     @Override
     public PacketContainerSendable spawnPacket(int entityID, Location location, Plugin plugin) {
