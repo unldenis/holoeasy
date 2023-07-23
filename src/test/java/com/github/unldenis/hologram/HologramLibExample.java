@@ -4,14 +4,16 @@ import com.github.unldenis.hologram.animation.Animation.AnimationType;
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
-import com.github.unldenis.hologram.experimental.ClickableTextLine;
+import com.github.unldenis.hologram.line.ClickableTextLine;
+import com.github.unldenis.hologram.experimental.ItemLine;
 import com.github.unldenis.hologram.line.ITextLine;
-import com.github.unldenis.hologram.line.ItemLine;
+import com.github.unldenis.hologram.line.BlockLine;
 import com.github.unldenis.hologram.line.Line;
 import com.github.unldenis.hologram.line.TextLine;
-import com.github.unldenis.hologram.line.animated.ItemALine;
+import com.github.unldenis.hologram.line.animated.BlockALine;
 import com.github.unldenis.hologram.line.animated.StandardAnimatedLine;
-import com.github.unldenis.hologram.line.hologram.TextItemStandardLoader;
+import com.github.unldenis.hologram.line.hologram.SingletonLoader;
+import com.github.unldenis.hologram.line.hologram.TextBlockStandardLoader;
 import com.github.unldenis.hologram.line.hologram.TextSequentialLoader;
 import com.github.unldenis.hologram.placeholder.Placeholders;
 import org.bukkit.Bukkit;
@@ -22,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 
 public class HologramLibExample implements Listener {
@@ -91,22 +94,22 @@ public class HologramLibExample implements Listener {
 
     // create new line structure (armorstand)
     Line line2 = new Line(plugin);
-    // compose this second ItemLine hologram
-    ItemLine itemLine = new ItemLine(line2, new ItemStack(Material.GOLD_BLOCK));
+    // compose this second BlockLine hologram
+    BlockLine blockLine = new BlockLine(line2, new ItemStack(Material.GOLD_BLOCK));
     // compose this second ItemAnimatedLine hologram
-    ItemALine itemALine = new ItemALine(itemLine, new StandardAnimatedLine(line2));
+    BlockALine blockALine = new BlockALine(blockLine, new StandardAnimatedLine(line2));
 
     // append to hologram that will make all the hard work for you
-    // the TextItemStandardLoader loader will load lines(text or item) one below the other.
-    Hologram hologram = new Hologram(plugin, loc, new TextItemStandardLoader());
+    // the TextBlockStandardLoader loader will load lines(text or item) one below the other.
+    Hologram hologram = new Hologram(plugin, loc, new TextBlockStandardLoader());
     // remember to call this method or hologram will not be visible
-    hologram.load(textLine, itemALine);
+    hologram.load(textLine, blockALine);
 
     // show to player
     hologram.show(player);
 
     // start animation
-    itemALine.setAnimation(AnimationType.CIRCLE, hologram);
+    blockALine.setAnimation(AnimationType.CIRCLE, hologram);
 
     // hide after 30 seconds to player
     Bukkit.getScheduler().runTaskLater(plugin, () -> hologram.hide(player), 20L * 30);
@@ -166,13 +169,25 @@ public class HologramLibExample implements Listener {
    */
   public Hologram builderExample(Location loc) {
     return Hologram.builder(plugin, loc) // initialize the builder
-            .addTextLine("Hello")                                                      // add a text line
-            .addTextLine("%%player%%")                                                 // add another text line
-            .addClickableTextLine("Click me", 0.5f, 5f)  // add a clickable text line
-            .addItemLine(new ItemStack(Material.GOLD_BLOCK))                           // add an item line
-            .addItemLine(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)  // add an item line with animation
-            .placeholders(placeholders)                                                // add placeholders
-            .loadAndBuild(pool);                                                       // load and build the hologram
+            .addLine("Hello")                                                      // add a text line
+            .addLine("%%player%%")                                                 // add another text line
+            .addClickableLine("Click me")                                           // add a clickable text line
+            .addBlockLine(new ItemStack(Material.GOLD_BLOCK))                                // add a block line
+            .addBlockLine(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)       // add a block line with animation
+            .placeholders(placeholders)                                                 // add placeholders
+            .loadAndBuild(pool);                                                        // load and build the hologram
+  }
+
+  public void itemlineExample(Location loc) {
+    Hologram hologram = Hologram.builder(plugin, loc) // initialize the builder
+        .addItemLine(new ItemStack(Material.TORCH), EulerAngle.ZERO)                // add experimental item line
+        .loader(new SingletonLoader())                                              // a hologram loader with 1 line
+        .name("Since v2.6.0")                                                       // just a name
+        .loadAndBuild(pool);                                                        // load and build the hologram
+
+
+//    ItemLine line = (ItemLine) hologram.getLines().get(0);
+//    line.setHandRotation(new EulerAngle(Math.toRadians(270), 0, 0), hologram.getSeeingPlayers());
   }
 
   @EventHandler

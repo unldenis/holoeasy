@@ -29,10 +29,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Placeholders {
 
-  public static final int STRING           = 0b00000001;
-  public static final int PAPI             = 0b00000010;
+  public static final int STRING = 0b0001;
+  public static final int PAPI = 0b0010;
 
-  private final int flags;
+  private int flags;
 
   public Placeholders(int flags) {
     this.flags = flags;
@@ -49,17 +49,25 @@ public class Placeholders {
   public void add(@NotNull Placeholders p) {
     Validate.notNull(placeholders, "Placeholders cannot be null");
     placeholders.putAll(p.placeholders);
+
+    // fix: update flags
+    if (!isPapi() && p.isPapi()) {
+      flags |= PAPI;
+    }
+    if (!isString() && p.isString()) {
+      flags |= STRING;
+    }
   }
 
   @NotNull
   public String parse(@NotNull String line, @NotNull Player player) {
     String c = line;
-    if(isString()) {
+    if (isString()) {
       for (Map.Entry<String, Function<Player, String>> entry : placeholders.entrySet()) {
         c = c.replaceAll(entry.getKey(), entry.getValue().apply(player));
       }
     }
-    if(isPapi()) {
+    if (isPapi()) {
       c = PlaceholderAPI.setPlaceholders(player, c);
     }
     return c;
@@ -68,11 +76,10 @@ public class Placeholders {
   private boolean isString() {
     return (flags & STRING) != 0;
   }
+
   private boolean isPapi() {
     return (flags & PAPI) != 0;
   }
-
-
 }
 
 

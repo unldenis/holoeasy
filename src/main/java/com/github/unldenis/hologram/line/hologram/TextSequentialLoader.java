@@ -24,20 +24,23 @@ public class TextSequentialLoader implements IHologramLoader {
   private void set(Hologram hologram, ILine<?>[] lines, boolean add) {
     Location cloned = hologram.getLocation().clone();
     for(ILine<?> line : lines) {
-      if(!line.getType().isText()) {
-        throw new RuntimeException("This method load supports only TextLine & TextALine.");
-      }
-      TextLine tL = ((ITextLine) line).asTextLine();
+      switch (line.getType()) {
+        case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE -> {
+          TextLine tL = ((ITextLine) line).asTextLine();
 
-      // add to lines
-      tL.setLocation(cloned.clone());
+          // add to lines
+          tL.setLocation(cloned.clone());
 
-      if(add) {
-        hologram.getLines().add(0, tL);
-      } else {
-        hologram.getSeeingPlayers().forEach(tL::teleport);
+          if(add) {
+            hologram.getLines().add(0, tL);
+          } else {
+            hologram.getSeeingPlayers().forEach(tL::teleport);
+          }
+          cloned.setZ(cloned.getZ() + 0.175 * tL.getObj().length());
+        }
+        default -> throw new RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.");
       }
-      cloned.setZ(cloned.getZ() + 0.175 * tL.getObj().length());
+
     }
   }
 }

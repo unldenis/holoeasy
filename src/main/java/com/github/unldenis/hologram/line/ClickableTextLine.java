@@ -1,8 +1,7 @@
-package com.github.unldenis.hologram.experimental;
+package com.github.unldenis.hologram.line;
 
 import com.github.unldenis.hologram.collection.IntHashSet;
-import com.github.unldenis.hologram.line.ITextLine;
-import com.github.unldenis.hologram.line.TextLine;
+import com.github.unldenis.hologram.experimental.PlayerTextLineInteractEvent;
 import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.util.AABB;
 import org.bukkit.Bukkit;
@@ -13,9 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.ApiStatus.Experimental;
 
-@Experimental
 public class ClickableTextLine implements Listener, ITextLine {
 
   private final TextLine line;
@@ -69,7 +66,7 @@ public class ClickableTextLine implements Listener, ITextLine {
 
   @Override
   public Type getType() {
-    return EType.CLICKABLE_TEXT_LINE;
+    return Type.CLICKABLE_TEXT_LINE;
   }
 
   @Override

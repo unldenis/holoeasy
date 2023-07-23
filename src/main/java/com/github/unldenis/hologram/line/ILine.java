@@ -13,11 +13,6 @@ public interface ILine<T> {
 
   Type getType();
 
-  default Optional<EType> getEType() {
-    Type type = getType();
-    return type instanceof EType ? Optional.of((EType) type) : Optional.empty();
-  }
-
   int getEntityId();
 
   Location getLocation();
@@ -42,48 +37,21 @@ public interface ILine<T> {
     }
   }
 
-
-  interface Type {
-
-    String name();
-
-    boolean isText();
-
-    boolean isItem();
-  }
-
-  enum EType implements Type {
-    EXTERNAL(false, false),
-    TEXT_LINE(true),
-    ITEM_LINE(false),
-    TEXT_ANIMATED_LINE(true),
-    ITEM_ANIMATED_LINE(false),
-
+  enum Type {
+    EXTERNAL,
+    TEXT_LINE,
+    TEXT_ANIMATED_LINE,
     @Experimental
-    CLICKABLE_TEXT_LINE(true),
+    CLICKABLE_TEXT_LINE,
+
+
+    BLOCK_LINE,
+    BLOCK_ANIMATED_LINE,
+
+
+    ITEM_LINE,
 
     ;
 
-    private final boolean text;
-    private final boolean item;
-
-    EType(boolean text) {
-      this(text, !text);
-    }
-
-    EType(boolean text, boolean item) {
-      this.text = text;
-      this.item = item;
-    }
-
-    @Override
-    public boolean isText() {
-      return text;
-    }
-
-    @Override
-    public boolean isItem() {
-      return item;
-    }
   }
 }

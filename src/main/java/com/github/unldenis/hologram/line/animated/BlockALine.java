@@ -1,8 +1,8 @@
 package com.github.unldenis.hologram.line.animated;
 
 import com.github.unldenis.hologram.animation.Animation;
+import com.github.unldenis.hologram.line.BlockLine;
 import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.line.ItemLine;
 import java.util.Collection;
 import java.util.Optional;
 import org.bukkit.Location;
@@ -10,73 +10,73 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class ItemALine implements ILine<ItemStack>, IAnimated {
+public class BlockALine implements ILine<ItemStack>, IAnimated {
 
-  private final ItemLine itemLine;
+  private final BlockLine blockLine;
   private final IAnimated animatedLine;
 
-  public ItemALine(ItemLine itemLine, IAnimated animatedLine) {
-    this.itemLine = itemLine;
+  public BlockALine(BlockLine blockLine, IAnimated animatedLine) {
+    this.blockLine = blockLine;
     this.animatedLine = animatedLine;
   }
 
-  public ItemLine getItemLine() {
-    return itemLine;
+  public BlockLine getBlockLine() {
+    return blockLine;
   }
 
   @Override
   public Plugin getPlugin() {
-    return itemLine.getPlugin();
+    return blockLine.getPlugin();
   }
 
   @Override
   public Type getType() {
-    return EType.ITEM_ANIMATED_LINE;
+    return Type.BLOCK_ANIMATED_LINE;
   }
 
   @Override
   public int getEntityId() {
-    return itemLine.getEntityId();
+    return blockLine.getEntityId();
   }
 
   @Override
   public Location getLocation() {
-    return itemLine.getLocation();
+    return blockLine.getLocation();
   }
 
   @Override
   public void setLocation(Location location) {
-    itemLine.setLocation(location);
+    blockLine.setLocation(location);
   }
 
   @Override
   public ItemStack getObj() {
-    return itemLine.getObj();
+    return blockLine.getObj();
   }
 
   @Override
   public void setObj(ItemStack obj) {
-    itemLine.setObj(obj);
+    blockLine.setObj(obj);
   }
 
   @Override
   public void hide(Player player) {
-    itemLine.hide(player);
+    blockLine.hide(player);
   }
 
   @Override
   public void teleport(Player player) {
-    itemLine.teleport(player);
+    blockLine.teleport(player);
   }
 
   @Override
   public void show(Player player) {
-    itemLine.show(player);
+    blockLine.show(player);
   }
 
   @Override
   public void update(Player player) {
-    itemLine.update(player);
+    blockLine.update(player);
   }
 
   @Override

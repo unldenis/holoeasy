@@ -3,7 +3,7 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.line.hologram.TextItemStandardLoader;
+import com.github.unldenis.hologram.line.hologram.TextBlockStandardLoader;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,7 +50,7 @@ public class LibTests {
     TextLineMock line1 = new TextLineMock(plugin, "line1");
     TextLineMock line2 = new TextLineMock(plugin, "line2");
 
-    Hologram hologram = new Hologram(plugin, location, new TextItemStandardLoader());
+    Hologram hologram = new Hologram(plugin, location, new TextBlockStandardLoader());
     hologram.load(line1, line2);
     return hologram;
   }

@@ -56,43 +56,45 @@ public class InteractiveHologramPool implements Listener, IHologramPool {
 
   @EventHandler
   public void handleInteract(PlayerInteractEvent e) {
-    final Player player = e.getPlayer();
-    if (e.getAction() != Action.LEFT_CLICK_AIR) {
-      return;
-    }
-    FST:
-    for (Hologram hologram : pool.getHolograms()) {
-      if (!hologram.isShownFor(player)) {
-        continue;
+    Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), () -> {
+      final Player player = e.getPlayer();
+      if (e.getAction() != Action.LEFT_CLICK_AIR) {
+        return;
       }
-      for (ILine<?> line : hologram.getLines()) {
-        if (!line.getType().isText()) {
+      FST:
+      for (Hologram hologram : pool.getHolograms()) {
+        if (!hologram.isShownFor(player)) {
           continue;
         }
+        for (ILine<?> line : hologram.getLines()) {
+          switch (line.getType()) {
+            case TEXT_LINE, TEXT_ANIMATED_LINE -> {
+              ITextLine iTextLine = (ITextLine) line;
+              if(!iTextLine.isClickable()) {
+                continue;
+              }
 
-        ITextLine iTextLine = (ITextLine) line;
-        if(!iTextLine.isClickable()) {
-          continue;
+              TextLine tL = iTextLine.asTextLine();
+              if(tL.getHitbox() == null) {
+                continue;
+              }
+
+              AABB.Vec3D intersects = tL.getHitbox().intersectsRay(
+                  new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
+              if (intersects == null) {
+                continue;
+              }
+
+              Bukkit.getScheduler().runTask(
+                  getPlugin(),
+                  () -> Bukkit.getPluginManager()
+                      .callEvent(new PlayerHologramInteractEvent(player, hologram, iTextLine)));
+              break FST;
+            }
+          }
         }
-
-        TextLine tL = iTextLine.asTextLine();
-        if(tL.getHitbox() == null) {
-          continue;
-        }
-
-        AABB.Vec3D intersects = tL.getHitbox().intersectsRay(
-            new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
-        if (intersects == null) {
-          continue;
-        }
-
-        Bukkit.getScheduler().runTask(
-            getPlugin(),
-            () -> Bukkit.getPluginManager()
-                .callEvent(new PlayerHologramInteractEvent(player, hologram, iTextLine)));
-        break FST;
       }
-    }
+    });
   }
 
 

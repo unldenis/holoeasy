@@ -7,16 +7,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public final class ItemLine implements ILine<ItemStack> {
+public final class BlockLine implements ILine<ItemStack> {
 
   private final Line line;
   private final PacketContainerSendable entityMetadataPacket;
 
   private ItemStack obj;
 
-  public ItemLine(Line line, ItemStack obj) {
+  public BlockLine(Line line, ItemStack obj) {
+    if (!obj.getType().isBlock()) {
+      throw new UnsupportedOperationException(
+          "'%s' is not a block. Are you looking for the new experimental ItemLine class?".formatted(obj.getType().name()));
+    }
     this.line = line;
-    this.entityMetadataPacket = PacketsFactory.get().metadataPacket(line.getEntityID());
+    this.entityMetadataPacket = PacketsFactory.get().metadataPacket(line.getEntityID(), null);
 
     this.obj = obj;
   }
@@ -28,7 +32,7 @@ public final class ItemLine implements ILine<ItemStack> {
 
   @Override
   public Type getType() {
-    return EType.ITEM_LINE;
+    return Type.BLOCK_LINE;
   }
 
   @Override
@@ -76,7 +80,7 @@ public final class ItemLine implements ILine<ItemStack> {
   @Override
   public void update(Player player) {
     PacketsFactory.get()
-        .equipmentPacket(line.getEntityID(), this.obj)
+        .equipmentPacket(line.getEntityID(), this.obj, false)
         .send(player);
   }
 

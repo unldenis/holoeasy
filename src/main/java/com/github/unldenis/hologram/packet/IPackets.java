@@ -22,6 +22,7 @@ package com.github.unldenis.hologram.packet;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
@@ -39,7 +40,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -50,12 +50,13 @@ public interface IPackets {
 
   PacketContainerSendable destroyPacket(int entityID);
 
-  PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet);
+  PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet, boolean itemLine);
 
-  PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall);
+  PacketContainerSendable metadataPacket(int entityID, String nameTag,
+      boolean setInvisible, boolean setSmall, Object handRotationNMS);
 
-  default PacketContainerSendable metadataPacket(int entityID) {
-    return metadataPacket(entityID, null, null, true, true);
+  default PacketContainerSendable metadataPacket(int entityID, Object handRotationNMS) {
+    return metadataPacket(entityID, null, true, true, handRotationNMS);
   }
 
   PacketContainerSendable teleportPacket(int entityID, Location location);
@@ -102,17 +103,24 @@ public interface IPackets {
     }
 
     @Override
-    public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet) {
+    public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet,
+        boolean itemLine) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
       packet.getIntegers().write(0, entityID);
-      // Use legacy form to update the head slot.
-      packet.getIntegers().write(1, 4);
+      if (itemLine) {
+        packet.getIntegers().write(1, 0);
+      } else {
+        // Use legacy form to update the head slot.
+        packet.getIntegers().write(1, 4);
+      }
+
       packet.getItemModifier().write(0, helmet);
       return packet;
     }
 
     @Override
-    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag,
+        boolean setInvisible, boolean setSmall, Object handRotationNMS) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
       packet.getIntegers().write(0, entityID);
       WrappedDataWatcher watcher = new WrappedDataWatcher();
@@ -124,7 +132,10 @@ public interface IPackets {
         watcher.setObject(3, (byte) 1);
       }
       if (setSmall) {
-        watcher.setObject(10, (byte) 0x01);
+        watcher.setObject(10, (byte) (0x01 | 0x04));
+      }
+      if (handRotationNMS != null) {
+        watcher.setObject(19, handRotationNMS);
       }
       packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
       return packet;
@@ -204,36 +215,52 @@ public interface IPackets {
     }
 
     @Override
-    public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet) {
+    public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet,
+        boolean itemLine) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
 
       packet.getIntegers().write(0, entityID);
+      if (itemLine) {
+        packet.getItemSlots().write(0, ItemSlot.MAINHAND);
+      } else {
+        packet.getItemSlots().write(0, EnumWrappers.ItemSlot.HEAD);
+
+      }
       packet.getItemModifier().write(0, helmet);
-      packet.getItemSlots().write(0, EnumWrappers.ItemSlot.HEAD);
 
       return packet;
     }
 
     @Override
-    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag,
+        boolean setInvisible, boolean setSmall, Object handRotationNMS) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
       packet.getModifier().writeDefaults();
       packet.getIntegers().write(0, entityID);
 
       WrappedDataWatcher watcher = new WrappedDataWatcher();
       if (setInvisible) {
-        WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(0, WrappedDataWatcher.Registry.get(Byte.class));
+        WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(
+            0, WrappedDataWatcher.Registry.get(Byte.class));
         watcher.setObject(visible, (byte) 0x20);
       }
       if (nameTag != null) {
-        watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.get(String.class)), nameTag);
+        watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2,
+            WrappedDataWatcher.Registry.get(String.class)), nameTag);
 
-        WrappedDataWatcher.WrappedDataWatcherObject nameVisible = new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class));
+        WrappedDataWatcher.WrappedDataWatcherObject nameVisible = new WrappedDataWatcher.WrappedDataWatcherObject(
+            3, WrappedDataWatcher.Registry.get(Boolean.class));
         watcher.setObject(nameVisible, true);
       }
       if (setSmall) {
-        WrappedDataWatcher.WrappedDataWatcherObject small = new WrappedDataWatcher.WrappedDataWatcherObject(10, WrappedDataWatcher.Registry.get(Byte.class));
-        watcher.setObject(small, (byte) 0x01);
+        WrappedDataWatcher.WrappedDataWatcherObject small = new WrappedDataWatcher.WrappedDataWatcherObject(
+            10, WrappedDataWatcher.Registry.get(Byte.class));
+        watcher.setObject(small, (byte) (0x01 | 0x04));
+      }
+      if (handRotationNMS != null) {
+        WrappedDataWatcher.WrappedDataWatcherObject handRotation = new WrappedDataWatcher.WrappedDataWatcherObject(
+            19, WrappedDataWatcher.Registry.getVectorSerializer());
+        watcher.setObject(handRotation, handRotationNMS);
       }
 
       packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
@@ -266,17 +293,21 @@ public interface IPackets {
   class PacketsV1_13V1_16 extends PacketsV1_9V1_12 {
 
     @Override
-    public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet) {
+    public PacketContainerSendable equipmentPacket(int entityID, ItemStack helmet,
+        boolean itemLine) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
       packet.getIntegers().write(0, entityID);
       List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = new ArrayList<>();
-      pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, helmet));
+      pairList.add(new Pair<>(itemLine ?
+          ItemSlot.MAINHAND : EnumWrappers.ItemSlot.HEAD
+          , helmet));
       packet.getSlotStackPairLists().write(0, pairList);
       return packet;
     }
 
     @Override
-    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag,
+        boolean setInvisible, boolean setSmall, Object handRotationNMS) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
       packet.getIntegers().write(0, entityID);
       WrappedDataWatcher watcher = new WrappedDataWatcher();
@@ -297,8 +328,12 @@ public interface IPackets {
       if (setSmall) {
         WrappedDataWatcher.WrappedDataWatcherObject small = new WrappedDataWatcher.WrappedDataWatcherObject(
             15, WrappedDataWatcher.Registry.get(Byte.class));
-        watcher.setObject(small, (byte) 0x01);
-
+        watcher.setObject(small, (byte) (0x01 | 0x04));
+      }
+      if (handRotationNMS != null) {
+        WrappedDataWatcher.WrappedDataWatcherObject handRotation = new WrappedDataWatcher.WrappedDataWatcherObject(
+            19, WrappedDataWatcher.Registry.getVectorSerializer());
+        watcher.setObject(handRotation, handRotationNMS);
       }
       packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
       return packet;
@@ -306,6 +341,7 @@ public interface IPackets {
   }
 
   class PacketsV1_17_V18 extends PacketsV1_13V1_16 {
+
     @Override
     public PacketContainerSendable destroyPacket(int entityID) {
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_DESTROY);
@@ -329,8 +365,10 @@ public interface IPackets {
       packet.getDoubles().write(2, location.getZ());
       return packet;
     }
-        @Override
-    public PacketContainerSendable metadataPacket(int entityID, String nameTag, Player player, boolean setInvisible, boolean setSmall) {
+
+    @Override
+    public PacketContainerSendable metadataPacket(int entityID, String nameTag,
+        boolean setInvisible, boolean setSmall, Object handRotationNMS) {
 
       PacketContainerSendable packet = newPacket(PacketType.Play.Server.ENTITY_METADATA);
       packet.getIntegers().write(0, entityID);
@@ -343,44 +381,58 @@ public interface IPackets {
         final List<WrappedDataValue> wrappedDataValueList = new ArrayList<>();
 
         if (setInvisible) {
-          wrappedDataValueList.add(new WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte.class), (byte) 0x20));
+          wrappedDataValueList.add(
+              new WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte.class), (byte) 0x20));
 
         }
         if (nameTag != null) {
           Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(
               nameTag)[0].getHandle());
 
-          wrappedDataValueList.add(new WrappedDataValue(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true), opt));
-          wrappedDataValueList.add(new WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean.class), true));
+          wrappedDataValueList.add(
+              new WrappedDataValue(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true),
+                  opt));
+          wrappedDataValueList.add(
+              new WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean.class), true));
 
         }
         if (setSmall) {
-          wrappedDataValueList.add(new WrappedDataValue(15, WrappedDataWatcher.Registry.get(Byte.class), (byte) 0x01));
+          wrappedDataValueList.add(
+              new WrappedDataValue(15, WrappedDataWatcher.Registry.get(Byte.class),
+                  (byte) (0x01 | 0x04)));
         }
-
+        if (handRotationNMS != null) {
+          wrappedDataValueList.add(
+              new WrappedDataValue(19, WrappedDataWatcher.Registry.getVectorSerializer(),
+                  handRotationNMS));
+        }
         packet.getDataValueCollectionModifier().write(0, wrappedDataValueList);
 
       } catch (ClassNotFoundException e) {
         if (setInvisible) {
           WrappedDataWatcher.WrappedDataWatcherObject visible = new WrappedDataWatcher.WrappedDataWatcherObject(
-                  0, WrappedDataWatcher.Registry.get(Byte.class));
+              0, WrappedDataWatcher.Registry.get(Byte.class));
           watcher.setObject(visible, (byte) 0x20);
         }
         if (nameTag != null) {
           Optional<?> opt = Optional.of(WrappedChatComponent.fromChatMessage(
               nameTag)[0].getHandle());
           watcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2,
-                  WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
+              WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt);
 
           WrappedDataWatcher.WrappedDataWatcherObject nameVisible = new WrappedDataWatcher.WrappedDataWatcherObject(
-                  3, WrappedDataWatcher.Registry.get(Boolean.class));
+              3, WrappedDataWatcher.Registry.get(Boolean.class));
           watcher.setObject(nameVisible, true);
         }
         if (setSmall) {
           WrappedDataWatcher.WrappedDataWatcherObject small = new WrappedDataWatcher.WrappedDataWatcherObject(
-                  15, WrappedDataWatcher.Registry.get(Byte.class));
-          watcher.setObject(small, (byte) 0x01);
-
+              15, WrappedDataWatcher.Registry.get(Byte.class));
+          watcher.setObject(small, (byte) (0x01 | 0x04));
+        }
+        if(handRotationNMS != null) {
+          WrappedDataWatcher.WrappedDataWatcherObject handRotation = new WrappedDataWatcher.WrappedDataWatcherObject(
+              19, WrappedDataWatcher.Registry.getVectorSerializer());
+          watcher.setObject(handRotation, handRotationNMS);
         }
         packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
       }

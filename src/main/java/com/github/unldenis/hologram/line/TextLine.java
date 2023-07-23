@@ -66,7 +66,7 @@ public final class TextLine implements ITextLine {
 
   @Override
   public Type getType() {
-    return EType.TEXT_LINE;
+    return Type.TEXT_LINE;
   }
 
   @Override
@@ -120,7 +120,7 @@ public final class TextLine implements ITextLine {
     if(!isEmpty) {
       line.spawn(player);
       PacketsFactory.get()
-          .metadataPacket(line.getEntityID(), parse(player), player, true, true)
+          .metadataPacket(line.getEntityID(), parse(player), true, true, null)
           .send(player);
     }
   }
@@ -144,7 +144,7 @@ public final class TextLine implements ITextLine {
         isEmpty = false;
       case 0x00:
         PacketsFactory.get()
-            .metadataPacket(line.getEntityID(), parse(player), player, spawnBefore == 0x01, spawnBefore == 0x01)
+            .metadataPacket(line.getEntityID(), parse(player), spawnBefore == 0x01, spawnBefore == 0x01, null)
             .send(player);
     }
   }

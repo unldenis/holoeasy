@@ -23,7 +23,7 @@ public final class TextALine implements ITextLine, IAnimated {
 
   @Override
   public boolean isClickable() {
-    return false;
+    return textLine.isClickable();
   }
 
   @Override
@@ -48,7 +48,7 @@ public final class TextALine implements ITextLine, IAnimated {
 
   @Override
   public Type getType() {
-    return EType.TEXT_ANIMATED_LINE;
+    return Type.TEXT_ANIMATED_LINE;
   }
 
   @Override

@@ -24,22 +24,7 @@ public class TextLineMock implements ILine<String> {
 
   @Override
   public Type getType() {
-    return new Type() {
-      @Override
-      public String name() {
-        return "MockType";
-      }
-
-      @Override
-      public boolean isText() {
-        return true;
-      }
-
-      @Override
-      public boolean isItem() {
-        return false;
-      }
-    };
+    return Type.EXTERNAL;
   }
 
   @Override

@@ -8,29 +8,32 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 public final class Hologram {
 
   private final Plugin plugin;
-  private final IHologramLoader loader;
   private final List<ILine<?>> hLines = new CopyOnWriteArrayList<>();       // writes are slow and Iterators are fast and consistent.
   private final Set<Player> seeingPlayers = ConcurrentHashMap.newKeySet();  // faster writes
 
+  private String name;
   private Location location;
-
+  private IHologramLoader loader;
   private Integer hashCode;
 
   public Hologram(Plugin plugin, Location location, IHologramLoader loader) {
     this.plugin = plugin;
-    this.loader = loader;
 
     this.location = location;
+    this.loader = loader;
+    this.name = UUID.randomUUID().toString();
   }
 
   public void load(ILine<?>... lines) {
@@ -86,6 +89,18 @@ public final class Hologram {
     return new HologramBuilder(plugin, location);
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(@NotNull String name) {
+    this.name = name;
+  }
+
+  public void setLoader(@NotNull IHologramLoader loader) {
+    this.loader = loader;
+  }
+
   @Override
   public int hashCode() {
     return hashCode == null ? super.hashCode() : hashCode;
@@ -101,6 +116,14 @@ public final class Hologram {
     }
     Hologram hologram = (Hologram) o;
 
-    return Objects.equals(location, hologram.location) && Objects.equals(hashCode(), o.hashCode());
+    return Objects.equals(name, hologram.name) && Objects.equals(location, hologram.location) && Objects.equals(hashCode(), o.hashCode());
+  }
+
+  @Override
+  public String toString() {
+    return "Hologram{" +
+        ", name='" + name + '\'' +
+        ", location=" + location +
+        '}';
   }
 }
