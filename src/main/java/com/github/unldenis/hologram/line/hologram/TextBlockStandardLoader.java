@@ -4,8 +4,9 @@ import com.github.unldenis.hologram.Hologram;
 import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.ILine.Type;
 import com.github.unldenis.hologram.util.Arrays;
-import java.util.List;
 import org.bukkit.Location;
+
+import java.util.List;
 
 public class TextBlockStandardLoader implements IHologramLoader {
 
@@ -33,23 +34,29 @@ public class TextBlockStandardLoader implements IHologramLoader {
       if(j > 0) {
         Type before = lines[j - 1].getType();
         switch (before) {
-          case BLOCK_LINE, BLOCK_ANIMATED_LINE -> up = 0.0D;
+          case BLOCK_LINE:
+          case BLOCK_ANIMATED_LINE:
+            up = 0.0D;
+            break;
         }
       }
 
       switch (line.getType()) {
-        case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE -> {
+        case TEXT_LINE:
+        case TEXT_ANIMATED_LINE:
+        case CLICKABLE_TEXT_LINE:
           line.setLocation(cloned.add(0, up, 0).clone());
           hologram.getLines().add(0, line);
-        }
-        case BLOCK_LINE, BLOCK_ANIMATED_LINE -> {
+          break;
+        case BLOCK_LINE:
+        case BLOCK_ANIMATED_LINE:
           line.setLocation(cloned.add(0, 0.6D, 0).clone());
           hologram.getLines().add(0, line);
-        }
-        default -> throw new RuntimeException("This method load does not support line type " + line.getType().name());
+          break;
+        default:
+          throw new RuntimeException("This method load does not support line type " + line.getType().name());
       }
     }
-
   }
 
   @Override
@@ -61,10 +68,16 @@ public class TextBlockStandardLoader implements IHologramLoader {
     // Get position Y where to teleport the first line
     double destY = (hologram.getLocation().getY() - 0.28D);
 
-    destY += switch (firstLine.getType()) {
-      case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE -> 0.28D;
-      default -> 0.60D;
-    };
+    switch (firstLine.getType()) {
+      case TEXT_LINE:
+      case TEXT_ANIMATED_LINE:
+      case CLICKABLE_TEXT_LINE:
+        destY += 0.28D;
+        break;
+      default:
+        destY += 0.60D;
+        break;
+    }
 
     // Teleport the first line
     this.teleportLine(hologram, destY, firstLine);

@@ -13,12 +13,13 @@ import com.github.unldenis.hologram.line.animated.StandardAnimatedLine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
 import com.github.unldenis.hologram.line.hologram.TextBlockStandardLoader;
 import com.github.unldenis.hologram.placeholder.Placeholders;
-import java.util.LinkedList;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.EulerAngle;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class HologramBuilder {
 
@@ -39,11 +40,13 @@ public class HologramBuilder {
     // update already added lines
     for (ILine<?> line : lines) {
       switch (line.getType()) {
-        case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE ->
-            ((ITextLine) line).getPlaceholders().add(placeholders);
+        case TEXT_LINE:
+        case TEXT_ANIMATED_LINE:
+        case CLICKABLE_TEXT_LINE:
+          ((ITextLine) line).getPlaceholders().add(placeholders);
+          break;
       }
     }
-    //
     this.placeholders = placeholders;
     return this;
   }
@@ -62,7 +65,7 @@ public class HologramBuilder {
       lines.add(blockLine);
       return this;
     }
-    throw new IllegalArgumentException("ItemStack '%s' must be a block.".formatted(item.getType()));
+    throw new IllegalArgumentException("ItemStack '" + item.getType() + "' must be a block.");
   }
 
   public HologramBuilder addItemLine(ItemStack item, EulerAngle handRotation) {
@@ -72,13 +75,12 @@ public class HologramBuilder {
       lines.add(blockLine);
       return this;
     }
-    throw new IllegalArgumentException("ItemStack '%s' must be an item.".formatted(item.getType()));
+    throw new IllegalArgumentException("ItemStack '" + item.getType() + "' must be an item.");
   }
 
   public HologramBuilder addBlockLine(ItemStack item, Animation.AnimationType animationType) {
     if(!item.getType().isBlock()) {
-      throw new UnsupportedOperationException("Item '%s' is not a block, this class is not yet implemented but you can start from ItemLine and composite it."
-          .formatted(item.getType().name()));
+      throw new UnsupportedOperationException("Item '" + item.getType().name() + "' is not a block, this class is not yet implemented but you can start from ItemLine and composite it.");
     }
     Line line = new Line(plugin);
     BlockLine blockLine = new BlockLine(line, item);

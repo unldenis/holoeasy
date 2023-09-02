@@ -5,9 +5,9 @@ import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.TextLine;
 import org.bukkit.Location;
-import org.jetbrains.annotations.ApiStatus.Experimental;
 
-@Experimental
+import java.util.Arrays;
+
 public class TextSequentialLoader implements IHologramLoader {
 
   @Override
@@ -23,9 +23,11 @@ public class TextSequentialLoader implements IHologramLoader {
 
   private void set(Hologram hologram, ILine<?>[] lines, boolean add) {
     Location cloned = hologram.getLocation().clone();
-    for(ILine<?> line : lines) {
+    Arrays.stream(lines).forEach(line -> {
       switch (line.getType()) {
-        case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE -> {
+        case TEXT_LINE:
+        case TEXT_ANIMATED_LINE:
+        case CLICKABLE_TEXT_LINE:
           TextLine tL = ((ITextLine) line).asTextLine();
 
           // add to lines
@@ -37,10 +39,10 @@ public class TextSequentialLoader implements IHologramLoader {
             hologram.getSeeingPlayers().forEach(tL::teleport);
           }
           cloned.setZ(cloned.getZ() + 0.175 * tL.getObj().length());
-        }
-        default -> throw new RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.");
+          break;
+        default:
+          throw new RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.");
       }
-
-    }
+    });
   }
 }

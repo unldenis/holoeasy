@@ -67,30 +67,28 @@ public class InteractiveHologramPool implements Listener, IHologramPool {
           continue;
         }
         for (ILine<?> line : hologram.getLines()) {
-          switch (line.getType()) {
-            case TEXT_LINE, TEXT_ANIMATED_LINE -> {
-              ITextLine iTextLine = (ITextLine) line;
-              if(!iTextLine.isClickable()) {
-                continue;
-              }
-
-              TextLine tL = iTextLine.asTextLine();
-              if(tL.getHitbox() == null) {
-                continue;
-              }
-
-              AABB.Vec3D intersects = tL.getHitbox().intersectsRay(
-                  new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
-              if (intersects == null) {
-                continue;
-              }
-
-              Bukkit.getScheduler().runTask(
-                  getPlugin(),
-                  () -> Bukkit.getPluginManager()
-                      .callEvent(new PlayerHologramInteractEvent(player, hologram, iTextLine)));
-              break FST;
+          if (line.getType() == ILine.Type.TEXT_LINE || line.getType() == ILine.Type.TEXT_ANIMATED_LINE) {
+            ITextLine iTextLine = (ITextLine) line;
+            if (!iTextLine.isClickable()) {
+              continue;
             }
+
+            TextLine tL = iTextLine.asTextLine();
+            if (tL.getHitbox() == null) {
+              continue;
+            }
+
+            AABB.Vec3D intersects = tL.getHitbox().intersectsRay(
+                    new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
+            if (intersects == null) {
+              continue;
+            }
+
+            Bukkit.getScheduler().runTask(
+                    getPlugin(),
+                    () -> Bukkit.getPluginManager()
+                            .callEvent(new PlayerHologramInteractEvent(player, hologram, iTextLine)));
+            break FST;
           }
         }
       }
