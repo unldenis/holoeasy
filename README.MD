@@ -16,3 +16,4 @@ Please read the new developer documentation, located at:
 To contribute as a developer look at the issue tab, so we
 solve any problems first. I don't have an official channel for
 donations yet, you can find me on discord #unldenis possibly.
+

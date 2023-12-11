@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Hologram {
 
-  private final Plugin plugin;
+  final Plugin plugin;
   private final List<ILine<?>> hLines = new CopyOnWriteArrayList<>();       // writes are slow and Iterators are fast and consistent.
   private final Set<Player> seeingPlayers = ConcurrentHashMap.newKeySet();  // faster writes
 

@@ -5,7 +5,6 @@ import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
 import com.github.unldenis.hologram.line.ClickableTextLine;
-import com.github.unldenis.hologram.experimental.ItemLine;
 import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.BlockLine;
 import com.github.unldenis.hologram.line.Line;
@@ -15,7 +14,6 @@ import com.github.unldenis.hologram.line.animated.StandardAnimatedLine;
 import com.github.unldenis.hologram.line.hologram.SingletonLoader;
 import com.github.unldenis.hologram.line.hologram.TextBlockStandardLoader;
 import com.github.unldenis.hologram.line.hologram.TextSequentialLoader;
-import com.github.unldenis.hologram.placeholder.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,7 +30,7 @@ public class HologramLibExample implements Listener {
   private final Plugin plugin;
   private final IHologramPool pool;
 
-  private final Placeholders placeholders;
+  private final PlaceholdersJava placeholdersJava;
 
   public HologramLibExample(Plugin plugin) {
     this.plugin = plugin;
@@ -44,9 +42,9 @@ public class HologramLibExample implements Listener {
     // this allows me to hear clicks towards text lines.
     this.pool = new InteractiveHologramPool(_pool, 0.5f, 5f);
 
-    // create placeholders
-    this.placeholders = new Placeholders(Placeholders.STRING | Placeholders.PAPI);
-    this.placeholders.add("%%player%%", Player::getName);
+    // create placeholdersJava
+    this.placeholdersJava = new PlaceholdersJava(PlaceholdersJava.STRING | PlaceholdersJava.PAPI);
+    this.placeholdersJava.add("%%player%%", Player::getName);
 
     Bukkit.getPluginManager().registerEvents(this, plugin);
   }
@@ -67,7 +65,7 @@ public class HologramLibExample implements Listener {
     // create new line structure (armorstand)
     Line line2 = new Line(plugin);
     // compose this second TextLine hologram
-    TextLine textLine2 = new TextLine(line2, "%%player%%", placeholders, true);
+    TextLine textLine2 = new TextLine(line2, "%%player%%", placeholdersJava, true);
 
     // append to hologram that will make all the hard work for you
     // the TextSequentialLoader loader will load lines(text only) one after the other. It is an experimental function.
@@ -90,7 +88,7 @@ public class HologramLibExample implements Listener {
     // create new line structure (armorstand)
     Line line = new Line(plugin);
     // compose an TextLine hologram
-    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholders);
+    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholdersJava);
 
     // create new line structure (armorstand)
     Line line2 = new Line(plugin);
@@ -126,7 +124,7 @@ public class HologramLibExample implements Listener {
     // create new line structure (armorstand)
     Line line = new Line(plugin, loc);
     // compose an TextLine hologram
-    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholders);
+    TextLine textLine = new TextLine(line, "Hi %%player%%", placeholdersJava);
     // show to player
     textLine.show(player);
 
@@ -174,7 +172,7 @@ public class HologramLibExample implements Listener {
             .addClickableLine("Click me")                                           // add a clickable text line
             .addBlockLine(new ItemStack(Material.GOLD_BLOCK))                                // add a block line
             .addBlockLine(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)       // add a block line with animation
-            .placeholders(placeholders)                                                 // add placeholders
+            .placeholders(placeholdersJava)                                                 // add placeholdersJava
             .loadAndBuild(pool);                                                        // load and build the hologram
   }
 

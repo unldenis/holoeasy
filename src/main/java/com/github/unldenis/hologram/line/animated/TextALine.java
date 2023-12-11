@@ -4,7 +4,7 @@ import com.github.unldenis.hologram.animation.Animation;
 
 import com.github.unldenis.hologram.line.ITextLine;
 import com.github.unldenis.hologram.line.TextLine;
-import com.github.unldenis.hologram.placeholder.Placeholders;
+
 import java.util.Collection;
 import java.util.Optional;
 import org.bukkit.Location;
@@ -37,7 +37,7 @@ public final class TextALine implements ITextLine, IAnimated {
   }
 
   @Override
-  public Placeholders getPlaceholders() {
+  public PlaceholdersJava getPlaceholders() {
     return textLine.getPlaceholders();
   }
 

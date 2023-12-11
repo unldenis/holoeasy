@@ -3,14 +3,21 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.github.unldenis.hologram.Hologram;
+import com.github.unldenis.hologram.animation.Animation;
+import com.github.unldenis.hologram.line.ClickableTextLine;
+import com.github.unldenis.hologram.line.Line;
+import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.line.hologram.TextBlockStandardLoader;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+
+import static com.github.unldenis.hologram.DSL.*;
 
 public class LibTests {
 
@@ -91,6 +98,47 @@ public class LibTests {
 
 
 
+  @Test
+  public void dsl() {
+    Location l1 = new Location(world, 100, 100, 100);
+
+    hologram(pool, l1, () -> {
+      name("this is an internal name");
+
+
+      textline("First Line");
+      clickableline("This is a clickable line");
+      blockline(new ItemStack(Material.GOLD_BLOCK), Animation.AnimationType.CIRCLE);
+
+      // custom library line, remember to support the IHologramLoader
+      customline(plugin -> {
+          var line = new Line(plugin);
+          var textLine = new TextLine(line, "Click me");
+          return new ClickableTextLine(textLine, 0.5f, 5f);
+      });
+    });
+
+    /*
+    Kotlin way
+
+    hologram(pool, l1) {
+        name("this is an internal name")
+        textline("First Line")
+        clickableline("This is a clickable line")
+        blockline(ItemStack(Material.GOLD_BLOCK), AnimationType.CIRCLE)
+
+        // custom library line, remember to support the IHologramLoader
+        customline {
+            val line = Line(it)
+            val textLine = TextLine(line, "Click me")
+            ClickableTextLine(textLine, 0.5f, 5f)
+        }
+    }
+
+
+
+     */
+  }
 
 
 }

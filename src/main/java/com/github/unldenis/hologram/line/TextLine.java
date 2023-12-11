@@ -2,7 +2,6 @@ package com.github.unldenis.hologram.line;
 
 
 import com.github.unldenis.hologram.packet.PacketsFactory;
-import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.util.AABB;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,23 +11,23 @@ import org.jetbrains.annotations.Nullable;
 public final class TextLine implements ITextLine {
 
   private final Line line;
-  private final Placeholders placeholders;
+  private final PlaceholdersJava placeholdersJava;
   private final boolean clickable;
 
   private String obj;
   private boolean isEmpty;
   private AABB hitbox;
 
-  public TextLine(Line line, String obj, @Nullable Placeholders placeholders, boolean clickable) {
+  public TextLine(Line line, String obj, @Nullable PlaceholdersJava placeholdersJava, boolean clickable) {
     this.line = line;
-    this.placeholders = placeholders == null ? new Placeholders(0x00) : placeholders;
+    this.placeholdersJava = placeholdersJava == null ? new PlaceholdersJava(0x00) : placeholdersJava;
     this.clickable = clickable;
 
     this.obj = obj;
   }
 
-  public TextLine(Line line, String obj, Placeholders placeholders) {
-    this(line, obj, placeholders, false);
+  public TextLine(Line line, String obj, PlaceholdersJava placeholdersJava) {
+    this(line, obj, placeholdersJava, false);
   }
 
   public TextLine(Line line, String obj) {
@@ -42,7 +41,7 @@ public final class TextLine implements ITextLine {
 
   @Override
   public String parse(Player player) {
-    return placeholders.parse(this.obj, player);
+    return placeholdersJava.parse(this.obj, player);
   }
 
   @Override
@@ -51,8 +50,8 @@ public final class TextLine implements ITextLine {
   }
 
   @Override
-  public Placeholders getPlaceholders() {
-    return placeholders;
+  public PlaceholdersJava getPlaceholders() {
+    return placeholdersJava;
   }
 
   public AABB getHitbox() {

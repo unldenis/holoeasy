@@ -12,14 +12,16 @@ import com.github.unldenis.hologram.line.animated.BlockALine;
 import com.github.unldenis.hologram.line.animated.StandardAnimatedLine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
 import com.github.unldenis.hologram.line.hologram.TextBlockStandardLoader;
-import com.github.unldenis.hologram.placeholder.Placeholders;
+
 import java.util.LinkedList;
 import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.EulerAngle;
 
+@Deprecated(forRemoval = true)
 public class HologramBuilder {
 
   private final Plugin plugin;
@@ -27,7 +29,7 @@ public class HologramBuilder {
   private final List<ILine<?>> lines;
 
   // no placeholder
-  private Placeholders placeholders = new Placeholders(0x00);
+  private PlaceholdersJava placeholdersJava = new PlaceholdersJava(0x00);
 
   protected HologramBuilder(Plugin plugin, Location location) {
     this.plugin = plugin;
@@ -35,22 +37,22 @@ public class HologramBuilder {
     this.lines = new LinkedList<>();
   }
 
-  public HologramBuilder placeholders(Placeholders placeholders) {
+  public HologramBuilder placeholders(PlaceholdersJava placeholdersJava) {
     // update already added lines
     for (ILine<?> line : lines) {
       switch (line.getType()) {
         case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE ->
-            ((ITextLine) line).getPlaceholders().add(placeholders);
+            ((ITextLine) line).getPlaceholders().add(placeholdersJava);
       }
     }
     //
-    this.placeholders = placeholders;
+    this.placeholdersJava = placeholdersJava;
     return this;
   }
 
   public HologramBuilder addLine(String text) {
     Line line = new Line(plugin);
-    TextLine textLine = new TextLine(line, text, placeholders);
+    TextLine textLine = new TextLine(line, text, placeholdersJava);
     lines.add(textLine);
     return this;
   }
@@ -92,14 +94,14 @@ public class HologramBuilder {
 
   public HologramBuilder addClickableLine(String text) {
     Line line = new Line(plugin);
-    TextLine textLine = new TextLine(line, text, placeholders, true);
+    TextLine textLine = new TextLine(line, text, placeholdersJava, true);
     lines.add(textLine);
     return this;
   }
 
   public HologramBuilder addClickableLine(String text, float minHitDistance, float maxHitDistance) {
     Line line = new Line(plugin);
-    TextLine textLine = new TextLine(line, text, placeholders);
+    TextLine textLine = new TextLine(line, text, placeholdersJava);
     ClickableTextLine clickableTextLine = new ClickableTextLine(textLine, minHitDistance,
         maxHitDistance);
 
