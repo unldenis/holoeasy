@@ -1,151 +1,119 @@
-package com.github.unldenis.hologram.line;
+package com.github.unldenis.hologram.line
+
+import com.github.unldenis.hologram.packet.PacketsFactory
+import com.github.unldenis.hologram.packet.send
+import com.github.unldenis.hologram.placeholder.Placeholders
+import com.github.unldenis.hologram.util.AABB
+import com.github.unldenis.hologram.util.AABB.Vec3D
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
+
+class TextLine(
+    val line: Line, var obj: String, placeholders: Placeholders? = null,
+    val clickable: Boolean = false
+) : ITextLine{
+
+    val placeholders: Placeholders = placeholders ?: Placeholders(0x00)
+
+    var  hitbox: AABB? = null
+    private var isEmpty = false
 
 
-import com.github.unldenis.hologram.packet.PacketsFactory;
-import com.github.unldenis.hologram.util.AABB;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.Nullable;
+    override fun isClickable(): Boolean = clickable
 
-public final class TextLine implements ITextLine {
-
-  private final Line line;
-  private final PlaceholdersJava placeholdersJava;
-  private final boolean clickable;
-
-  private String obj;
-  private boolean isEmpty;
-  private AABB hitbox;
-
-  public TextLine(Line line, String obj, @Nullable PlaceholdersJava placeholdersJava, boolean clickable) {
-    this.line = line;
-    this.placeholdersJava = placeholdersJava == null ? new PlaceholdersJava(0x00) : placeholdersJava;
-    this.clickable = clickable;
-
-    this.obj = obj;
-  }
-
-  public TextLine(Line line, String obj, PlaceholdersJava placeholdersJava) {
-    this(line, obj, placeholdersJava, false);
-  }
-
-  public TextLine(Line line, String obj) {
-    this(line, obj, null);
-  }
-
-  @Override
-  public boolean isClickable() {
-    return clickable;
-  }
-
-  @Override
-  public String parse(Player player) {
-    return placeholdersJava.parse(this.obj, player);
-  }
-
-  @Override
-  public TextLine asTextLine() {
-    return this;
-  }
-
-  @Override
-  public PlaceholdersJava getPlaceholders() {
-    return placeholdersJava;
-  }
-
-  public AABB getHitbox() {
-    return hitbox;
-  }
-
-  @Override
-  public Plugin getPlugin() {
-    return line.getPlugin();
-  }
-
-  @Override
-  public Type getType() {
-    return Type.TEXT_LINE;
-  }
-
-  @Override
-  public int getEntityId() {
-    return line.getEntityID();
-  }
-
-  @Override
-  public Location getLocation() {
-    return line.getLocation();
-  }
-
-  @Override
-  public void setLocation(Location location) {
-    line.setLocation(location);
-    if (clickable) {
-      double chars = this.obj.length();
-      double size = 0.105;
-      double dist = size * (chars / 2d);
-
-      hitbox = new AABB(
-          new AABB.Vec3D(-dist, -0.039, -dist),
-          new AABB.Vec3D(dist, +0.039, dist));
-      hitbox.translate(AABB.Vec3D.fromLocation(location.clone().add(0, 1.40, 0)));
+    override fun parse(player: Player): String {
+        return placeholders.parse(obj, player)
     }
-  }
 
-  @Override
-  public String getObj() {
-    return this.obj;
-  }
+    override fun asTextLine(): TextLine = this
 
-  @Override
-  public void setObj(String obj) {
-    this.obj = obj;
-  }
+    override fun getPlaceholders(): Placeholders = placeholders
 
-  @Override
-  public void hide(Player player) {
-    line.destroy(player);
-  }
+    override fun getPlugin(): Plugin = line.plugin
 
-  @Override
-  public void teleport(Player player) {
-    line.teleport(player);
-  }
+    override fun getType(): ILine.Type = ILine.Type.TEXT_LINE
+    override fun getEntityId(): Int = line.entityID
 
-  @Override
-  public void show(Player player) {
-    isEmpty = this.obj.isEmpty();
-    if(!isEmpty) {
-      line.spawn(player);
-      PacketsFactory.get()
-          .metadataPacket(line.getEntityID(), parse(player), true, true, null)
-          .send(player);
+    override fun getLocation(): Location? = line.location
+
+    override fun setLocation(location: Location) {
+        line.location = location
+        if (clickable) {
+            val chars = obj.length.toDouble()
+            val size = 0.105
+            val dist = size * (chars / 2.0)
+
+            hitbox = AABB(
+                Vec3D(-dist, -0.039, -dist),
+                Vec3D(dist, +0.039, dist)
+            ).also {
+                it.translate(Vec3D.fromLocation(location.clone().add(0.0, 1.40, 0.0)))
+            }
+        }
     }
-  }
 
-  @Override
-  public void update(Player player) {
-    byte spawnBefore = (byte) ((isEmpty ? 1 : 0) | (this.obj.isEmpty() ? 1 : 0) << 1);
-    /*  0x00  = is already showed
-        0x01  = is hided but now has changed
-        0x02  = is already showed but is empty
-        0x03  = is hided and isn't changed      */
-    switch (spawnBefore) {
-      case 0x03:
-        break;
-      case 0x02:
-        line.destroy(player);
-        isEmpty = true;
-        break;
-      case 0x01:
-        line.spawn(player);
-        isEmpty = false;
-      case 0x00:
-        PacketsFactory.get()
-            .metadataPacket(line.getEntityID(), parse(player), spawnBefore == 0x01, spawnBefore == 0x01, null)
-            .send(player);
+    override fun getObj(): String = obj
+    override fun setObj(obj: String) {
+        this.obj = obj
     }
-  }
+
+    override fun hide(player: Player) {
+        line.destroy(player)
+    }
+
+    override fun teleport(player: Player) {
+        line.teleport(player)
+    }
+
+    override fun show(player: Player) {
+        isEmpty = obj.isEmpty()
+        if (!isEmpty) {
+            line.spawn(player)
+            PacketsFactory.get()
+                .metadataPacket(line.entityID, parse(player), setInvisible = true, setSmall = true, handRotationNMS = null)
+                .send(player)
+        }
+    }
+
+    override fun update(player: Player) {
+        val spawnBefore = ((if (isEmpty) 1 else 0) or ((if (obj.isEmpty()) 1 else 0) shl 1))
+        /*  0x00  = is already showed
+            0x01  = is hided but now has changed
+            0x02  = is already showed but is empty
+            0x03  = is hided and isn't changed      */
+        when (spawnBefore) {
+            0x03 -> {}
+            0x02 -> {
+                line.destroy(player)
+                isEmpty = true
+            }
+
+            0x01 -> {
+                line.spawn(player)
+                isEmpty = false
+                PacketsFactory.get()
+                    .metadataPacket(
+                        line.entityID,
+                        parse(player),
+                        setInvisible = true,
+                        setSmall = true,
+                        handRotationNMS = null
+                    )
+                    .send(player)
+            }
+
+            0x00 -> PacketsFactory.get()
+                .metadataPacket(
+                    line.entityID,
+                    parse(player),
+                    setInvisible = false,
+                    setSmall = false,
+                    handRotationNMS = null
+                )
+                .send(player)
+        }
+    }
+
 
 }

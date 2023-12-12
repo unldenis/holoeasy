@@ -2,7 +2,6 @@ package com.github.unldenis.hologram;
 
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent;
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent;
-import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
 import java.util.Arrays;
 import java.util.List;

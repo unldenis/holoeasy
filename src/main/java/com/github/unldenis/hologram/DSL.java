@@ -2,7 +2,6 @@ package com.github.unldenis.hologram;
 
 import com.github.unldenis.hologram.animation.Animation;
 import com.github.unldenis.hologram.dsl.LinesGroup;
-import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;

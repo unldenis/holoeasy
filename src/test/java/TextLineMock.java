@@ -1,5 +1,3 @@
-import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.line.Line;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

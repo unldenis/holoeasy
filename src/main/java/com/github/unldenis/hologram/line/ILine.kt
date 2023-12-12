@@ -1,57 +1,52 @@
-package com.github.unldenis.hologram.line;
+package com.github.unldenis.hologram.line
 
-import java.util.Collection;
-import java.util.Optional;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
+import org.jetbrains.annotations.ApiStatus
 
-public interface ILine<T> {
+interface ILine<T> {
 
-  Plugin getPlugin();
+    fun getPlugin() : Plugin
 
-  Type getType();
+    fun getType() : Type
 
-  int getEntityId();
+    fun getEntityId() : Int
 
-  Location getLocation();
+    fun getLocation() : Location?
 
-  void setLocation(Location location);
+    fun setLocation(location: Location)
 
-  T getObj();
+    fun getObj() : T
 
-  void setObj(T obj);
+    fun setObj(obj : T)
 
-  void hide(Player player);
+    fun hide(player: Player)
 
-  void teleport(Player player);
+    fun teleport(player: Player)
 
-  void show(Player player);
+    fun show(player: Player)
 
-  void update(Player player);
+    fun update(player: Player)
 
-  default void update(Collection<Player> seeingPlayers) {
-    for (Player player : seeingPlayers) {
-      update(player);
+    fun update(seeingPlayers: Collection<Player>) {
+        for (player in seeingPlayers) {
+            update(player)
+        }
     }
-  }
 
-  enum Type {
-    EXTERNAL,
-    TEXT_LINE,
-    TEXT_ANIMATED_LINE,
-    @Experimental
-    CLICKABLE_TEXT_LINE,
-
-
-    BLOCK_LINE,
-    BLOCK_ANIMATED_LINE,
+    enum class Type {
+        EXTERNAL,
+        TEXT_LINE,
+        TEXT_ANIMATED_LINE,
+        @ApiStatus.Experimental
+        CLICKABLE_TEXT_LINE,
 
 
-    ITEM_LINE,
+        BLOCK_LINE,
+        BLOCK_ANIMATED_LINE,
 
-    ;
 
-  }
+        ITEM_LINE,
+    }
 }

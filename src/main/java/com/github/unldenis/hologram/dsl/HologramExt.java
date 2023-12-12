@@ -1,7 +1,6 @@
 package com.github.unldenis.hologram.dsl;
 
 import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.line.hologram.IHologramLoader;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;

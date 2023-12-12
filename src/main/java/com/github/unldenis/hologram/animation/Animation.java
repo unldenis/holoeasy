@@ -19,7 +19,6 @@
 
 package com.github.unldenis.hologram.animation;
 
-import com.github.unldenis.hologram.line.Line;
 import java.util.function.Supplier;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

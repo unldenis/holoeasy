@@ -4,6 +4,9 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot
+import com.comphenix.protocol.wrappers.Pair
+import com.comphenix.protocol.wrappers.WrappedChatComponent
+import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject
 import com.github.unldenis.hologram.util.BukkitFuture
@@ -168,9 +171,8 @@ class PacketsV1_8 : IPackets {
 
 }
 
-class PacketsV1_9V1_12 : IPackets {
-    override fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer { PacketContainerSendable packet = newPacket(PacketType.Play.Server.SPAWN_ENTITY_LIVING);
-
+open class PacketsV1_9V1_12 : IPackets {
+    override fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer {
         val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY_LIVING)
         packet.modifier.writeDefaults()
 
@@ -273,5 +275,196 @@ class PacketsV1_9V1_12 : IPackets {
         packet.booleans.write(0, true)
         return listOf(packet)
     }
+
+}
+
+open class PacketsV1_13V1_16 : PacketsV1_9V1_12() {
+
+
+    override fun equipmentPacket(entityID: Int, helmet: ItemStack, itemLine: Boolean): PacketContainer {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT)
+        packet.integers.write(0, entityID)
+        val pairList: MutableList<Pair<ItemSlot, ItemStack>> = ArrayList()
+        pairList.add(
+            Pair(
+                if (itemLine) ItemSlot.MAINHAND else ItemSlot.HEAD,
+                helmet
+            )
+        )
+        packet.slotStackPairLists.write(0, pairList)
+        return packet
+    }
+
+    override fun metadataPacket(
+        entityID: Int,
+        nameTag: String?,
+        setInvisible: Boolean,
+        setSmall: Boolean,
+        handRotationNMS: Any?
+    ): PacketContainer {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+        packet.integers.write(0, entityID)
+        val watcher = WrappedDataWatcher()
+        if (setInvisible) {
+            val visible = WrappedDataWatcherObject(
+                0, WrappedDataWatcher.Registry.get(Byte::class.java)
+            )
+            watcher.setObject(visible, 0x20.toByte())
+        }
+        if (nameTag != null) {
+            val opt: Optional<*> = Optional.of(WrappedChatComponent.fromChatMessage(nameTag)[0].handle)
+            watcher.setObject(
+                WrappedDataWatcherObject(
+                    2,
+                    WrappedDataWatcher.Registry.getChatComponentSerializer(true)
+                ), opt
+            )
+
+            val nameVisible = WrappedDataWatcherObject(
+                3, WrappedDataWatcher.Registry.get(Boolean::class.java)
+            )
+            watcher.setObject(nameVisible, true)
+        }
+        if (setSmall) {
+            val small = WrappedDataWatcherObject(
+                15, WrappedDataWatcher.Registry.get(Byte::class.java)
+            )
+            watcher.setObject(small, (0x01 or 0x04).toByte())
+        }
+        if (handRotationNMS != null) {
+            val handRotation = WrappedDataWatcherObject(
+                19, WrappedDataWatcher.Registry.getVectorSerializer()
+            )
+            watcher.setObject(handRotation, handRotationNMS)
+        }
+        packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
+        return packet
+    }
+
+}
+
+open class PacketsV1_17_V18 : PacketsV1_13V1_16() {
+
+    override fun destroyPacket(entityID: Int): PacketContainer {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
+        packet.intLists.write(0, listOf(entityID))
+        return packet
+    }
+
+}
+
+class PacketsV1_19 : PacketsV1_17_V18() {
+    override fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer {
+        val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
+        val extraData = 1
+        packet.integers.write(0, entityID)
+        packet.integers.write(1, extraData)
+        packet.entityTypeModifier.write(0, EntityType.ARMOR_STAND)
+        packet.uuiDs.write(0, UUID.randomUUID())
+        packet.doubles.write(0, location.x)
+        packet.doubles.write(1, location.y /*+1.2*/)
+        packet.doubles.write(2, location.z)
+        return packet
+    }
+
+
+    override fun metadataPacket(
+        entityID: Int,
+        nameTag: String?,
+        setInvisible: Boolean,
+        setSmall: Boolean,
+        handRotationNMS: Any?
+    ): PacketContainer {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+        packet.integers.write(0, entityID)
+        val watcher = WrappedDataWatcher()
+
+        try {
+            Class.forName("com.comphenix.protocol.wrappers.WrappedDataValue")
+
+            packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
+            val wrappedDataValueList: MutableList<WrappedDataValue> = ArrayList()
+
+            if (setInvisible) {
+                wrappedDataValueList.add(
+                    WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte::class.java), 0x20.toByte())
+                )
+            }
+            if (nameTag != null) {
+                val opt: Optional<*> = Optional.of(
+                    WrappedChatComponent.fromChatMessage(
+                        nameTag
+                    )[0].handle
+                )
+
+                wrappedDataValueList.add(
+                    WrappedDataValue(
+                        2, WrappedDataWatcher.Registry.getChatComponentSerializer(true),
+                        opt
+                    )
+                )
+                wrappedDataValueList.add(
+                    WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean::class.java), true)
+                )
+            }
+            if (setSmall) {
+                wrappedDataValueList.add(
+                    WrappedDataValue(
+                        15, WrappedDataWatcher.Registry.get(Byte::class.java),
+                        (0x01 or 0x04).toByte()
+                    )
+                )
+            }
+            if (handRotationNMS != null) {
+                wrappedDataValueList.add(
+                    WrappedDataValue(
+                        19, WrappedDataWatcher.Registry.getVectorSerializer(),
+                        handRotationNMS
+                    )
+                )
+            }
+            packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
+        } catch (e: ClassNotFoundException) {
+            if (setInvisible) {
+                val visible = WrappedDataWatcherObject(
+                    0, WrappedDataWatcher.Registry.get(Byte::class.java)
+                )
+                watcher.setObject(visible, 0x20.toByte())
+            }
+            if (nameTag != null) {
+                val opt: Optional<*> = Optional.of(
+                    WrappedChatComponent.fromChatMessage(
+                        nameTag
+                    )[0].handle
+                )
+                watcher.setObject(
+                    WrappedDataWatcherObject(
+                        2,
+                        WrappedDataWatcher.Registry.getChatComponentSerializer(true)
+                    ), opt
+                )
+
+                val nameVisible = WrappedDataWatcherObject(
+                    3, WrappedDataWatcher.Registry.get(Boolean::class.java)
+                )
+                watcher.setObject(nameVisible, true)
+            }
+            if (setSmall) {
+                val small = WrappedDataWatcherObject(
+                    15, WrappedDataWatcher.Registry.get(Byte::class.java)
+                )
+                watcher.setObject(small, (0x01 or 0x04).toByte())
+            }
+            if (handRotationNMS != null) {
+                val handRotation = WrappedDataWatcherObject(
+                    19, WrappedDataWatcher.Registry.getVectorSerializer()
+                )
+                watcher.setObject(handRotation, handRotationNMS)
+            }
+            packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
+        }
+        return packet
+    }
+
 
 }

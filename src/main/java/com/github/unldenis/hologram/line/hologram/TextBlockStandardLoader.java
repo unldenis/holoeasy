@@ -1,8 +1,6 @@
 package com.github.unldenis.hologram.line.hologram;
 
 import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.line.ILine.Type;
 import com.github.unldenis.hologram.util.Arrays;
 import java.util.List;
 import org.bukkit.Location;

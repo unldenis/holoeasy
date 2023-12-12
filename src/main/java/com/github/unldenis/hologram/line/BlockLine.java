@@ -1,7 +1,5 @@
 package com.github.unldenis.hologram.line;
 
-import com.github.unldenis.hologram.packet.PacketContainerSendable;
-import com.github.unldenis.hologram.packet.PacketsFactory;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

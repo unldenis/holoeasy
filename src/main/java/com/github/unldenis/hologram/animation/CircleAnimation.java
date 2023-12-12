@@ -20,8 +20,6 @@
 package com.github.unldenis.hologram.animation;
 
 
-import com.github.unldenis.hologram.line.Line;
-import com.github.unldenis.hologram.packet.PacketsFactory;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

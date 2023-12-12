@@ -1,15 +1,15 @@
-package com.github.unldenis.hologram.line;
+package com.github.unldenis.hologram.line
 
-import org.bukkit.entity.Player;
+import com.github.unldenis.hologram.placeholder.Placeholders
+import org.bukkit.entity.Player
 
-public interface ITextLine extends ILine<String> {
+interface ITextLine : ILine<String> {
 
-  boolean isClickable();
+    fun isClickable() : Boolean
 
-  String parse(Player player);
+    fun parse(player: Player) : String
 
-  TextLine asTextLine();
+    fun asTextLine() : TextLine
 
-  PlaceholdersJava getPlaceholders();
-
+    fun getPlaceholders() : Placeholders
 }

@@ -1,9 +1,6 @@
 package com.github.unldenis.hologram.line.hologram;
 
 import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.line.ITextLine;
-import com.github.unldenis.hologram.line.TextLine;
 import org.bukkit.Location;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 

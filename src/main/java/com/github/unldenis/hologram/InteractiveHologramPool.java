@@ -1,9 +1,6 @@
 package com.github.unldenis.hologram;
 
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent;
-import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.line.ITextLine;
-import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.util.AABB;
 import java.util.Collection;
 import org.bukkit.Bukkit;

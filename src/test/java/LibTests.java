@@ -5,8 +5,6 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.github.unldenis.hologram.Hologram;
 import com.github.unldenis.hologram.animation.Animation;
 import com.github.unldenis.hologram.line.ClickableTextLine;
-import com.github.unldenis.hologram.line.Line;
-import com.github.unldenis.hologram.line.TextLine;
 import com.github.unldenis.hologram.line.hologram.TextBlockStandardLoader;
 import org.bukkit.Location;
 import org.bukkit.Material;

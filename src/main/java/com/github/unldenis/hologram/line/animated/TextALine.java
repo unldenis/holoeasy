@@ -2,9 +2,6 @@ package com.github.unldenis.hologram.line.animated;
 
 import com.github.unldenis.hologram.animation.Animation;
 
-import com.github.unldenis.hologram.line.ITextLine;
-import com.github.unldenis.hologram.line.TextLine;
-
 import java.util.Collection;
 import java.util.Optional;
 import org.bukkit.Location;

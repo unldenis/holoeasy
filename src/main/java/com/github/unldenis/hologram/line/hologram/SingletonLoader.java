@@ -1,7 +1,6 @@
 package com.github.unldenis.hologram.line.hologram;
 
 import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.line.ILine;
 import org.bukkit.Location;
 
 public class SingletonLoader implements IHologramLoader {
