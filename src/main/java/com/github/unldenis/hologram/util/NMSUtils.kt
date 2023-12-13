@@ -1,13 +1,10 @@
-package com.github.unldenis.hologram.util;
+package com.github.unldenis.hologram.util
 
-import com.comphenix.protocol.wrappers.Vector3F;
+import com.comphenix.protocol.wrappers.Vector3F
 
-public class NMSUtils {
-
-  public static Object newNMSVector(double x, double y, double z) {
-    Vector3F vector3f = new Vector3F((float) x, (float) y, (float) z);
-    return Vector3F.getConverter().getGeneric(vector3f);
-  }
-
-
+object NMSUtils {
+    fun newNMSVector(x: Double, y: Double, z: Double): Any {
+        val vector3f = Vector3F(x.toFloat(), y.toFloat(), z.toFloat())
+        return Vector3F.getConverter().getGeneric(vector3f)
+    }
 }

@@ -16,30 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.github.unldenis.hologram.animation
 
-package com.github.unldenis.hologram.animation;
+import com.github.unldenis.hologram.line.Line
+import org.bukkit.entity.Player
+import java.util.function.Supplier
 
-import java.util.function.Supplier;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+interface Animation {
+    fun delay(): Long
 
-public interface Animation {
+    fun nextFrame(player: Player, line: Line)
 
-  long delay();
+    fun async(): Boolean
 
-  void nextFrame(@NotNull Player player, Line line);
-
-  boolean async();
-
-  enum AnimationType {
-    CIRCLE(() -> new CircleAnimation());
-
-    public final Supplier<Animation> type;
-
-    AnimationType(Supplier<Animation> type) {
-      this.type = type;
+    enum class AnimationType(val type: Supplier<Animation>) {
+        CIRCLE(Supplier { CircleAnimation() })
     }
-
-  }
-
 }

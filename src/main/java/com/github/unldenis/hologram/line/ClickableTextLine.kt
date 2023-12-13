@@ -1,155 +1,138 @@
-package com.github.unldenis.hologram.line;
+package com.github.unldenis.hologram.line
 
-import com.github.unldenis.hologram.collection.IntHashSet;
-import com.github.unldenis.hologram.experimental.PlayerTextLineInteractEvent;
-import com.github.unldenis.hologram.util.AABB;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.Plugin;
+import com.github.unldenis.hologram.collection.IntHashSet
+import com.github.unldenis.hologram.experimental.PlayerTextLineInteractEvent
+import com.github.unldenis.hologram.placeholder.Placeholders
+import com.github.unldenis.hologram.util.AABB
+import com.github.unldenis.hologram.util.AABB.Ray3D
+import com.github.unldenis.hologram.util.AABB.Vec3D
+import com.github.unldenis.hologram.util.AABB.Vec3D.Companion.fromLocation
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.plugin.Plugin
 
-public class ClickableTextLine implements Listener, ITextLine {
+class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHitDistance: Float) : Listener,
+    ITextLine {
+    private val minHitDistance: Float
+    private val maxHitDistance: Float
+    private var hitbox: AABB? = null
 
-  private final TextLine line;
-  private final float minHitDistance, maxHitDistance;
-  private AABB hitbox;
+    private val playersClickable = IntHashSet()
 
-  private final IntHashSet playersClickable = new IntHashSet();
+    init {
+        require(!(minHitDistance < 0)) { "minHitDistance must be positive" }
+        require(!(maxHitDistance > 120)) { "maxHitDistance cannot be greater than 120" }
+        this.minHitDistance = minHitDistance
+        this.maxHitDistance = maxHitDistance
 
-  public ClickableTextLine(TextLine line, float minHitDistance, float maxHitDistance) {
-    this.line = line;
-    if (minHitDistance < 0) {
-      throw new IllegalArgumentException("minHitDistance must be positive");
-    }
-    if (maxHitDistance > 120) {
-      throw new IllegalArgumentException("maxHitDistance cannot be greater than 120");
-    }
-    this.minHitDistance = minHitDistance;
-    this.maxHitDistance = maxHitDistance;
+        if (line.getLocation() != null) {
+            this.updateHitBox()
+        }
 
-    if(line.getLocation() != null) {
-      this.updateHitBox();
-    }
-
-    Bukkit.getPluginManager().registerEvents(this, line.getPlugin());
-  }
-
-  @Override
-  public boolean isClickable() {
-    return false;
-  }
-
-  @Override
-  public String parse(Player player) {
-    return line.parse(player);
-  }
-
-  @Override
-  public TextLine asTextLine() {
-    return line;
-  }
-
-  @Override
-  public PlaceholdersJava getPlaceholders() {
-    return line.getPlaceholders();
-  }
-
-  @Override
-  public Plugin getPlugin() {
-    return line.getPlugin();
-  }
-
-  @Override
-  public Type getType() {
-    return Type.CLICKABLE_TEXT_LINE;
-  }
-
-  @Override
-  public int getEntityId() {
-    return line.getEntityId();
-  }
-
-  @Override
-  public Location getLocation() {
-    return line.getLocation();
-  }
-
-  @Override
-  public void setLocation(Location location) {
-    line.setLocation(location);
-
-    this.updateHitBox();
-  }
-
-  @Override
-  public String getObj() {
-    return line.getObj();
-  }
-
-  @Override
-  public void setObj(String obj) {
-    line.setObj(obj);
-  }
-
-  @Override
-  public void hide(Player player) {
-    line.hide(player);
-
-    this.playersClickable.remove(player.getEntityId());
-  }
-
-  @Override
-  public void teleport(Player player) {
-    line.teleport(player);
-  }
-
-  @Override
-  public void show(Player player) {
-    line.show(player);
-
-    this.playersClickable.add(player.getEntityId());
-  }
-
-  @Override
-  public void update(Player player) {
-    line.update(player);
-  }
-
-  @EventHandler
-  public void handleInteract(PlayerInteractEvent e) {
-    final Player player = e.getPlayer();
-    if (e.getAction() != Action.LEFT_CLICK_AIR) {
-      return;
-    }
-    if(hitbox == null) {
-      return;
+        Bukkit.getPluginManager().registerEvents(this, line.getPlugin())
     }
 
-    if(!playersClickable.contains(player.getEntityId())) {
-      return;
+    override fun isClickable(): Boolean {
+        return false
     }
 
-    AABB.Vec3D intersects = hitbox.intersectsRay(new AABB.Ray3D(player.getEyeLocation()), minHitDistance, maxHitDistance);
-    if (intersects == null) {
-      return;
+    override fun parse(player: Player): String {
+        return line.parse(player)
     }
 
-    Bukkit.getScheduler().runTask(line.getPlugin(),
-        () -> Bukkit.getPluginManager().callEvent(new PlayerTextLineInteractEvent(player, this)));
-  }
+    override fun asTextLine(): TextLine {
+        return line
+    }
 
-  private void updateHitBox() {
-    double chars = line.getObj().length();
-    double size = 0.105;
-    double dist = size * (chars / 2d);
+    override fun getPlaceholders(): Placeholders {
+        return line.getPlaceholders()
+    }
 
-    hitbox = new AABB(
-        new AABB.Vec3D(-dist, -0.039, -dist),
-        new AABB.Vec3D(dist, +0.039, dist));
-    hitbox.translate(AABB.Vec3D.fromLocation(line.getLocation().clone().add(0, 1.40, 0)));
-  }
+    override fun getPlugin(): Plugin {
+        return line.getPlugin()
+    }
+
+    override fun getType(): ILine.Type {
+        return ILine.Type.CLICKABLE_TEXT_LINE
+    }
+
+    override fun getEntityId(): Int {
+        return line.getEntityId()
+    }
+
+    override fun getLocation(): Location? {
+        return line.getLocation()
+    }
+
+    override fun setLocation(location: Location) {
+        line.setLocation(location)
+
+        this.updateHitBox()
+    }
+
+    override fun getObj(): String {
+        return line.getObj()
+    }
+
+    override fun setObj(obj: String) {
+        line.setObj(obj)
+    }
+
+    override fun hide(player: Player) {
+        line.hide(player)
+
+        playersClickable.remove(player.entityId)
+    }
+
+    override fun teleport(player: Player) {
+        line.teleport(player)
+    }
+
+    override fun show(player: Player) {
+        line.show(player)
+
+        playersClickable.add(player.entityId)
+    }
+
+    override fun update(player: Player) {
+        line.update(player)
+    }
+
+    @EventHandler
+    fun handleInteract(e: PlayerInteractEvent) {
+        val player = e.player
+        if (e.action != Action.LEFT_CLICK_AIR) {
+            return
+        }
+        if (hitbox == null) {
+            return
+        }
+
+        if (!playersClickable.contains(player.entityId)) {
+            return
+        }
+
+        val intersects = hitbox!!.intersectsRay(Ray3D(player.eyeLocation), minHitDistance, maxHitDistance) ?: return
+
+        Bukkit.getScheduler().runTask(
+            line.getPlugin(),
+            Runnable { Bukkit.getPluginManager().callEvent(PlayerTextLineInteractEvent(player, this)) })
+    }
+
+    private fun updateHitBox() {
+        val chars = line.getObj().length.toDouble()
+        val size = 0.105
+        val dist = size * (chars / 2.0)
+
+        hitbox = AABB(
+            Vec3D(-dist, -0.039, -dist),
+            Vec3D(dist, +0.039, dist)
+        )
+        hitbox!!.translate(fromLocation(line.getLocation()!!.clone().add(0.0, 1.40, 0.0)))
+    }
 }

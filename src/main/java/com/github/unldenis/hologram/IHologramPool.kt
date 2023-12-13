@@ -1,17 +1,13 @@
-package com.github.unldenis.hologram;
+package com.github.unldenis.hologram
 
-import java.util.Collection;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.plugin.Plugin
 
-public interface IHologramPool {
+interface IHologramPool {
+    fun takeCareOf(hologram: Hologram)
 
-  void takeCareOf(Hologram hologram);
+    val plugin: Plugin
 
-  Plugin getPlugin();
+    fun remove(hologram: Hologram): Boolean
 
-  boolean remove(@NotNull Hologram hologram);
-
-  Collection<Hologram> getHolograms();
-
+    val holograms: Collection<Hologram>
 }

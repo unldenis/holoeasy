@@ -1,96 +1,68 @@
-package com.github.unldenis.hologram.line.animated;
+package com.github.unldenis.hologram.line.animated
 
-import com.github.unldenis.hologram.animation.Animation;
-import com.github.unldenis.hologram.line.BlockLine;
+import com.github.unldenis.hologram.animation.Animation
+import com.github.unldenis.hologram.line.BlockLine
+import com.github.unldenis.hologram.line.ILine
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
+import java.util.*
 
-import java.util.Collection;
-import java.util.Optional;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
+class BlockALine(private val blockLine: BlockLine, private val animatedLine: IAnimated) : ILine<ItemStack>, IAnimated {
 
-public class BlockALine implements ILine<ItemStack>, IAnimated {
+    override fun getPlugin(): Plugin {
+        return blockLine.getPlugin()
+    }
 
-  private final BlockLine blockLine;
-  private final IAnimated animatedLine;
+    override fun getType(): ILine.Type {
+        return ILine.Type.BLOCK_ANIMATED_LINE
+    }
 
-  public BlockALine(BlockLine blockLine, IAnimated animatedLine) {
-    this.blockLine = blockLine;
-    this.animatedLine = animatedLine;
-  }
+    override fun getEntityId(): Int {
+        return blockLine.getEntityId()
+    }
 
-  public BlockLine getBlockLine() {
-    return blockLine;
-  }
+    override fun getLocation(): Location? {
+        return blockLine.getLocation()
+    }
 
-  @Override
-  public Plugin getPlugin() {
-    return blockLine.getPlugin();
-  }
+    override fun setLocation(location: Location) {
+        blockLine.setLocation(location)
+    }
 
-  @Override
-  public Type getType() {
-    return Type.BLOCK_ANIMATED_LINE;
-  }
+    override fun getObj(): ItemStack {
+        return blockLine.getObj()
+    }
 
-  @Override
-  public int getEntityId() {
-    return blockLine.getEntityId();
-  }
+    override fun setObj(obj: ItemStack) {
+        blockLine.setObj(obj)
+    }
 
-  @Override
-  public Location getLocation() {
-    return blockLine.getLocation();
-  }
+    override fun hide(player: Player) {
+        blockLine.hide(player)
+    }
 
-  @Override
-  public void setLocation(Location location) {
-    blockLine.setLocation(location);
-  }
+    override fun teleport(player: Player) {
+        blockLine.teleport(player)
+    }
 
-  @Override
-  public ItemStack getObj() {
-    return blockLine.getObj();
-  }
+    override fun show(player: Player) {
+        blockLine.show(player)
+    }
 
-  @Override
-  public void setObj(ItemStack obj) {
-    blockLine.setObj(obj);
-  }
+    override fun update(player: Player) {
+        blockLine.update(player)
+    }
 
-  @Override
-  public void hide(Player player) {
-    blockLine.hide(player);
-  }
+    override fun setAnimation(animation: Animation, seeingPlayers: Collection<Player>) {
+        animatedLine.setAnimation(animation, seeingPlayers)
+    }
 
-  @Override
-  public void teleport(Player player) {
-    blockLine.teleport(player);
-  }
+    override fun removeAnimation() {
+        animatedLine.removeAnimation()
+    }
 
-  @Override
-  public void show(Player player) {
-    blockLine.show(player);
-  }
-
-  @Override
-  public void update(Player player) {
-    blockLine.update(player);
-  }
-
-  @Override
-  public void setAnimation(Animation animation, Collection<Player> seeingPlayers) {
-    animatedLine.setAnimation(animation, seeingPlayers);
-  }
-
-  @Override
-  public void removeAnimation() {
-    animatedLine.removeAnimation();
-  }
-
-  @Override
-  public Optional<Animation> getAnimation() {
-    return animatedLine.getAnimation();
-  }
+    override val animation: Optional<Animation>
+        get() = animatedLine.animation
 }

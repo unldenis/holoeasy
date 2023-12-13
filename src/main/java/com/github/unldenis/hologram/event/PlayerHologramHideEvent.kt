@@ -16,16 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.github.unldenis.hologram.event
 
-package com.github.unldenis.hologram.util;
+import com.github.unldenis.hologram.Hologram
+import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 
-public final class Validate {
-
-  public static <T> T notNull(T object, String message) {
-    if (object == null) {
-      throw new NullPointerException(message);
+class PlayerHologramHideEvent(player: Player, hologram: Hologram) : PlayerHologramEvent(player, hologram) {
+    override fun getHandlers(): HandlerList {
+        return handlerList
     }
-    return object;
-  }
 
+    companion object {
+        val handlerList: HandlerList = HandlerList()
+    }
 }

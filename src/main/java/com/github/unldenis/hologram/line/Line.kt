@@ -26,19 +26,19 @@ class Line(val plugin: Plugin, spawn : Location? = null) {
     }
 
     fun spawn(player: Player) {
-        location?.let {
-            PacketsFactory.get()
-                .spawnPacket(entityID, it, plugin)
-                .send(player)
-        }
+
+        PacketsFactory.get()
+            .spawnPacket(entityID, location ?: throw RuntimeException("Forgot the location?"), plugin)
+            .send(player)
+
     }
 
     fun teleport(player: Player) {
-        location?.let {
-            PacketsFactory.get()
-                .teleportPacket(entityID, it)
-                .send(player)
-        }
+
+        PacketsFactory.get()
+            .teleportPacket(entityID, location ?: throw RuntimeException("Forgot the location?"))
+            .send(player)
+
     }
 
 

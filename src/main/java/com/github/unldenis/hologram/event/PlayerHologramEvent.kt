@@ -16,26 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.github.unldenis.hologram.event
 
-package com.github.unldenis.hologram.event;
+import com.github.unldenis.hologram.Hologram
+import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerEvent
 
-import com.github.unldenis.hologram.Hologram;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerEvent;
-import org.jetbrains.annotations.NotNull;
-
-public abstract class PlayerHologramEvent extends PlayerEvent {
-
-  private final Hologram hologram;
-
-  public PlayerHologramEvent(@NotNull Player player, @NotNull Hologram hologram) {
-    super(player);
-    this.hologram = hologram;
-  }
-
-  @NotNull
-  public Hologram getHologram() {
-    return hologram;
-  }
-
-}
+abstract class PlayerHologramEvent(player: Player, @JvmField val hologram: Hologram) : PlayerEvent(player)

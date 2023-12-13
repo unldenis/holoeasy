@@ -1,10 +1,10 @@
-package com.github.unldenis.hologram.line.hologram;
+package com.github.unldenis.hologram.line.hologram
 
-import com.github.unldenis.hologram.Hologram;
+import com.github.unldenis.hologram.Hologram
+import com.github.unldenis.hologram.line.ILine
 
-public interface IHologramLoader {
-  void load(Hologram hologram, ILine<?>[] lines);
+interface IHologramLoader {
+    fun load(hologram: Hologram, lines: Array<out ILine<*>>)
 
-  void teleport(Hologram hologram);
-
+    fun teleport(hologram: Hologram)
 }

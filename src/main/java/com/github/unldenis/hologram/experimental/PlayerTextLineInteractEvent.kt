@@ -16,44 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.github.unldenis.hologram.experimental
 
-package com.github.unldenis.hologram.experimental;
+import com.github.unldenis.hologram.line.ClickableTextLine
+import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
+import org.bukkit.event.player.PlayerEvent
+import org.jetbrains.annotations.ApiStatus
 
 
-import com.github.unldenis.hologram.line.ClickableTextLine;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
-import org.jetbrains.annotations.ApiStatus.Experimental;
-import org.jetbrains.annotations.NotNull;
+@ApiStatus.Experimental
+class PlayerTextLineInteractEvent(
+    player: Player,
+    val line: ClickableTextLine
+) : PlayerEvent(player) {
+    override fun getHandlers(): HandlerList {
+        return handlerList
+    }
 
-@Experimental
-public class PlayerTextLineInteractEvent extends PlayerEvent {
-
-  private static final HandlerList HANDLERS = new HandlerList();
-
-  private final ClickableTextLine line;
-
-  public PlayerTextLineInteractEvent(
-      @NotNull Player player,
-      @NotNull ClickableTextLine line
-  ) {
-    super(player);
-    this.line = line;
-  }
-
-  public static HandlerList getHandlerList() {
-    return HANDLERS;
-  }
-
-  @NotNull
-  public ClickableTextLine getLine() {
-    return line;
-  }
-
-  @NotNull
-  @Override
-  public HandlerList getHandlers() {
-    return HANDLERS;
-  }
+    companion object {
+        val handlerList: HandlerList = HandlerList()
+    }
 }

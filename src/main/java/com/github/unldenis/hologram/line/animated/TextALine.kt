@@ -1,110 +1,85 @@
-package com.github.unldenis.hologram.line.animated;
+package com.github.unldenis.hologram.line.animated
 
-import com.github.unldenis.hologram.animation.Animation;
+import com.github.unldenis.hologram.animation.Animation
+import com.github.unldenis.hologram.line.ILine
+import com.github.unldenis.hologram.line.ITextLine
+import com.github.unldenis.hologram.line.TextLine
+import com.github.unldenis.hologram.placeholder.Placeholders
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
+import java.util.*
 
-import java.util.Collection;
-import java.util.Optional;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+class TextALine(textLine: TextLine, private val animatedLine: IAnimated) : ITextLine, IAnimated {
+    private val textLine: TextLine = textLine
+    override fun isClickable(): Boolean {
+        return textLine.isClickable()
+    }
 
-public final class TextALine implements ITextLine, IAnimated {
+    override fun parse(player: Player): String {
+        return textLine.parse(player)
+    }
 
-  private final TextLine textLine;
-  private final IAnimated animatedLine;
+    override fun asTextLine(): TextLine {
+        return textLine
+    }
 
-  public TextALine(TextLine textLine, IAnimated animatedLine) {
-    this.textLine = textLine;
-    this.animatedLine = animatedLine;
-  }
+    override fun getPlaceholders(): Placeholders {
+        return textLine.getPlaceholders()
+    }
 
-  @Override
-  public boolean isClickable() {
-    return textLine.isClickable();
-  }
+    override fun getPlugin(): Plugin {
+        return textLine.getPlugin()
+    }
 
-  @Override
-  public String parse(Player player) {
-    return textLine.parse(player);
-  }
+    override fun getType(): ILine.Type {
+        return textLine.getType()
+    }
 
-  @Override
-  public TextLine asTextLine() {
-    return textLine;
-  }
+    override fun getEntityId(): Int {
+        return textLine.getEntityId()
+    }
 
-  @Override
-  public PlaceholdersJava getPlaceholders() {
-    return textLine.getPlaceholders();
-  }
+    override fun getLocation(): Location? {
+        return textLine.getLocation()
+    }
 
-  @Override
-  public Plugin getPlugin() {
-    return textLine.getPlugin();
-  }
+    override fun setLocation(location: Location) {
+        textLine.setLocation(location)
+    }
 
-  @Override
-  public Type getType() {
-    return Type.TEXT_ANIMATED_LINE;
-  }
+    override fun getObj(): String {
+        return textLine.getObj()
+    }
 
-  @Override
-  public int getEntityId() {
-    return textLine.getEntityId();
-  }
+    override fun setObj(obj: String) {
+        textLine.setObj(obj)
+    }
 
-  @Override
-  public Location getLocation() {
-    return textLine.getLocation();
-  }
+    override fun hide(player: Player) {
+        textLine.hide(player)
+    }
 
-  @Override
-  public void setLocation(Location location) {
-    textLine.setLocation(location);
-  }
+    override fun teleport(player: Player) {
+        textLine.teleport(player)
+    }
 
-  @Override
-  public String getObj() {
-    return textLine.getObj();
-  }
+    override fun show(player: Player) {
+        textLine.show(player)
+    }
 
-  @Override
-  public void setObj(String obj) {
-    textLine.setObj(obj);
-  }
+    override fun update(player: Player) {
+        textLine.update(player)
+    }
 
-  @Override
-  public void hide(Player player) {
-    textLine.hide(player);
-  }
+    override fun setAnimation(animation: Animation, seeingPlayers: Collection<Player>) {
+        animatedLine.setAnimation(animation, seeingPlayers)
+    }
 
-  @Override
-  public void teleport(Player player) {
-    textLine.teleport(player);
-  }
+    override fun removeAnimation() {
+        animatedLine.removeAnimation()
+    }
 
-  @Override
-  public void show(Player player) {
-    textLine.show(player);
-  }
-
-  @Override
-  public void update(Player player) {
-    textLine.update(player);
-  }
-
-  @Override
-  public void setAnimation(Animation animation, Collection<Player> seeingPlayers) {
-    animatedLine.setAnimation(animation, seeingPlayers);
-  }
-
-  @Override
-  public void removeAnimation() {
-    animatedLine.removeAnimation();
-  }
-
-  @Override
-  public Optional<Animation> getAnimation() {
-    return animatedLine.getAnimation();
-  }
+    override val animation: Optional<Animation>
+        get() = animatedLine.animation
 }

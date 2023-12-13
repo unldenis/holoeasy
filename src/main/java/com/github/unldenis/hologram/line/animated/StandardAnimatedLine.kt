@@ -1,57 +1,47 @@
-package com.github.unldenis.hologram.line.animated;
+package com.github.unldenis.hologram.line.animated
 
-import com.github.unldenis.hologram.animation.Animation;
+import com.github.unldenis.hologram.animation.Animation
+import com.github.unldenis.hologram.line.Line
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import java.util.*
+import java.util.function.Consumer
 
-import java.util.Collection;
-import java.util.Optional;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
+class StandardAnimatedLine(line: Line) : IAnimated {
+    private val line: Line = line
 
-public final class StandardAnimatedLine implements IAnimated {
+    override var animation: Optional<Animation> = Optional.empty()
+    private var taskID: Int = -1
+        private set
 
-  private final Line line;
+    override fun setAnimation(animation: Animation, seeingPlayers: Collection<Player>) {
+        this.animation = Optional.of(animation)
 
-  private Optional<Animation> animation = Optional.empty();
-  private int taskID = -1;
-
-
-  public StandardAnimatedLine(Line line) {
-    this.line = line;
-  }
-
-  @Override
-  public void setAnimation(Animation animation, Collection<Player> seeingPlayers) {
-    this.animation = Optional.of(animation);
-
-    Runnable taskR = () -> seeingPlayers.forEach(
-        player -> animation.nextFrame(player, line));
-    BukkitTask task;
-    if (animation.async()) {
-      task = Bukkit.getScheduler()
-          .runTaskTimerAsynchronously(line.getPlugin(), taskR, animation.delay(),
-              animation.delay());
-    } else {
-      task = Bukkit.getScheduler()
-          .runTaskTimer(line.getPlugin(), taskR, animation.delay(), animation.delay());
+        val taskR = Runnable {
+            seeingPlayers.forEach(
+                Consumer { player -> animation.nextFrame(player, line) })
+        }
+        val task = if (animation.async()) {
+            Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(
+                    line.plugin, taskR, animation.delay(),
+                    animation.delay()
+                )
+        } else {
+            Bukkit.getScheduler()
+                .runTaskTimer(line.plugin, taskR, animation.delay(), animation.delay())
+        }
+        this.taskID = task.taskId
     }
-    this.taskID = task.getTaskId();
-  }
 
-  @Override
-  public void removeAnimation() {
-    if (taskID != -1) {
-      Bukkit.getScheduler().cancelTask(taskID);
-      taskID = -1;
+    override fun removeAnimation() {
+        if (taskID != -1) {
+            Bukkit.getScheduler().cancelTask(taskID)
+            taskID = -1
+        }
     }
-  }
 
-  @Override
-  public Optional<Animation> getAnimation() {
-    return animation;
-  }
-
-  public int getTaskID() {
-    return taskID;
-  }
+    fun getAnimation(): Optional<Animation> {
+        return animation
+    }
 }

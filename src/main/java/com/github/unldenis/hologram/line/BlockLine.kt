@@ -1,85 +1,76 @@
-package com.github.unldenis.hologram.line;
+package com.github.unldenis.hologram.line
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
+import com.comphenix.protocol.events.PacketContainer
+import com.github.unldenis.hologram.packet.PacketsFactory
+import com.github.unldenis.hologram.packet.send
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
 
-public final class BlockLine implements ILine<ItemStack> {
+class BlockLine(line: Line, obj: ItemStack) : ILine<ItemStack> {
+    private val line: Line
+    private val entityMetadataPacket: PacketContainer
 
-  private final Line line;
-  private final PacketContainerSendable entityMetadataPacket;
+    private var obj: ItemStack
 
-  private ItemStack obj;
+    init {
+        if (!obj.type.isBlock) {
+            throw UnsupportedOperationException(
+                "'%s' is not a block. Are you looking for the new experimental ItemLine class?".formatted(obj.type.name)
+            )
+        }
+        this.line = line
+        this.entityMetadataPacket = PacketsFactory.get().metadataPacket(line.entityID, null)
 
-  public BlockLine(Line line, ItemStack obj) {
-    if (!obj.getType().isBlock()) {
-      throw new UnsupportedOperationException(
-          "'%s' is not a block. Are you looking for the new experimental ItemLine class?".formatted(obj.getType().name()));
+        this.obj = obj
     }
-    this.line = line;
-    this.entityMetadataPacket = PacketsFactory.get().metadataPacket(line.getEntityID(), null);
 
-    this.obj = obj;
-  }
+    override fun getPlugin(): Plugin {
+        return line.plugin
+    }
 
-  @Override
-  public Plugin getPlugin() {
-    return line.getPlugin();
-  }
+    override fun getType(): ILine.Type {
+        return ILine.Type.BLOCK_LINE
+    }
 
-  @Override
-  public Type getType() {
-    return Type.BLOCK_LINE;
-  }
+    override fun getEntityId(): Int {
+        return line.entityID
+    }
 
-  @Override
-  public int getEntityId() {
-    return line.getEntityID();
-  }
+    override fun getLocation(): Location? {
+        return line.location
+    }
 
-  @Override
-  public Location getLocation() {
-    return line.getLocation();
-  }
+    override fun setLocation(location: Location) {
+        line.location = location
+    }
 
-  @Override
-  public void setLocation(Location location) {
-    line.setLocation(location);
-  }
+    override fun getObj(): ItemStack {
+        return obj.clone()
+    }
 
-  @Override
-  public ItemStack getObj() {
-    return obj.clone();
-  }
+    override fun setObj(obj: ItemStack) {
+        this.obj = obj
+    }
 
-  @Override
-  public void setObj(ItemStack obj) {
-    this.obj = obj;
-  }
+    override fun hide(player: Player) {
+        line.destroy(player)
+    }
 
-  @Override
-  public void hide(Player player) {
-    line.destroy(player);
-  }
+    override fun teleport(player: Player) {
+        line.teleport(player)
+    }
 
-  @Override
-  public void teleport(Player player) {
-    line.teleport(player);
-  }
+    override fun show(player: Player) {
+        line.spawn(player)
+        entityMetadataPacket.send(player)
+        this.update(player)
+    }
 
-  @Override
-  public void show(Player player) {
-    line.spawn(player);
-    entityMetadataPacket.send(player);
-    this.update(player);
-  }
-
-  @Override
-  public void update(Player player) {
-    PacketsFactory.get()
-        .equipmentPacket(line.getEntityID(), this.obj, false)
-        .send(player);
-  }
-
+    override fun update(player: Player) {
+        PacketsFactory.get()
+            .equipmentPacket(line.entityID, this.obj, false)
+            .send(player)
+    }
 }

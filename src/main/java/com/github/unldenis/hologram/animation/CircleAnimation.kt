@@ -16,35 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.github.unldenis.hologram.animation
 
-package com.github.unldenis.hologram.animation;
+import com.github.unldenis.hologram.line.Line
+import com.github.unldenis.hologram.packet.PacketsFactory
+import com.github.unldenis.hologram.packet.send
+import org.bukkit.entity.Player
 
 
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+class CircleAnimation : Animation {
+    private var yaw = 0f
 
+    override fun delay(): Long {
+        return 3L
+    }
 
-public class CircleAnimation implements Animation {
+    override fun nextFrame(player: Player, line: Line) {
+        this.yaw += 10f
 
-  private float yaw = 0;
+        PacketsFactory.get()
+            .rotatePackets(line.entityID, line.location ?:
+            throw RuntimeException("Location is not set to rotate"), yaw)
+            .forEach { it.send(player) }
+    }
 
-  @Override
-  public long delay() {
-    return 3L;
-  }
-
-  @Override
-  public void nextFrame(@NotNull Player player, Line line) {
-    this.yaw += 10L;
-
-    PacketsFactory.get()
-        .rotatePackets(line.getEntityID(), line.getLocation(), yaw)
-        .forEach(p -> p.send(player));
-  }
-
-  @Override
-  public boolean async() {
-    return true;
-  }
-
+    override fun async(): Boolean {
+        return true
+    }
 }

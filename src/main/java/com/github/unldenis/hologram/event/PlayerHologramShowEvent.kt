@@ -16,29 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.github.unldenis.hologram.event
 
-package com.github.unldenis.hologram.event;
+import com.github.unldenis.hologram.Hologram
+import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 
-import com.github.unldenis.hologram.Hologram;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+class PlayerHologramShowEvent(player: Player, hologram: Hologram) : PlayerHologramEvent(player, hologram) {
+    override fun getHandlers(): HandlerList {
+        return handlerList
+    }
 
-public class PlayerHologramShowEvent extends PlayerHologramEvent {
-
-  private static final HandlerList HANDLERS = new HandlerList();
-
-  public PlayerHologramShowEvent(@NotNull Player player, @NotNull Hologram hologram) {
-    super(player, hologram);
-  }
-
-  public static HandlerList getHandlerList() {
-    return HANDLERS;
-  }
-
-  @NotNull
-  @Override
-  public HandlerList getHandlers() {
-    return HANDLERS;
-  }
+    companion object {
+        val handlerList: HandlerList = HandlerList()
+    }
 }

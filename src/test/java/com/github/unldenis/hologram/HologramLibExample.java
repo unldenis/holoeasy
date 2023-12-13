@@ -187,7 +187,7 @@ public class HologramLibExample implements Listener {
 
   @EventHandler
   public void onHologramShow(PlayerHologramShowEvent event) {
-    Hologram holo = event.getHologram();
+    Hologram holo = event.hologram;
     Player player = event.getPlayer();
   }
 
@@ -198,7 +198,7 @@ public class HologramLibExample implements Listener {
    */
   @EventHandler
   public void onHologramHide(PlayerHologramHideEvent event) {
-    Hologram holo = event.getHologram();
+    Hologram holo = event.hologram;
     Player player = event.getPlayer();
   }
 

@@ -103,7 +103,7 @@ public final class HologramPoolMock implements Listener, IHologramPool {
     Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
       for (Player player : ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
         for (Hologram hologram : this.holograms) {
-          Location holoLoc = hologram.getLocation();
+          Location holoLoc = hologram.location;
           Location playerLoc = player.getLocation();
           boolean isShown = hologram.isShownFor(player);
 

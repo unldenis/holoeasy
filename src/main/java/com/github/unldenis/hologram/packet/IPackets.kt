@@ -45,7 +45,7 @@ interface IPackets {
         setInvisible: Boolean, setSmall: Boolean, handRotationNMS: Any?
     ): PacketContainer
 
-    fun metadataPacket(entityID: Int, handRotationNMS: Any): PacketContainer {
+    fun metadataPacket(entityID: Int, handRotationNMS: Any?): PacketContainer {
         return metadataPacket(entityID, null, true, true, handRotationNMS)
     }
 
@@ -57,8 +57,8 @@ interface IPackets {
 
 class PacketsV1_8 : IPackets {
     companion object {
-        fun loadDefaultWatcher(plugin: Plugin?): CompletableFuture<Void> {
-            return BukkitFuture.runSync(plugin!!) {
+        fun loadDefaultWatcher(plugin: Plugin): CompletableFuture<Void> {
+            return BukkitFuture.runSync(plugin) {
                 val world = Bukkit.getWorlds()[0]
                 val entity =
                     world.spawnEntity(Location(world, 0.0, 256.0, 0.0), EntityType.ARMOR_STAND)

@@ -1,43 +1,41 @@
-package com.github.unldenis.hologram.line.hologram;
+package com.github.unldenis.hologram.line.hologram
 
-import com.github.unldenis.hologram.Hologram;
-import org.bukkit.Location;
-import org.jetbrains.annotations.ApiStatus.Experimental;
+import com.github.unldenis.hologram.Hologram
+import com.github.unldenis.hologram.line.ILine
+import com.github.unldenis.hologram.line.ITextLine
+import org.jetbrains.annotations.ApiStatus
 
-@Experimental
-public class TextSequentialLoader implements IHologramLoader {
-
-  @Override
-  public void load(Hologram hologram, ILine<?>[] lines) {
-    set(hologram, lines, true);
-  }
-
-  @Override
-  public void teleport(Hologram hologram) {
-    set(hologram, hologram.getLines().toArray(new ILine<?>[0]), false);
-    // TODO: When teleporting, the holograms unexpectedly become distant. Understand why.
-  }
-
-  private void set(Hologram hologram, ILine<?>[] lines, boolean add) {
-    Location cloned = hologram.getLocation().clone();
-    for(ILine<?> line : lines) {
-      switch (line.getType()) {
-        case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE -> {
-          TextLine tL = ((ITextLine) line).asTextLine();
-
-          // add to lines
-          tL.setLocation(cloned.clone());
-
-          if(add) {
-            hologram.getLines().add(0, tL);
-          } else {
-            hologram.getSeeingPlayers().forEach(tL::teleport);
-          }
-          cloned.setZ(cloned.getZ() + 0.175 * tL.getObj().length());
-        }
-        default -> throw new RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.");
-      }
-
+@ApiStatus.Experimental
+class TextSequentialLoader : IHologramLoader {
+    override fun load(hologram: Hologram, lines: Array<out ILine<*>>) {
+        set(hologram, lines, true)
     }
-  }
+
+    override fun teleport(hologram: Hologram) {
+        set(hologram, hologram.lines.toTypedArray(), false)
+        // TODO: When teleporting, the holograms unexpectedly become distant. Understand why.
+    }
+
+    private fun set(hologram: Hologram, lines: Array<ILine<*>>, add: Boolean) {
+        val cloned = hologram.location.clone()
+        for (line in lines) {
+            when (line.getType()) {
+                ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
+                    val tL = (line as ITextLine).asTextLine()
+
+                    // add to lines
+                    tL.setLocation(cloned.clone())
+
+                    if (add) {
+                        hologram.lines.addFirst(tL)
+                    } else {
+                        hologram.seeingPlayers.forEach { tL.teleport(it) }
+                    }
+                    cloned.z += 0.175 * tL.getObj().length
+                }
+
+                else -> throw RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.")
+            }
+        }
+    }
 }

@@ -1,110 +1,105 @@
-package com.github.unldenis.hologram.collection;
+package com.github.unldenis.hologram.collection
 
-import java.util.Arrays;
+import java.util.*
 
-public class IntHashSet {
-  private static final int DEFAULT_CAPACITY = 16;
-  private static final double DEFAULT_LOAD_FACTOR = 0.75;
-  private static final int NULL_INT = Integer.MIN_VALUE;
+class IntHashSet @JvmOverloads constructor(capacity: Int = DEFAULT_CAPACITY) {
+    private var capacity: Int
+    private var size: Int
+    private var entries: IntArray
 
-  private int capacity;
-  private int size;
-  private int[] entries;
-
-  public IntHashSet() {
-    this(DEFAULT_CAPACITY);
-  }
-
-  public IntHashSet(int capacity) {
-    this.capacity = calculateCapacity(capacity);
-    this.size = 0;
-    this.entries = new int[this.capacity];
-    Arrays.fill(entries, NULL_INT); // init
-  }
-
-  public void add(int n) {
-    ensureCapacity();
-    int index = findIndex(n);
-    if (index == -1) {
-      index = findEmptyIndex(n);
-      size++;
+    init {
+        this.capacity = calculateCapacity(capacity)
+        this.size = 0
+        this.entries = IntArray(this.capacity)
+        Arrays.fill(entries, NULL_INT) // init
     }
-    entries[index] = n;
-  }
 
-  public boolean contains(int n) {
-    return findIndex(n) != -1;
-  }
-
-  public void remove(int n) {
-    int index = findIndex(n);
-    if (index != -1) {
-      entries[index] = NULL_INT; // set to min
-      size--;
+    fun add(n: Int) {
+        ensureCapacity()
+        var index = findIndex(n)
+        if (index == -1) {
+            index = findEmptyIndex(n)
+            size++
+        }
+        entries[index] = n
     }
-  }
 
-  public int size() {
-    return size;
-  }
-
-  private int calculateCapacity(int initialCapacity) {
-    int capacity = 1;
-    while (capacity < initialCapacity) {
-      capacity <<= 1; // x2
+    fun contains(n: Int): Boolean {
+        return findIndex(n) != -1
     }
-    return capacity;
-  }
 
-  private void ensureCapacity() {
-    if (size >= capacity * DEFAULT_LOAD_FACTOR) {
-      resize();
+    fun remove(n: Int) {
+        val index = findIndex(n)
+        if (index != -1) {
+            entries[index] = NULL_INT // set to min
+            size--
+        }
     }
-  }
 
-  private int findIndex(int n) {
-    int index = hash(n);
-    final int startIndex = index;
-    while (entries[index] != n && entries[index] != NULL_INT) {
-      index = (index + 1) & (capacity - 1); // linear
-      if (index == startIndex) {
-        return -1; // nf
-      }
+    fun size(): Int {
+        return size
     }
-    if (entries[index] == NULL_INT) {
-      return -1; // nf
+
+    private fun calculateCapacity(initialCapacity: Int): Int {
+        var capacity = 1
+        while (capacity < initialCapacity) {
+            capacity = capacity shl 1 // x2
+        }
+        return capacity
     }
-    return index;
-  }
 
-  private int findEmptyIndex(int n) {
-    int index = hash(n);
-    final int startIndex = index;
-    while (entries[index] != NULL_INT) {
-      index = (index + 1) & (capacity - 1);
-      if (index == startIndex) {
-        throw new IllegalStateException("Set is full.");
-      }
+    private fun ensureCapacity() {
+        if (size >= capacity * DEFAULT_LOAD_FACTOR) {
+            resize()
+        }
     }
-    return index;
-  }
 
-  private int hash(int n) {
-    return n & (capacity - 1);
-  }
-
-  private void resize() {
-    final int newCapacity = capacity << 1; // x2
-    final int[] oldEntries = entries;
-    entries = new int[newCapacity];
-    Arrays.fill(entries, NULL_INT); // init
-    size = 0;
-    for (int entry : oldEntries) {
-      if (entry != NULL_INT) {
-        add(entry);
-      }
+    private fun findIndex(n: Int): Int {
+        var index = hash(n)
+        val startIndex = index
+        while (entries[index] != n && entries[index] != NULL_INT) {
+            index = (index + 1) and (capacity - 1) // linear
+            if (index == startIndex) {
+                return -1 // nf
+            }
+        }
+        if (entries[index] == NULL_INT) {
+            return -1 // nf
+        }
+        return index
     }
-    capacity = newCapacity;
-  }
 
+    private fun findEmptyIndex(n: Int): Int {
+        var index = hash(n)
+        val startIndex = index
+        while (entries[index] != NULL_INT) {
+            index = (index + 1) and (capacity - 1)
+            check(index != startIndex) { "Set is full." }
+        }
+        return index
+    }
+
+    private fun hash(n: Int): Int {
+        return n and (capacity - 1)
+    }
+
+    private fun resize() {
+        val newCapacity = capacity shl 1 // x2
+        val oldEntries = entries
+        entries = IntArray(newCapacity)
+        Arrays.fill(entries, NULL_INT) // init
+        size = 0
+        for (entry in oldEntries) {
+            if (entry != NULL_INT) {
+                add(entry)
+            }
+        }
+        capacity = newCapacity
+    }
+
+    companion object {
+        private const val DEFAULT_CAPACITY = 16
+        private const val DEFAULT_LOAD_FACTOR = 0.75
+        private const val NULL_INT = Int.MIN_VALUE
+    }
 }

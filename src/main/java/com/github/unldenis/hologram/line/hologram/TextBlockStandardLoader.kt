@@ -1,86 +1,84 @@
-package com.github.unldenis.hologram.line.hologram;
+package com.github.unldenis.hologram.line.hologram
 
-import com.github.unldenis.hologram.Hologram;
-import com.github.unldenis.hologram.util.Arrays;
-import java.util.List;
-import org.bukkit.Location;
+import com.github.unldenis.hologram.Hologram
+import com.github.unldenis.hologram.line.ILine
+import kotlin.math.abs
 
-public class TextBlockStandardLoader implements IHologramLoader {
+class TextBlockStandardLoader : IHologramLoader {
+    override fun load(hologram: Hologram, lines: Array<out ILine<*>>) {
+        val cloned = hologram.location.clone()
 
-  @Override
-  public void load(Hologram hologram, ILine<?>[] lines) {
-    Location cloned = hologram.getLocation().clone();
+        if (lines.size == 1) {
+            val line: ILine<*> = lines[0]
 
-    if(lines.length == 1) {
-      ILine<?> line = lines[0];
+            line.setLocation(cloned)
+            hologram.lines.addLast(line)
+            return
+        }
 
-      line.setLocation(cloned);
-      hologram.getLines().add(line);
-      return;
+        // reverse A - B - C to C - B - A
+        lines.reverse()
+
+        cloned.subtract(0.0, 0.28, 0.0)
+
+        for (j in lines.indices) {
+            val line: ILine<*> = lines[j]
+            var up = 0.28
+
+            if (j > 0) {
+                val before: ILine.Type = lines[j - 1].getType()
+                when (before) {
+                    ILine.Type.BLOCK_LINE, ILine.Type.BLOCK_ANIMATED_LINE -> up = 0.0
+                }
+            }
+
+            when (line.getType()) {
+                ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
+                    line.setLocation(cloned.add(0.0, up, 0.0).clone())
+                    hologram.lines.addFirst(line)
+                }
+
+                ILine.Type.BLOCK_LINE, ILine.Type.BLOCK_ANIMATED_LINE -> {
+                    line.setLocation(cloned.add(0.0, 0.6, 0.0).clone())
+                    hologram.lines.addFirst(line)
+                }
+
+                else -> throw RuntimeException("This method load does not support line type " + line.getType().name)
+            }
+        }
     }
 
-    // reverse A - B - C to C - B - A
-    Arrays.reverse(lines);
+    override fun teleport(hologram: Hologram) {
+        val lines: List<ILine<*>> = hologram.lines
+        val firstLine: ILine<*> = lines[0]
+        // Obtain the Y position of the first line and then calculate the distance to all lines to maintain this distance
+        val baseY: Double = firstLine.getLocation()?.y ?: throw RuntimeException("First line has not a location")
+        // Get position Y where to teleport the first line
+        var destY = (hologram.location.y - 0.28)
 
-    cloned.subtract(0, 0.28D, 0);
-
-    for(int j = 0; j < lines.length; j++) {
-      ILine<?> line = lines[j];
-      double up = 0.28D;
-
-      if(j > 0) {
-        Type before = lines[j - 1].getType();
-        switch (before) {
-          case BLOCK_LINE, BLOCK_ANIMATED_LINE -> up = 0.0D;
+        destY += when (firstLine.getType()) {
+            ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> 0.28
+            else -> 0.60
         }
-      }
 
-      switch (line.getType()) {
-        case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE -> {
-          line.setLocation(cloned.add(0, up, 0).clone());
-          hologram.getLines().add(0, line);
-        }
-        case BLOCK_LINE, BLOCK_ANIMATED_LINE -> {
-          line.setLocation(cloned.add(0, 0.6D, 0).clone());
-          hologram.getLines().add(0, line);
-        }
-        default -> throw new RuntimeException("This method load does not support line type " + line.getType().name());
-      }
-    }
-
-  }
-
-  @Override
-  public void teleport(Hologram hologram) {
-    List<ILine<?>> lines = hologram.getLines();
-    ILine<?> firstLine = lines.get(0);
-    // Obtain the Y position of the first line and then calculate the distance to all lines to maintain this distance
-    double baseY = firstLine.getLocation().getY();
-    // Get position Y where to teleport the first line
-    double destY = (hologram.getLocation().getY() - 0.28D);
-
-    destY += switch (firstLine.getType()) {
-      case TEXT_LINE, TEXT_ANIMATED_LINE, CLICKABLE_TEXT_LINE -> 0.28D;
-      default -> 0.60D;
-    };
-
-    // Teleport the first line
-    this.teleportLine(hologram, destY, firstLine);
-    ILine<?> tempLine;
-    for (int j = 1; j < lines.size(); j++) {
-      tempLine = lines.get(j);
-        /*
+        // Teleport the first line
+        this.teleportLine(hologram, destY, firstLine)
+        var tempLine: ILine<*>
+        for (j in 1 until lines.size) {
+            tempLine = lines[j]
+            /*
         Teleport from the second line onwards.
         The final height is found by adding to that of the first line the difference that was present when it was already spawned
         */
-      this.teleportLine(hologram, destY + Math.abs(baseY - tempLine.getLocation().getY()), tempLine);
+            this.teleportLine(hologram, destY + abs(baseY -
+                    (tempLine.getLocation()?.y ?: throw RuntimeException("Missing location of line $tempLine"))), tempLine)
+        }
     }
-  }
 
-  public void teleportLine(Hologram hologram, double destY, ILine<?> tempLine) {
-    Location dest = hologram.getLocation().clone();
-    dest.setY(destY);
-    tempLine.setLocation(dest);
-    hologram.getSeeingPlayers().forEach(tempLine::teleport);
-  }
+    private fun teleportLine(hologram: Hologram, destY: Double, tempLine: ILine<*>) {
+        val dest = hologram.location.clone()
+        dest.y = destY
+        tempLine.setLocation(dest)
+        hologram.seeingPlayers.forEach(tempLine::teleport)
+    }
 }

@@ -1,121 +1,111 @@
-package com.github.unldenis.hologram.experimental;
+package com.github.unldenis.hologram.experimental
 
-import com.github.unldenis.hologram.util.NMSUtils;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.util.EulerAngle;
-import org.jetbrains.annotations.ApiStatus.Experimental;
-import org.jetbrains.annotations.NotNull;
+import com.comphenix.protocol.events.PacketContainer
+import com.github.unldenis.hologram.line.ILine
+import com.github.unldenis.hologram.line.Line
+import com.github.unldenis.hologram.packet.PacketsFactory
+import com.github.unldenis.hologram.packet.send
+import com.github.unldenis.hologram.util.NMSUtils
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
+import org.bukkit.util.EulerAngle
+import org.jetbrains.annotations.ApiStatus
 
-@Experimental
-public final class ItemLine implements ILine<ItemStack> {
+@ApiStatus.Experimental
+class ItemLine(line: Line, obj: ItemStack, handRotation: EulerAngle) : ILine<ItemStack> {
+    private val line: Line
 
-  private final Line line;
+    private var obj: ItemStack
 
-  private ItemStack obj;
+    var handRotation: EulerAngle? = null
+        private set
+    private var entityMetadataPacket: PacketContainer? = null
 
-  private EulerAngle handRotation;
-  private PacketContainerSendable entityMetadataPacket;
+    init {
+        if (!obj.type.isItem) {
+            throw UnsupportedOperationException(
+                "'%s' is not a item. Are you looking for the BlockLine class?".formatted(obj.type.name)
+            )
+        }
+        this.line = line
 
-  public ItemLine(Line line, ItemStack obj, @NotNull EulerAngle handRotation) {
-    if (!obj.getType().isItem()) {
-      throw new UnsupportedOperationException(
-          "'%s' is not a item. Are you looking for the BlockLine class?".formatted(obj.getType().name()));
+        this.obj = obj
+        setHandRotation(handRotation)
     }
-    this.line = line;
 
-    this.obj = obj;
-    setHandRotation(handRotation);
-  }
-
-  public EulerAngle getHandRotation() {
-    return handRotation;
-  }
-
-  private void updateHandRotation(EulerAngle handRotation) {
-    this.handRotation = handRotation;
-    Object handRotationNMS = NMSUtils.newNMSVector(Math.toDegrees(handRotation.getX()),
-        Math.toDegrees(handRotation.getY()), Math.toDegrees(handRotation.getZ()));
-    this.entityMetadataPacket = PacketsFactory.get()
-        .metadataPacket(line.getEntityID(), handRotationNMS);
-  }
-
-  public void setHandRotation(EulerAngle handRotation, Iterable<Player> seeingPlayers) {
-    updateHandRotation(handRotation);
-
-    for(Player p: seeingPlayers) {
-      entityMetadataPacket.send(p);
+    private fun updateHandRotation(handRotation: EulerAngle) {
+        this.handRotation = handRotation
+        val handRotationNMS = NMSUtils.newNMSVector(
+            Math.toDegrees(handRotation.x),
+            Math.toDegrees(handRotation.y), Math.toDegrees(handRotation.z)
+        )
+        this.entityMetadataPacket = PacketsFactory.get()
+            .metadataPacket(line.entityID, handRotationNMS)
     }
-  }
 
-  public void setHandRotation(EulerAngle handRotation, Player... seeingPlayers) {
-    updateHandRotation(handRotation);
+    fun setHandRotation(handRotation: EulerAngle, seeingPlayers: Iterable<Player>) {
+        updateHandRotation(handRotation)
 
-    for(Player p: seeingPlayers) {
-      entityMetadataPacket.send(p);
+        for (p in seeingPlayers) {
+            entityMetadataPacket?.send(p) ?: throw RuntimeException("Missing metadata packet")
+        }
     }
-  }
 
+    fun setHandRotation(handRotation: EulerAngle, vararg seeingPlayers: Player) {
+        updateHandRotation(handRotation)
 
-  @Override
-  public Plugin getPlugin() {
-    return line.getPlugin();
-  }
+        for (p in seeingPlayers) {
+            entityMetadataPacket?.send(p) ?: throw RuntimeException("Missing metadata packet")
+        }
+    }
 
-  @Override
-  public Type getType() {
-    return Type.ITEM_LINE;
-  }
+    override fun getPlugin(): Plugin {
+        return line.plugin
+    }
 
-  @Override
-  public int getEntityId() {
-    return line.getEntityID();
-  }
+    override fun getType(): ILine.Type {
+        return ILine.Type.ITEM_LINE
+    }
 
-  @Override
-  public Location getLocation() {
-    return line.getLocation();
-  }
+    override fun getEntityId(): Int {
+        return line.entityID
+    }
 
-  @Override
-  public void setLocation(Location location) {
-    line.setLocation(location);
-  }
+    override fun getLocation(): Location? {
+        return line.location
+    }
 
-  @Override
-  public ItemStack getObj() {
-    return obj.clone();
-  }
+    override fun setLocation(location: Location) {
+        line.location = location
+    }
 
-  @Override
-  public void setObj(ItemStack obj) {
-    this.obj = obj;
-  }
+    override fun getObj(): ItemStack {
+        return obj
+    }
 
-  @Override
-  public void hide(Player player) {
-    line.destroy(player);
-  }
+    override fun setObj(obj: ItemStack) {
+        this.obj = obj
+    }
 
-  @Override
-  public void teleport(Player player) {
-    line.teleport(player);
-  }
+    override fun hide(player: Player) {
+        line.destroy(player)
+    }
 
-  @Override
-  public void show(Player player) {
-    line.spawn(player);
-    entityMetadataPacket.send(player);
-    this.update(player);
-  }
+    override fun teleport(player: Player) {
+        line.teleport(player)
+    }
 
-  @Override
-  public void update(Player player) {
-    PacketsFactory.get()
-        .equipmentPacket(line.getEntityID(), this.obj, true)
-        .send(player);
-  }
+    override fun show(player: Player) {
+        line.spawn(player)
+        entityMetadataPacket?.send(player) ?: throw RuntimeException("Missing metadata packet")
+        this.update(player)
+    }
 
+    override fun update(player: Player) {
+        PacketsFactory.get()
+            .equipmentPacket(line.entityID, this.obj, true)
+            .send(player)
+    }
 }

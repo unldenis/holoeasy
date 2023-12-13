@@ -1,30 +1,26 @@
-package com.github.unldenis.hologram.line.hologram;
+package com.github.unldenis.hologram.line.hologram
 
-import com.github.unldenis.hologram.Hologram;
-import org.bukkit.Location;
+import com.github.unldenis.hologram.Hologram
+import com.github.unldenis.hologram.line.ILine
 
-public class SingletonLoader implements IHologramLoader {
+class SingletonLoader : IHologramLoader {
+    override fun load(hologram: Hologram, lines: Array<out ILine<*>>) {
+        if (lines.size > 1) {
+            throw RuntimeException("Hologram with name '%s' has more than 1 line.".formatted(hologram.name))
+        }
 
+        val cloned = hologram.location.clone()
 
-  @Override
-  public void load(Hologram hologram, ILine<?>[] lines) {
-    if(lines.length > 1) {
-      throw new RuntimeException("Hologram with name '%s' has more than 1 line.".formatted(hologram.getName()));
+        val line: ILine<*> = lines[0]
+
+        line.setLocation(cloned)
+        hologram.lines.addLast(line)
     }
 
-    Location cloned = hologram.getLocation().clone();
+    override fun teleport(hologram: Hologram) {
+        val line: ILine<*> = hologram.lines[0]
 
-    ILine<?> line = lines[0];
-
-    line.setLocation(cloned);
-    hologram.getLines().add(line);
-  }
-
-  @Override
-  public void teleport(Hologram hologram) {
-    ILine<?> line = hologram.getLines().get(0);
-
-    line.setLocation(hologram.getLocation().clone());
-    hologram.getSeeingPlayers().forEach(line::teleport);
-  }
+        line.setLocation(hologram.location.clone())
+        hologram.seeingPlayers.forEach(line::teleport)
+    }
 }
