@@ -1,19 +1,3 @@
-(https://jitpack.io/#unldenis/Hologram-Lib)
-Hologram-Lib
------------------------------------------------------------
-Asynchronous, high-performance Minecraft Hologram library
-for 1.8-1.20.1 servers.
+A simple, modern and high-performant Java and Kotlin Minecraft Hologram library for 1.8-1.20.1 servers.
 
-This library can only be used on spigot servers higher or
-on version 1.8.8. The plugin ProtocolLib is required on
-your server.
-
-Please read the new developer documentation, located at:
-
-  https://unldenis.github.io/hologramlib/
-
-
-To contribute as a developer look at the issue tab, so we
-solve any problems first. I don't have an official channel for
-donations yet, you can find me on discord #unldenis possibly.
-
+Coming in HologramLib 3
