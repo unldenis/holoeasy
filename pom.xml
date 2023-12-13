@@ -79,21 +79,6 @@
             <version>2.11.3</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- TEST -->
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.20</artifactId>
-            <version>3.14.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -107,12 +92,6 @@
                         <id>compile</id>
                         <goals>
                             <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <goals>
-                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>

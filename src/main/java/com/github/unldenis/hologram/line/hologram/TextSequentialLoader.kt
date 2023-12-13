@@ -16,7 +16,7 @@ class TextSequentialLoader : IHologramLoader {
         // TODO: When teleporting, the holograms unexpectedly become distant. Understand why.
     }
 
-    private fun set(hologram: Hologram, lines: Array<ILine<*>>, add: Boolean) {
+    private fun set(hologram: Hologram, lines: Array<out ILine<*>>, add: Boolean) {
         val cloned = hologram.location.clone()
         for (line in lines) {
             when (line.getType()) {
