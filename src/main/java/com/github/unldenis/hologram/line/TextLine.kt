@@ -10,35 +10,32 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 
 class TextLine(
-    val line: Line, var obj: String, placeholders: Placeholders? = null,
-    val clickable: Boolean = false
+    val line: Line, override var obj: String, override val placeholders: Placeholders = Placeholders(0x00),
+    override val clickable: Boolean = false
 ) : ITextLine{
 
-    val placeholders: Placeholders = placeholders ?: Placeholders(0x00)
-
-    var  hitbox: AABB? = null
+    var hitbox: AABB? = null
+        private set
     private var isEmpty = false
 
-
-    override fun isClickable(): Boolean = clickable
+    override val textLine: TextLine
+        get() = this
 
     override fun parse(player: Player): String {
         return placeholders.parse(obj, player)
     }
 
-    override fun asTextLine(): TextLine = this
+    override val plugin: Plugin
+        get() = line.plugin
+    override val type: ILine.Type
+        get() = ILine.Type.TEXT_LINE
+    override val entityId: Int
+        get() = line.entityID
+    override val location: Location?
+        get() = line.location
 
-    override fun getPlaceholders(): Placeholders = placeholders
-
-    override fun getPlugin(): Plugin = line.plugin
-
-    override fun getType(): ILine.Type = ILine.Type.TEXT_LINE
-    override fun getEntityId(): Int = line.entityID
-
-    override fun getLocation(): Location? = line.location
-
-    override fun setLocation(location: Location) {
-        line.location = location
+    override fun setLocation(value: Location) {
+        line.location = value
         if (clickable) {
             val chars = obj.length.toDouble()
             val size = 0.105
@@ -48,14 +45,9 @@ class TextLine(
                 Vec3D(-dist, -0.039, -dist),
                 Vec3D(dist, +0.039, dist)
             ).also {
-                it.translate(Vec3D.fromLocation(location.clone().add(0.0, 1.40, 0.0)))
+                it.translate(Vec3D.fromLocation(value.clone().add(0.0, 1.40, 0.0)))
             }
         }
-    }
-
-    override fun getObj(): String = obj
-    override fun setObj(obj: String) {
-        this.obj = obj
     }
 
     override fun hide(player: Player) {

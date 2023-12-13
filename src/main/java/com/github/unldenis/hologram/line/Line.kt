@@ -9,17 +9,14 @@ import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
-class Line(val plugin: Plugin, spawn : Location? = null) {
+class Line(val plugin: Plugin, var location : Location? = null) {
 
     companion object {
         val IDs_COUNTER = AtomicInteger(Random().nextInt())
-
     }
 
     val entityID : Int = IDs_COUNTER.getAndIncrement()
     private val entityDestroyPacket : PacketContainer = PacketsFactory.get().destroyPacket(entityID)
-
-    var location : Location? = spawn
 
     fun destroy(player: Player) {
         entityDestroyPacket.send(player)

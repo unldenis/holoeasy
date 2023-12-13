@@ -13,8 +13,15 @@ import org.bukkit.plugin.Plugin
 
 class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float) : Listener,
     IHologramPool {
-    private val minHitDistance: Float
-    private val maxHitDistance: Float
+
+    override val plugin: Plugin
+        get() = pool.plugin
+
+    override val holograms: Collection<Hologram>
+        get() = pool.holograms
+
+    val minHitDistance: Float
+    val maxHitDistance: Float
 
     init {
         require(!(minHitDistance < 0)) { "minHitDistance must be positive" }
@@ -29,15 +36,10 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
         pool.takeCareOf(hologram)
     }
 
-    override val plugin: Plugin
-        get() = pool.plugin
 
     override fun remove(hologram: Hologram): Boolean {
         return pool.remove(hologram)
     }
-
-    override val holograms: Collection<Hologram>
-        get() = pool.holograms
 
     @EventHandler
     fun handleInteract(e: PlayerInteractEvent) {

@@ -5,11 +5,12 @@ import org.bukkit.entity.Player
 
 interface ITextLine : ILine<String> {
 
-    fun isClickable() : Boolean
+    val clickable : Boolean
+
+    val textLine : TextLine
+
+    val placeholders : Placeholders
 
     fun parse(player: Player) : String
 
-    fun asTextLine() : TextLine
-
-    fun getPlaceholders() : Placeholders
 }

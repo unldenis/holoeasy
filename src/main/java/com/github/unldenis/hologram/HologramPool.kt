@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 
 class HologramPool(override val plugin: Plugin, private val spawnDistance: Double) : Listener, IHologramPool {
     override val holograms: MutableSet<Hologram> =
-        CopyOnWriteArraySet<Hologram>() // writes are slow and Iterators are fast and consistent.
+        CopyOnWriteArraySet() // writes are slow and Iterators are fast and consistent.
 
     init {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -31,14 +31,12 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
      * @return true if any elements were removed
      */
     override fun remove(hologram: Hologram): Boolean {
-
-
         // if removed
         val removed = holograms.removeIf { h -> h == hologram }
         if (removed) {
             // hide from seeing players
 
-            for (player in hologram.getSeeingPlayers()) {
+            for (player in hologram.seeingPlayers) {
                 hologram.hide(player)
             }
         }
@@ -48,21 +46,17 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
     @EventHandler
     fun handleRespawn(event: PlayerRespawnEvent) {
         val player = event.player
-        for (h in holograms) {
-            if (h.isShownFor(player)) {
-                h.hide(player)
-            }
-        }
+        holograms
+            .filter { it.isShownFor(player) }
+            .forEach { it.hide(player) }
     }
 
     @EventHandler
     fun handleQuit(event: PlayerQuitEvent) {
         val player = event.player
-        for (h in holograms) {
-            if (h.isShownFor(player)) {
-                h.getSeeingPlayers().remove(player)
-            }
-        }
+        holograms
+            .filter { it.isShownFor(player) }
+            .forEach { it.seeingPlayers.remove(player) }
     }
 
     /**

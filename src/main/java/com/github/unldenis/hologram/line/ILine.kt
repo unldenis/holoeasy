@@ -7,20 +7,18 @@ import org.jetbrains.annotations.ApiStatus
 
 interface ILine<T> {
 
-    fun getPlugin() : Plugin
+    val plugin : Plugin
 
-    fun getType() : Type
+    val type : Type
 
-    fun getEntityId() : Int
+    val entityId : Int
 
-    fun getLocation() : Location?
+    val location : Location?
 
-    fun setLocation(location: Location)
+    var obj : T
 
-    fun getObj() : T
-
-    fun setObj(obj : T)
-
+    fun setLocation(value : Location)
+    
     fun hide(player: Player)
 
     fun teleport(player: Player)

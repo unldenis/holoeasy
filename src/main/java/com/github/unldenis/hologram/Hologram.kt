@@ -12,18 +12,23 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hologram(val plugin: Plugin, var location: Location, private var loader: IHologramLoader) {
-    private val hLines: MutableList<ILine<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
+class Hologram(val plugin: Plugin, var location: Location, var loader: IHologramLoader) {
+
+    private val hLines : MutableList<ILine<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
+    val lines : MutableList<ILine<*>>
+        get() = hLines
+
     val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
 
     var name: String = UUID.randomUUID().toString()
+
     private var hashCode: Int? = null
+
 
     fun load(vararg lines: ILine<*>) {
         hLines.clear()
         loader.load(this, lines)
         this.hashCode = hLines.map { it.getEntityId() }.toIntArray().contentHashCode()
-
     }
 
     fun teleport(to: Location) {
@@ -54,17 +59,6 @@ class Hologram(val plugin: Plugin, var location: Location, private var loader: I
         Bukkit.getScheduler().runTask(
             plugin,
             Runnable { Bukkit.getPluginManager().callEvent(PlayerHologramHideEvent(player, this)) })
-    }
-
-    val lines: List<ILine<*>>
-        get() = hLines
-
-    fun getSeeingPlayers(): MutableSet<Player> {
-        return seeingPlayers
-    }
-
-    fun setLoader(loader: IHologramLoader) {
-        this.loader = loader
     }
 
     override fun hashCode(): Int {
