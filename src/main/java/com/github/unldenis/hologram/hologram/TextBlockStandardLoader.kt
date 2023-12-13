@@ -1,6 +1,5 @@
-package com.github.unldenis.hologram.line.hologram
+package com.github.unldenis.hologram.hologram
 
-import com.github.unldenis.hologram.Hologram
 import com.github.unldenis.hologram.line.ILine
 import kotlin.math.abs
 
@@ -26,13 +25,13 @@ class TextBlockStandardLoader : IHologramLoader {
             var up = 0.28
 
             if (j > 0) {
-                val before: ILine.Type = lines[j - 1].getType()
+                val before: ILine.Type = lines[j - 1].type
                 when (before) {
                     ILine.Type.BLOCK_LINE, ILine.Type.BLOCK_ANIMATED_LINE -> up = 0.0
                 }
             }
 
-            when (line.getType()) {
+            when (line.type) {
                 ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
                     line.setLocation(cloned.add(0.0, up, 0.0).clone())
                     hologram.lines.addFirst(line)
@@ -43,7 +42,7 @@ class TextBlockStandardLoader : IHologramLoader {
                     hologram.lines.addFirst(line)
                 }
 
-                else -> throw RuntimeException("This method load does not support line type " + line.getType().name)
+                else -> throw RuntimeException("This method load does not support line type " + line.type.name)
             }
         }
     }
@@ -52,11 +51,11 @@ class TextBlockStandardLoader : IHologramLoader {
         val lines: List<ILine<*>> = hologram.lines
         val firstLine: ILine<*> = lines[0]
         // Obtain the Y position of the first line and then calculate the distance to all lines to maintain this distance
-        val baseY: Double = firstLine.getLocation()?.y ?: throw RuntimeException("First line has not a location")
+        val baseY: Double = firstLine.location?.y ?: throw RuntimeException("First line has not a location")
         // Get position Y where to teleport the first line
         var destY = (hologram.location.y - 0.28)
 
-        destY += when (firstLine.getType()) {
+        destY += when (firstLine.type) {
             ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> 0.28
             else -> 0.60
         }
@@ -71,7 +70,7 @@ class TextBlockStandardLoader : IHologramLoader {
         The final height is found by adding to that of the first line the difference that was present when it was already spawned
         */
             this.teleportLine(hologram, destY + abs(baseY -
-                    (tempLine.getLocation()?.y ?: throw RuntimeException("Missing location of line $tempLine"))), tempLine)
+                    (tempLine.location?.y ?: throw RuntimeException("Missing location of line $tempLine"))), tempLine)
         }
     }
 

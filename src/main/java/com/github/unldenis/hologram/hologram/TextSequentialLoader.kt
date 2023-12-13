@@ -1,6 +1,5 @@
-package com.github.unldenis.hologram.line.hologram
+package com.github.unldenis.hologram.hologram
 
-import com.github.unldenis.hologram.Hologram
 import com.github.unldenis.hologram.line.ILine
 import com.github.unldenis.hologram.line.ITextLine
 import org.jetbrains.annotations.ApiStatus
@@ -19,9 +18,9 @@ class TextSequentialLoader : IHologramLoader {
     private fun set(hologram: Hologram, lines: Array<out ILine<*>>, add: Boolean) {
         val cloned = hologram.location.clone()
         for (line in lines) {
-            when (line.getType()) {
+            when (line.type) {
                 ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
-                    val tL = (line as ITextLine).asTextLine()
+                    val tL = (line as ITextLine).textLine
 
                     // add to lines
                     tL.setLocation(cloned.clone())
@@ -31,7 +30,7 @@ class TextSequentialLoader : IHologramLoader {
                     } else {
                         hologram.seeingPlayers.forEach { tL.teleport(it) }
                     }
-                    cloned.z += 0.175 * tL.getObj().length
+                    cloned.z += 0.175 * tL.obj.length
                 }
 
                 else -> throw RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.")

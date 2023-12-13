@@ -18,7 +18,7 @@
  */
 package com.github.unldenis.hologram.event
 
-import com.github.unldenis.hologram.Hologram
+import com.github.unldenis.hologram.hologram.Hologram
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerEvent
 

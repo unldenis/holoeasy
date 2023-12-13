@@ -1,6 +1,6 @@
-package com.github.unldenis.hologram.line.hologram
+package com.github.unldenis.hologram.hologram
 
-import com.github.unldenis.hologram.Hologram
+import com.github.unldenis.hologram.hologram.Hologram
 import com.github.unldenis.hologram.line.ILine
 
 interface IHologramLoader {

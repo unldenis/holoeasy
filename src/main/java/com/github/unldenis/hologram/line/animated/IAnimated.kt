@@ -1,8 +1,8 @@
 package com.github.unldenis.hologram.line.animated
 
-import com.github.unldenis.hologram.Hologram
+import com.github.unldenis.hologram.hologram.Hologram
 import com.github.unldenis.hologram.animation.Animation
-import com.github.unldenis.hologram.animation.Animation.AnimationType
+import com.github.unldenis.hologram.animation.AnimationType
 import org.bukkit.entity.Player
 import java.util.*
 

@@ -29,7 +29,5 @@ interface Animation {
 
     fun async(): Boolean
 
-    enum class AnimationType(val type: Supplier<Animation>) {
-        CIRCLE(Supplier { CircleAnimation() })
-    }
+
 }

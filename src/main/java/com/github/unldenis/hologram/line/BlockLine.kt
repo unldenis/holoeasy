@@ -8,11 +8,20 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 
-class BlockLine(line: Line, obj: ItemStack) : ILine<ItemStack> {
+class BlockLine(line: Line, override var obj: ItemStack) : ILine<ItemStack> {
     private val line: Line
     private val entityMetadataPacket: PacketContainer
+    override val plugin: Plugin
+        get() = line.plugin
 
-    private var obj: ItemStack
+    override val type: ILine.Type
+        get() = ILine.Type.BLOCK_LINE
+
+    override val entityId: Int
+        get() = line.entityID
+
+    override val location: Location?
+        get() = line.location
 
     init {
         if (!obj.type.isBlock) {
@@ -22,36 +31,11 @@ class BlockLine(line: Line, obj: ItemStack) : ILine<ItemStack> {
         }
         this.line = line
         this.entityMetadataPacket = PacketsFactory.get().metadataPacket(line.entityID, null)
-
-        this.obj = obj
     }
 
-    override fun getPlugin(): Plugin {
-        return line.plugin
-    }
 
-    override fun getType(): ILine.Type {
-        return ILine.Type.BLOCK_LINE
-    }
-
-    override fun getEntityId(): Int {
-        return line.entityID
-    }
-
-    override fun getLocation(): Location? {
-        return line.location
-    }
-
-    override fun setLocation(location: Location) {
-        line.location = location
-    }
-
-    override fun getObj(): ItemStack {
-        return obj.clone()
-    }
-
-    override fun setObj(obj: ItemStack) {
-        this.obj = obj
+    override fun setLocation(value: Location) {
+        line.location = value
     }
 
     override fun hide(player: Player) {

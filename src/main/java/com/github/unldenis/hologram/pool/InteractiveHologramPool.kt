@@ -1,6 +1,7 @@
-package com.github.unldenis.hologram
+package com.github.unldenis.hologram.pool
 
 import com.github.unldenis.hologram.event.PlayerHologramInteractEvent
+import com.github.unldenis.hologram.hologram.Hologram
 import com.github.unldenis.hologram.line.ILine
 import com.github.unldenis.hologram.line.ITextLine
 import com.github.unldenis.hologram.util.AABB.Ray3D
@@ -53,14 +54,14 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
                     continue
                 }
                 for (line in hologram.lines) {
-                    when (line.getType()) {
+                    when (line.type) {
                         ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE -> {
                             val iTextLine = line as ITextLine
-                            if (!iTextLine.isClickable()) {
+                            if (!iTextLine.clickable) {
                                 continue
                             }
 
-                            val tL = iTextLine.asTextLine()
+                            val tL = iTextLine.textLine
                             if (tL.hitbox == null) {
                                 continue
                             }

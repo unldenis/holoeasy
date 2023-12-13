@@ -1,5 +1,6 @@
-package com.github.unldenis.hologram
+package com.github.unldenis.hologram.pool
 
+import com.github.unldenis.hologram.hologram.Hologram
 import org.bukkit.plugin.Plugin
 
 interface IHologramPool {
@@ -10,6 +11,5 @@ interface IHologramPool {
     fun takeCareOf(hologram: Hologram)
 
     fun remove(hologram: Hologram): Boolean
-
 
 }

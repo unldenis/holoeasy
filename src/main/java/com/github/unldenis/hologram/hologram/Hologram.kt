@@ -1,9 +1,8 @@
-package com.github.unldenis.hologram
+package com.github.unldenis.hologram.hologram
 
 import com.github.unldenis.hologram.event.PlayerHologramHideEvent
 import com.github.unldenis.hologram.event.PlayerHologramShowEvent
 import com.github.unldenis.hologram.line.ILine
-import com.github.unldenis.hologram.line.hologram.IHologramLoader
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -12,9 +11,13 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hologram(val plugin: Plugin, var location: Location, var loader: IHologramLoader) {
+class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoader) {
+    var location : Location = location
+        private set
+
 
     private val hLines : MutableList<ILine<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
+
     val lines : MutableList<ILine<*>>
         get() = hLines
 
@@ -24,11 +27,10 @@ class Hologram(val plugin: Plugin, var location: Location, var loader: IHologram
 
     private var hashCode: Int? = null
 
-
     fun load(vararg lines: ILine<*>) {
         hLines.clear()
         loader.load(this, lines)
-        this.hashCode = hLines.map { it.getEntityId() }.toIntArray().contentHashCode()
+        this.hashCode = hLines.map { it.entityId }.toIntArray().contentHashCode()
     }
 
     fun teleport(to: Location) {

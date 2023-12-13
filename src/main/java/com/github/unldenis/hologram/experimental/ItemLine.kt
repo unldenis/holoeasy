@@ -14,10 +14,9 @@ import org.bukkit.util.EulerAngle
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Experimental
-class ItemLine(line: Line, obj: ItemStack, handRotation: EulerAngle) : ILine<ItemStack> {
+class ItemLine(line: Line, override var obj: ItemStack, handRotation: EulerAngle) : ILine<ItemStack> {
     private val line: Line
 
-    private var obj: ItemStack
 
     var handRotation: EulerAngle? = null
         private set
@@ -61,32 +60,19 @@ class ItemLine(line: Line, obj: ItemStack, handRotation: EulerAngle) : ILine<Ite
         }
     }
 
-    override fun getPlugin(): Plugin {
-        return line.plugin
-    }
+    override val plugin: Plugin
+        get() = line.plugin
 
-    override fun getType(): ILine.Type {
-        return ILine.Type.ITEM_LINE
-    }
+    override val type: ILine.Type
+        get() = ILine.Type.ITEM_LINE
 
-    override fun getEntityId(): Int {
-        return line.entityID
-    }
+    override val entityId: Int
+        get() = line.entityID
+    override val location: Location?
+        get() = line.location
 
-    override fun getLocation(): Location? {
-        return line.location
-    }
-
-    override fun setLocation(location: Location) {
-        line.location = location
-    }
-
-    override fun getObj(): ItemStack {
-        return obj
-    }
-
-    override fun setObj(obj: ItemStack) {
-        this.obj = obj
+    override fun setLocation(value: Location) {
+        line.location = value
     }
 
     override fun hide(player: Player) {

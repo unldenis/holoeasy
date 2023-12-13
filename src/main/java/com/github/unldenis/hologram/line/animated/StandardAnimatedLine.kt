@@ -7,12 +7,10 @@ import org.bukkit.entity.Player
 import java.util.*
 import java.util.function.Consumer
 
-class StandardAnimatedLine(line: Line) : IAnimated {
-    private val line: Line = line
+class StandardAnimatedLine(private val line: Line) : IAnimated {
 
     override var animation: Optional<Animation> = Optional.empty()
     private var taskID: Int = -1
-        private set
 
     override fun setAnimation(animation: Animation, seeingPlayers: Collection<Player>) {
         this.animation = Optional.of(animation)

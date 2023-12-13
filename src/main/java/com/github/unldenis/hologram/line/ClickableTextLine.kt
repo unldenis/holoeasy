@@ -30,57 +30,48 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
 
-        if (line.getLocation() != null) {
+        if (line.location != null) {
             this.updateHitBox()
         }
 
-        Bukkit.getPluginManager().registerEvents(this, line.getPlugin())
+        Bukkit.getPluginManager().registerEvents(this, line.plugin)
     }
 
-    override fun isClickable(): Boolean {
-        return false
-    }
+    override val clickable: Boolean
+        get() = false
+
+    override val textLine: TextLine
+        get() = line
+
+    override val placeholders: Placeholders
+        get() = line.placeholders
+
 
     override fun parse(player: Player): String {
         return line.parse(player)
     }
 
-    override fun asTextLine(): TextLine {
-        return line
-    }
+    override val plugin: Plugin
+        get() = line.plugin
 
-    override fun getPlaceholders(): Placeholders {
-        return line.getPlaceholders()
-    }
+    override val type: ILine.Type
+        get() = ILine.Type.CLICKABLE_TEXT_LINE
 
-    override fun getPlugin(): Plugin {
-        return line.getPlugin()
-    }
+    override val entityId: Int
+        get() = line.entityId
 
-    override fun getType(): ILine.Type {
-        return ILine.Type.CLICKABLE_TEXT_LINE
-    }
+    override val location: Location?
+        get() = line.location
 
-    override fun getEntityId(): Int {
-        return line.getEntityId()
-    }
+    override var obj: String
+        get() = line.obj
+        set(value) {
+            line.obj = value
+        }
 
-    override fun getLocation(): Location? {
-        return line.getLocation()
-    }
-
-    override fun setLocation(location: Location) {
-        line.setLocation(location)
-
+    override fun setLocation(value: Location) {
+        line.setLocation(value)
         this.updateHitBox()
-    }
-
-    override fun getObj(): String {
-        return line.getObj()
-    }
-
-    override fun setObj(obj: String) {
-        line.setObj(obj)
     }
 
     override fun hide(player: Player) {
@@ -120,12 +111,12 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         val intersects = hitbox!!.intersectsRay(Ray3D(player.eyeLocation), minHitDistance, maxHitDistance) ?: return
 
         Bukkit.getScheduler().runTask(
-            line.getPlugin(),
+            line.plugin,
             Runnable { Bukkit.getPluginManager().callEvent(PlayerTextLineInteractEvent(player, this)) })
     }
 
     private fun updateHitBox() {
-        val chars = line.getObj().length.toDouble()
+        val chars = obj.length.toDouble()
         val size = 0.105
         val dist = size * (chars / 2.0)
 
@@ -133,6 +124,6 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
             Vec3D(-dist, -0.039, -dist),
             Vec3D(dist, +0.039, dist)
         )
-        hitbox!!.translate(fromLocation(line.getLocation()!!.clone().add(0.0, 1.40, 0.0)))
+        hitbox!!.translate(fromLocation(location!!.clone().add(0.0, 1.40, 0.0)))
     }
 }

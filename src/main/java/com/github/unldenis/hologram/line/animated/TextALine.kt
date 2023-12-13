@@ -10,50 +10,36 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
 
-class TextALine(textLine: TextLine, private val animatedLine: IAnimated) : ITextLine, IAnimated {
-    private val textLine: TextLine = textLine
-    override fun isClickable(): Boolean {
-        return textLine.isClickable()
-    }
+class TextALine(override val textLine: TextLine, private val animatedLine: IAnimated) : ITextLine, IAnimated {
+    override val clickable: Boolean
+        get() = textLine.clickable
+    override val placeholders: Placeholders
+        get() = textLine.placeholders
 
     override fun parse(player: Player): String {
         return textLine.parse(player)
     }
 
-    override fun asTextLine(): TextLine {
-        return textLine
-    }
+    override val plugin: Plugin
+        get() = textLine.plugin
 
-    override fun getPlaceholders(): Placeholders {
-        return textLine.getPlaceholders()
-    }
+    override val type: ILine.Type
+        get() = ILine.Type.TEXT_ANIMATED_LINE
 
-    override fun getPlugin(): Plugin {
-        return textLine.getPlugin()
-    }
+    override val entityId: Int
+        get() = textLine.entityId
 
-    override fun getType(): ILine.Type {
-        return textLine.getType()
-    }
+    override val location: Location?
+        get() = textLine.location
 
-    override fun getEntityId(): Int {
-        return textLine.getEntityId()
-    }
+    override var obj: String
+        get() = textLine.obj
+        set(value) {
+            textLine.obj = value
+        }
 
-    override fun getLocation(): Location? {
-        return textLine.getLocation()
-    }
-
-    override fun setLocation(location: Location) {
-        textLine.setLocation(location)
-    }
-
-    override fun getObj(): String {
-        return textLine.getObj()
-    }
-
-    override fun setObj(obj: String) {
-        textLine.setObj(obj)
+    override fun setLocation(value: Location) {
+        textLine.setLocation(value)
     }
 
     override fun hide(player: Player) {

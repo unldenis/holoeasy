@@ -47,7 +47,7 @@ data class Placeholders(var flags : Int) {
         return (flags and Placeholders.PAPI) != 0
     }
     companion object {
-        val STRING = 0b0001
-        val PAPI = 0b0010
+        const val STRING = 0b0001
+        const val PAPI = 0b0010
     }
 }

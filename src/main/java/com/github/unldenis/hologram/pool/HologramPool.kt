@@ -1,5 +1,7 @@
-package com.github.unldenis.hologram
+package com.github.unldenis.hologram.pool
 
+import com.github.unldenis.hologram.builder.Service
+import com.github.unldenis.hologram.hologram.Hologram
 import com.google.common.collect.ImmutableList
 import org.bukkit.Bukkit
 import org.bukkit.Location

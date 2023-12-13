@@ -11,32 +11,26 @@ import java.util.*
 
 class BlockALine(private val blockLine: BlockLine, private val animatedLine: IAnimated) : ILine<ItemStack>, IAnimated {
 
-    override fun getPlugin(): Plugin {
-        return blockLine.getPlugin()
-    }
+    override val plugin: Plugin
+        get() = blockLine.plugin
 
-    override fun getType(): ILine.Type {
-        return ILine.Type.BLOCK_ANIMATED_LINE
-    }
+    override val type: ILine.Type
+        get() = ILine.Type.BLOCK_ANIMATED_LINE
 
-    override fun getEntityId(): Int {
-        return blockLine.getEntityId()
-    }
+    override val entityId: Int
+        get() = blockLine.entityId
 
-    override fun getLocation(): Location? {
-        return blockLine.getLocation()
-    }
+    override val location: Location?
+        get() = blockLine.location
+
+    override var obj: ItemStack
+        get() = blockLine.obj
+        set(value) {
+            blockLine.obj = value
+        }
 
     override fun setLocation(location: Location) {
         blockLine.setLocation(location)
-    }
-
-    override fun getObj(): ItemStack {
-        return blockLine.getObj()
-    }
-
-    override fun setObj(obj: ItemStack) {
-        blockLine.setObj(obj)
     }
 
     override fun hide(player: Player) {
