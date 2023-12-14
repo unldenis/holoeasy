@@ -1,6 +1,5 @@
 package com.github.unldenis.hologram.builder;
 
-
 import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.hologram.IHologramLoader;
 import com.github.unldenis.hologram.line.ILine;

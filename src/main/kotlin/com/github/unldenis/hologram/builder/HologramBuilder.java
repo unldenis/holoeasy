@@ -1,17 +1,11 @@
 package com.github.unldenis.hologram.builder;
 
-
-import com.github.unldenis.hologram.animation.Animation;
 import com.github.unldenis.hologram.animation.AnimationType;
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup;
 import com.github.unldenis.hologram.builder.interfaces.HologramSetupGroup;
 import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.pool.HologramPool;
-import com.github.unldenis.hologram.pool.IHologramPool;
-import com.github.unldenis.hologram.pool.InteractiveHologramPool;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 

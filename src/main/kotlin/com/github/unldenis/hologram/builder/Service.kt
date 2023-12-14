@@ -1,6 +1,5 @@
 package com.github.unldenis.hologram.builder
 
-import com.github.unldenis.hologram.animation.Animation
 import com.github.unldenis.hologram.animation.AnimationType
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup
 import com.github.unldenis.hologram.experimental.ItemLine
