@@ -23,6 +23,9 @@ public class HologramBuilder {
 
         var holo = new Hologram(holoConfig.plugin, holoConfig.location, holoConfig.loader);
         holo.setName(holoConfig.name);
+
+        // TODO: Add to pool and load?
+
         holo.getLines().addAll(holo.getLines());
 
         for(var task: holoConfig.onLoad) {
