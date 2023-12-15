@@ -23,5 +23,5 @@ interface IAnimated {
 
     fun removeAnimation()
 
-    val animation: Optional<Animation>
+    var animation: Animation
 }

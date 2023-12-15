@@ -57,6 +57,5 @@ class BlockALine(private val blockLine: BlockLine, private val animatedLine: IAn
         animatedLine.removeAnimation()
     }
 
-    override val animation: Optional<Animation>
-        get() = animatedLine.animation
+    override var animation: Animation = animatedLine.animation
 }

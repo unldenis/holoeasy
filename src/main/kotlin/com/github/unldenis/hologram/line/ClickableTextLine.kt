@@ -1,8 +1,8 @@
 package com.github.unldenis.hologram.line
 
+import com.github.unldenis.hologram.builder.interfaces.PlayerFun
 import com.github.unldenis.hologram.collection.IntHashSet
 import com.github.unldenis.hologram.experimental.PlayerTextLineInteractEvent
-import com.github.unldenis.hologram.placeholder.Placeholders
 import com.github.unldenis.hologram.util.AABB
 import com.github.unldenis.hologram.util.AABB.Ray3D
 import com.github.unldenis.hologram.util.AABB.Vec3D
@@ -15,6 +15,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
+import java.util.function.Function
 
 class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHitDistance: Float) : Listener,
     ITextLine {
@@ -43,8 +44,8 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
     override val textLine: TextLine
         get() = line
 
-    override val placeholders: Placeholders
-        get() = line.placeholders
+    override val args: Array<PlayerFun>?
+        get() = textLine.args
 
 
     override fun parse(player: Player): String {

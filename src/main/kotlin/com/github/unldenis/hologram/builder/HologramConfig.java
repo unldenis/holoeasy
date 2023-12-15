@@ -3,10 +3,10 @@ package com.github.unldenis.hologram.builder;
 import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.hologram.IHologramLoader;
 import com.github.unldenis.hologram.line.ILine;
-import com.github.unldenis.hologram.placeholder.Placeholders;
 import com.github.unldenis.hologram.pool.IHologramPool;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,8 +18,13 @@ import static com.github.unldenis.hologram.builder.HologramBuilder.getInstance;
 
 public class HologramConfig {
 
+    @NotNull
+    final Location location;
 
-    public Location location;
+    HologramConfig(@NotNull Location location) {
+        this.location = location;
+    }
+
     public String name;
     public IHologramLoader loader;
 
@@ -27,9 +32,9 @@ public class HologramConfig {
 
     public Plugin plugin;
 
-    public Placeholders placeholders;
 
     final List<ILine<?>>            lines   = new ArrayList<>();
     final Set<Consumer<Hologram>>   onLoad  = new HashSet<>();
+
 
 }

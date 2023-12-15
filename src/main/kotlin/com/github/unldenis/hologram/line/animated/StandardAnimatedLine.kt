@@ -9,11 +9,11 @@ import java.util.function.Consumer
 
 class StandardAnimatedLine(private val line: Line) : IAnimated {
 
-    override var animation: Optional<Animation> = Optional.empty()
+    override lateinit var animation: Animation
     private var taskID: Int = -1
 
     override fun setAnimation(animation: Animation, seeingPlayers: Collection<Player>) {
-        this.animation = Optional.of(animation)
+        this.animation = animation
 
         val taskR = Runnable {
             seeingPlayers.forEach(
@@ -37,9 +37,5 @@ class StandardAnimatedLine(private val line: Line) : IAnimated {
             Bukkit.getScheduler().cancelTask(taskID)
             taskID = -1
         }
-    }
-
-    fun getAnimation(): Optional<Animation> {
-        return animation
     }
 }

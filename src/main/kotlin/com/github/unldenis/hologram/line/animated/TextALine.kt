@@ -1,20 +1,21 @@
 package com.github.unldenis.hologram.line.animated
 
 import com.github.unldenis.hologram.animation.Animation
+import com.github.unldenis.hologram.builder.interfaces.PlayerFun
 import com.github.unldenis.hologram.line.ILine
 import com.github.unldenis.hologram.line.ITextLine
 import com.github.unldenis.hologram.line.TextLine
-import com.github.unldenis.hologram.placeholder.Placeholders
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
+import java.util.function.Function
 
 class TextALine(override val textLine: TextLine, private val animatedLine: IAnimated) : ITextLine, IAnimated {
     override val clickable: Boolean
         get() = textLine.clickable
-    override val placeholders: Placeholders
-        get() = textLine.placeholders
+    override val args: Array<PlayerFun>?
+        get() = textLine.args
 
     override fun parse(player: Player): String {
         return textLine.parse(player)
@@ -66,6 +67,6 @@ class TextALine(override val textLine: TextLine, private val animatedLine: IAnim
         animatedLine.removeAnimation()
     }
 
-    override val animation: Optional<Animation>
-        get() = animatedLine.animation
+    override var animation: Animation = animatedLine.animation
+
 }

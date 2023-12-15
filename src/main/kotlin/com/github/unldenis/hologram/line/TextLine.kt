@@ -1,19 +1,31 @@
 package com.github.unldenis.hologram.line
 
+import com.github.unldenis.hologram.builder.interfaces.PlayerFun
 import com.github.unldenis.hologram.packet.PacketsFactory
 import com.github.unldenis.hologram.packet.send
-import com.github.unldenis.hologram.placeholder.Placeholders
 import com.github.unldenis.hologram.util.AABB
 import com.github.unldenis.hologram.util.AABB.Vec3D
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import java.util.function.Function
 
 class TextLine(
-    val line: Line, override var obj: String, override val placeholders: Placeholders = Placeholders(0x00),
+    val line: Line, obj: String, override val args : Array<PlayerFun>? = null,
     override val clickable: Boolean = false
 ) : ITextLine{
 
+
+    override var obj : String = ""
+
+    init {
+
+        if (args == null) {
+            this.obj = obj
+        } else {
+            this.obj = obj.replace("{}", "%s")
+        }
+    }
     var hitbox: AABB? = null
         private set
     private var isEmpty = false
@@ -22,7 +34,15 @@ class TextLine(
         get() = this
 
     override fun parse(player: Player): String {
-        return placeholders.parse(obj, player)
+        if(args == null) {
+            return obj
+        }
+        val res = arrayOfNulls<Any>(args.size)
+        for (i in args.indices) {
+            res[i] = args[i].invoke(player)
+        }
+
+        return String.format(obj, args)
     }
 
     override val plugin: Plugin

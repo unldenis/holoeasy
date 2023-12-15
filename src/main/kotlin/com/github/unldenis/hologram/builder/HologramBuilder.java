@@ -3,11 +3,16 @@ package com.github.unldenis.hologram.builder;
 import com.github.unldenis.hologram.animation.AnimationType;
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup;
 import com.github.unldenis.hologram.builder.interfaces.HologramSetupGroup;
+import com.github.unldenis.hologram.builder.interfaces.PlayerFun;
 import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.line.ILine;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Function;
 
 public class HologramBuilder {
 
@@ -15,8 +20,12 @@ public class HologramBuilder {
         return Service.INSTANCE;
     }
 
-    public static Hologram hologram(@NotNull HologramSetupGroup setupGroup) {
-        var holoConfig = new HologramConfig();
+    public static void hologram(@NotNull Location location, @NotNull ILine<?> first, @NotNull ILine<?>... opt) {
+
+    }
+
+    public static Hologram hologram(@NotNull Location location, @NotNull HologramSetupGroup setupGroup) {
+        var holoConfig = new HologramConfig(location);
         getInstance().getStaticHologram().set(holoConfig);
         setupGroup.setup();
         getInstance().getStaticHologram().remove();
@@ -39,16 +48,37 @@ public class HologramBuilder {
         getInstance().config(configGroup);
     }
 
-    public static void textline(@NotNull String text) {
-        getInstance().textline(text, false, null, null);
+
+    public static void textline(@NotNull String text, @NotNull PlayerFun... args) {
+        getInstance().textline(
+                text,
+                false,
+                null,
+                null,
+                args.length == 0 ? null : args
+        );
     }
 
-    public static void clickable(@NotNull String text) {
-        getInstance().textline(text, true, null, null);
+    public static void clickable(@NotNull String text, @NotNull PlayerFun... args) {
+        getInstance().textline(
+                text,
+                true,
+                null,
+                null,
+                args.length == 0 ? null : args
+
+        );
     }
 
-    public static void clickable(@NotNull String text, float minHitDistance, float maxHitDistance) {
-        getInstance().textline(text, false, minHitDistance, maxHitDistance);
+    public static void clickable(@NotNull String text, float minHitDistance, float maxHitDistance,
+                                 @NotNull PlayerFun... args) {
+        getInstance().textline(
+                text,
+                false,
+                minHitDistance,
+                maxHitDistance,
+                args.length == 0 ? null : args
+        );
     }
 
     public static void item(@NotNull ItemStack item, @NotNull EulerAngle eulerAngle) {

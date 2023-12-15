@@ -2,16 +2,18 @@ package com.github.unldenis.hologram.builder
 
 import com.github.unldenis.hologram.animation.AnimationType
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup
+import com.github.unldenis.hologram.builder.interfaces.PlayerFun
 import com.github.unldenis.hologram.experimental.ItemLine
 import com.github.unldenis.hologram.hologram.TextBlockStandardLoader
 import com.github.unldenis.hologram.line.*
 import com.github.unldenis.hologram.line.animated.BlockALine
 import com.github.unldenis.hologram.line.animated.StandardAnimatedLine
-import com.github.unldenis.hologram.placeholder.Placeholders
 import com.github.unldenis.hologram.pool.IHologramPool
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.EulerAngle
 import java.util.concurrent.atomic.AtomicReference
+import java.util.function.Function
 
 object Service {
 
@@ -26,10 +28,8 @@ object Service {
     }
 
     fun config(configGroup: HologramConfigGroup) {
-        val holo = getStaticHolo()
+        val config = getStaticHolo()
 
-        val config = HologramConfig()
-        configGroup.configure(config)
 
         if(config.plugin == null) {
             if(config.pool == null) {
@@ -39,27 +39,25 @@ object Service {
             }
         }
 
-        config.location ?: throw RuntimeException("Required location")
-
         config.loader = config.loader ?: TextBlockStandardLoader()
 
         config.name?.let {
-            holo.name = it
+            config.name = it
         }
 
-        config.placeholders = config.placeholders ?: Placeholders(0x00)
     }
 
+    @JvmOverloads
     fun textline(text : String, clickable : Boolean = false, minHitDistance : Float ? = null,
-                 maxHitDistance : Float ? = null) {
+                 maxHitDistance : Float ? = null, args : Array<PlayerFun>? = null) {
         val holo = getStaticHolo()
 
         val line = Line(holo.plugin)
         if(minHitDistance == null || maxHitDistance == null) {
-            val textLine = TextLine(line, text, holo.placeholders, clickable)
+            val textLine = TextLine(line, text, clickable = clickable, args = args)
             holo.lines.add(textLine)
         } else {
-            val textLine = TextLine(line, text, holo.placeholders, false)
+            val textLine = TextLine(line, text, clickable = false, args = args)
             val clickableTextLine = ClickableTextLine(textLine, minHitDistance, maxHitDistance)
             holo.lines.add(clickableTextLine)
         }
