@@ -59,40 +59,40 @@ class PacketsV1_8 : IPackets {
         var defaultDataWatcher : WrappedDataWatcher? = null
     }
     override fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
+        return packet(PacketType.Play.Server.SPAWN_ENTITY) {
+            integers[0] = entityID
+            integers[1] = EntityType.ARMOR_STAND.typeId.toInt()
+            integers[2] = (location.x * 32).toInt()
+            integers[3] = (location.y * 32).toInt()
+            integers[4] = (location.z * 32).toInt()
 
-        packet.integers.write(0, entityID)
-        packet.integers.write(1, EntityType.ARMOR_STAND.typeId.toInt())
-        packet.integers.write(2, (location.x * 32).toInt())
-        packet.integers.write(3, (location.y * 32).toInt())
-        packet.integers.write(4, (location.z * 32).toInt())
-        if (defaultDataWatcher == null) {
-            loadDefaultWatcher(plugin).join()
+            if (defaultDataWatcher == null) {
+                loadDefaultWatcher(plugin).join()
+            }
+
+            dataWatcherModifier[0] = defaultDataWatcher
         }
-        packet.dataWatcherModifier.write(0, PacketsV1_8.defaultDataWatcher)
-
-        return packet
-
     }
 
     override fun destroyPacket(entityID: Int): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
-        packet.integerArrays.write(0, intArrayOf(entityID))
-        return packet
+        return packet(PacketType.Play.Server.ENTITY_DESTROY) {
+            integerArrays[0] = intArrayOf(entityID)
+        }
     }
 
     override fun equipmentPacket(entityID: Int, helmet: ItemStack, itemLine: Boolean): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT)
-        packet.integers.write(0, entityID)
-        if (itemLine) {
-            packet.integers.write(1, 0)
-        } else {
-            // Use legacy form to update the head slot.
-            packet.integers.write(1, 4)
-        }
+        return packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
+            integers[0] = entityID
+            if (itemLine) {
+                integers[1] = 0
+            } else {
+                // Use legacy form to update the head slot.
+                integers[1] = 4
+            }
 
-        packet.itemModifier.write(0, helmet)
-        return packet
+            itemModifier[0] = helmet
+
+        }
     }
 
     override fun metadataPacket(
@@ -102,8 +102,6 @@ class PacketsV1_8 : IPackets {
         setSmall: Boolean,
         handRotationNMS: Any?
     ): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-        packet.integers.write(0, entityID)
         val watcher = WrappedDataWatcher()
         if (setInvisible) {
             watcher.setObject(0, 0x20.toByte())
@@ -118,42 +116,54 @@ class PacketsV1_8 : IPackets {
         if (handRotationNMS != null) {
             watcher.setObject(19, handRotationNMS)
         }
-        packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
-        return packet
+
+        return packet(PacketType.Play.Server.ENTITY_METADATA) {
+            integers[0] = entityID
+            watchableCollectionModifier[0] = watcher.watchableObjects
+        }
     }
 
     override fun teleportPacket(entityID: Int, location: Location): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
-        packet.integers.write(0, entityID)
-        packet.integers.write(1, location.x.fixCoordinate)
-        packet.integers.write(2, location.y.fixCoordinate)
-        packet.integers.write(3, location.z.fixCoordinate)
-        packet.bytes.write(0, location.yaw.toDouble().compressAngle)
-        packet.bytes.write(1, location.pitch.toDouble().compressAngle)
-        packet.booleans.write(0, false)
-        return packet
+        return packet(PacketType.Play.Server.ENTITY_TELEPORT) {
+            integers[0] = entityID
+            integers[1] = location.x.fixCoordinate
+            integers[2] = location.y.fixCoordinate
+            integers[3] = location.z.fixCoordinate
+            bytes[0] = location.yaw.toDouble().compressAngle
+            bytes[1] = location.pitch.toDouble().compressAngle
+            booleans[0] = false
+        }
+
+//        old api, look difference
+//        val packet = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
+//        packet.integers.write(0, entityID)
+//        packet.integers.write(1, location.x.fixCoordinate)
+//        packet.integers.write(2, location.y.fixCoordinate)
+//        packet.integers.write(3, location.z.fixCoordinate)
+//        packet.bytes.write(0, location.yaw.toDouble().compressAngle)
+//        packet.bytes.write(1, location.pitch.toDouble().compressAngle)
+//        packet.booleans.write(0, false)
+//        return packet
     }
 
     override fun rotatePackets(entityID: Int, from: Location, yaw: Float): List<PacketContainer> {
-        val rotationPacket = PacketContainer(
-            PacketType.Play.Server.ENTITY_HEAD_ROTATION
-        )
+        val rotationPacket = packet(PacketType.Play.Server.ENTITY_HEAD_ROTATION) {
+            integers[0] = entityID
+            bytes[0] = yaw.toDouble().compressAngle
+        }
 
-        rotationPacket.integers.write(0, entityID)
-        rotationPacket.bytes.write(0, yaw.toDouble().compressAngle)
+        val teleportPacket = packet(PacketType.Play.Server.ENTITY_TELEPORT) {
+            integers[0] = entityID
 
-        val teleportPacket = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
+            integers[1] = from.x.fixCoordinate
+            integers[2] = from.y.fixCoordinate
+            integers[3] = from.z.fixCoordinate
 
-        teleportPacket.integers.write(0, entityID)
+            bytes[0] = yaw.toDouble().compressAngle
+            bytes[1] = 0.toByte()
 
-        teleportPacket.integers.write(1, from.x.fixCoordinate)
-        teleportPacket.integers.write(2, from.y.fixCoordinate)
-        teleportPacket.integers.write(3, from.z.fixCoordinate)
-
-        teleportPacket.bytes.write(0, yaw.toDouble().compressAngle)
-        teleportPacket.bytes.write(1, 0.toByte())
-
-        teleportPacket.booleans.write(0, true)
+            booleans[0] = true
+        }
 
         return listOf(rotationPacket, teleportPacket)
     }
@@ -162,39 +172,37 @@ class PacketsV1_8 : IPackets {
 
 open class PacketsV1_9V1_12 : IPackets {
     override fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY_LIVING)
-        packet.modifier.writeDefaults()
-
         val entityType = 30
         val extraData = 1
-        packet.integers.write(0, entityID)
-        packet.integers.write(1, entityType)
-        packet.integers.write(2, extraData)
-        packet.uuiDs.write(0, UUID.randomUUID())
-        packet.doubles.write(0, location.x)
-        packet.doubles.write(1, location.y)
-        packet.doubles.write(2, location.z)
-        return packet
+
+        return packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
+            modifier.writeDefaults()
+
+            integers[0] = entityID
+            integers[1] = entityType
+            integers[2] = extraData
+
+            uuiDs[0] = UUID.randomUUID()
+
+            doubles[0] = location.x
+            doubles[1] = location.y
+            doubles[2] = location.z
+        }
+
     }
 
     override fun destroyPacket(entityID: Int): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
-        packet.integerArrays.write(0, intArrayOf(entityID))
-        return packet
+        return packet(PacketType.Play.Server.ENTITY_DESTROY) {
+            integerArrays[0] = intArrayOf(entityID)
+        }
     }
 
     override fun equipmentPacket(entityID: Int, helmet: ItemStack, itemLine: Boolean): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT)
-
-        packet.integers.write(0, entityID)
-        if (itemLine) {
-            packet.itemSlots.write(0, ItemSlot.MAINHAND)
-        } else {
-            packet.itemSlots.write(0, ItemSlot.HEAD)
+        return packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
+            integers[0] = entityID
+            itemSlots[0] = if(itemLine) ItemSlot.MAINHAND else ItemSlot.HEAD
+            itemModifier[0] = helmet
         }
-        packet.itemModifier.write(0, helmet)
-
-        return packet
     }
 
     override fun metadataPacket(
@@ -204,9 +212,6 @@ open class PacketsV1_9V1_12 : IPackets {
         setSmall: Boolean,
         handRotationNMS: Any?
     ): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-        packet.modifier.writeDefaults()
-        packet.integers.write(0, entityID)
 
         val watcher = WrappedDataWatcher()
         if (setInvisible) {
@@ -224,27 +229,38 @@ open class PacketsV1_9V1_12 : IPackets {
             watcher.setVectorSerializer(19, handRotationNMS)
         }
 
-        packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
-        return packet
+        return packet(PacketType.Play.Server.ENTITY_METADATA) {
+            modifier.writeDefaults()
+            integers[0] = entityID
+            watchableCollectionModifier[0] = watcher.watchableObjects
+        }
+
     }
 
     override fun teleportPacket(entityID: Int, location: Location): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
-        packet.integers.write(0, entityID)
-        packet.doubles.write(0, location.x)
-        packet.doubles.write(1, location.y)
-        packet.doubles.write(2, location.z)
-        packet.bytes.write(0, location.yaw.toDouble().compressAngle)
-        packet.bytes.write(1, location.pitch.toDouble().compressAngle)
-        packet.booleans.write(0, false)
-        return packet
+        val teleportPacket = packet(PacketType.Play.Server.ENTITY_TELEPORT) {
+            integers[0] = entityID
+
+            doubles[0] = location.x
+            doubles[1] = location.y
+            doubles[2] = location.z
+
+            bytes[0] = location.yaw.toDouble().compressAngle
+            bytes[1] = location.pitch.toDouble().compressAngle
+
+            booleans[0] = false
+        }
+
+        return teleportPacket
     }
 
     override fun rotatePackets(entityID: Int, from: Location, yaw: Float): List<PacketContainer> {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_LOOK)
-        packet.integers.write(0, entityID)
-        packet.bytes.write(0, yaw.toDouble().compressAngle).write(1, 0.toByte())
-        packet.booleans.write(0, true)
+        val packet = packet(PacketType.Play.Server.ENTITY_LOOK) {
+            integers[0] = entityID
+            bytes[0] = yaw.toDouble().compressAngle
+            bytes[1] = 0.toByte()
+            booleans[0] = true
+        }
         return listOf(packet)
     }
 
@@ -254,8 +270,6 @@ open class PacketsV1_13V1_16 : PacketsV1_9V1_12() {
 
 
     override fun equipmentPacket(entityID: Int, helmet: ItemStack, itemLine: Boolean): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT)
-        packet.integers.write(0, entityID)
         val pairList: MutableList<Pair<ItemSlot, ItemStack>> = ArrayList()
         pairList.add(
             Pair(
@@ -263,8 +277,11 @@ open class PacketsV1_13V1_16 : PacketsV1_9V1_12() {
                 helmet
             )
         )
-        packet.slotStackPairLists.write(0, pairList)
-        return packet
+
+        return packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
+            integers[0] = entityID
+            slotStackPairLists[0] = pairList
+        }
     }
 
     override fun metadataPacket(
@@ -274,8 +291,7 @@ open class PacketsV1_13V1_16 : PacketsV1_9V1_12() {
         setSmall: Boolean,
         handRotationNMS: Any?
     ): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-        packet.integers.write(0, entityID)
+
         val watcher = WrappedDataWatcher()
         if (setInvisible) {
             watcher.setByte(0, 0x20.toByte())
@@ -291,8 +307,11 @@ open class PacketsV1_13V1_16 : PacketsV1_9V1_12() {
         if (handRotationNMS != null) {
             watcher.setVectorSerializer(19, handRotationNMS)
         }
-        packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
-        return packet
+
+        return packet(PacketType.Play.Server.ENTITY_METADATA) {
+            integers[0] = entityID
+            watchableCollectionModifier[0] = watcher.watchableObjects
+        }
     }
 
 }
@@ -300,25 +319,28 @@ open class PacketsV1_13V1_16 : PacketsV1_9V1_12() {
 open class PacketsV1_17_V18 : PacketsV1_13V1_16() {
 
     override fun destroyPacket(entityID: Int): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
-        packet.intLists.write(0, listOf(entityID))
-        return packet
+        return packet(PacketType.Play.Server.ENTITY_DESTROY) {
+            intLists[0] = listOf(entityID)
+        }
     }
 
 }
 
 class PacketsV1_19 : PacketsV1_17_V18() {
     override fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer {
-        val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
         val extraData = 1
-        packet.integers.write(0, entityID)
-        packet.integers.write(1, extraData)
-        packet.entityTypeModifier.write(0, EntityType.ARMOR_STAND)
-        packet.uuiDs.write(0, UUID.randomUUID())
-        packet.doubles.write(0, location.x)
-        packet.doubles.write(1, location.y /*+1.2*/)
-        packet.doubles.write(2, location.z)
-        return packet
+        return packet(PacketType.Play.Server.SPAWN_ENTITY) {
+            integers[0] = entityID
+            integers[1] = extraData
+
+            entityTypeModifier[0] = EntityType.ARMOR_STAND
+
+            uuiDs[0] = UUID.randomUUID()
+
+            doubles[0] = location.x
+            doubles[1] = location.y
+            doubles[2] = location.z
+        }
     }
 
 
@@ -331,6 +353,7 @@ class PacketsV1_19 : PacketsV1_17_V18() {
     ): PacketContainer {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.integers.write(0, entityID)
+
         val watcher = WrappedDataWatcher()
 
         try {

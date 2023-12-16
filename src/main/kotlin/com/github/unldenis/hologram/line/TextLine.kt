@@ -1,8 +1,8 @@
 package com.github.unldenis.hologram.line
 
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun
+import com.github.unldenis.hologram.ext.send
 import com.github.unldenis.hologram.packet.PacketsFactory
-import com.github.unldenis.hologram.packet.send
 import com.github.unldenis.hologram.util.AABB
 import com.github.unldenis.hologram.util.AABB.Vec3D
 import org.bukkit.Location
