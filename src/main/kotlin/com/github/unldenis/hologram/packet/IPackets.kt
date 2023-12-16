@@ -9,6 +9,7 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject
+import com.github.unldenis.hologram.ext.*
 import com.github.unldenis.hologram.util.BukkitFuture
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -20,19 +21,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.math.floor
 
-fun PacketContainer.send(player: Player) {
-    ProtocolLibrary.getProtocolManager().sendServerPacket(player, this)
-}
-
 interface IPackets {
-
-    fun getCompressAngle(angle: Double): Byte {
-        return (angle * 256f / 360f).toInt().toByte()
-    }
-
-    fun fixCoordinate(v: Double): Int {
-        return floor(v * 32.0).toInt()
-    }
 
     fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer
 
@@ -136,11 +125,11 @@ class PacketsV1_8 : IPackets {
     override fun teleportPacket(entityID: Int, location: Location): PacketContainer {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
         packet.integers.write(0, entityID)
-        packet.integers.write(1, fixCoordinate(location.x))
-        packet.integers.write(2, fixCoordinate(location.y))
-        packet.integers.write(3, fixCoordinate(location.z))
-        packet.bytes.write(0, this.getCompressAngle(location.yaw.toDouble()))
-        packet.bytes.write(1, this.getCompressAngle(location.pitch.toDouble()))
+        packet.integers.write(1, location.x.fixCoordinate)
+        packet.integers.write(2, location.y.fixCoordinate)
+        packet.integers.write(3, location.z.fixCoordinate)
+        packet.bytes.write(0, location.yaw.toDouble().compressAngle)
+        packet.bytes.write(1, location.pitch.toDouble().compressAngle)
         packet.booleans.write(0, false)
         return packet
     }
@@ -151,17 +140,17 @@ class PacketsV1_8 : IPackets {
         )
 
         rotationPacket.integers.write(0, entityID)
-        rotationPacket.bytes.write(0, getCompressAngle(yaw.toDouble()))
+        rotationPacket.bytes.write(0, yaw.toDouble().compressAngle)
 
         val teleportPacket = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
 
         teleportPacket.integers.write(0, entityID)
 
-        teleportPacket.integers.write(1, fixCoordinate(from.x))
-        teleportPacket.integers.write(2, fixCoordinate(from.y))
-        teleportPacket.integers.write(3, fixCoordinate(from.z))
+        teleportPacket.integers.write(1, from.x.fixCoordinate)
+        teleportPacket.integers.write(2, from.y.fixCoordinate)
+        teleportPacket.integers.write(3, from.z.fixCoordinate)
 
-        teleportPacket.bytes.write(0, getCompressAngle(yaw.toDouble()))
+        teleportPacket.bytes.write(0, yaw.toDouble().compressAngle)
         teleportPacket.bytes.write(1, 0.toByte())
 
         teleportPacket.booleans.write(0, true)
@@ -221,35 +210,18 @@ open class PacketsV1_9V1_12 : IPackets {
 
         val watcher = WrappedDataWatcher()
         if (setInvisible) {
-            val visible = WrappedDataWatcherObject(
-                0, WrappedDataWatcher.Registry.get(Byte::class.java)
-            )
-            watcher.setObject(visible, 0x20.toByte())
+            watcher.setByte(0, 0x20.toByte())
         }
         if (nameTag != null) {
-            watcher.setObject(
-                WrappedDataWatcherObject(
-                    2,
-                    WrappedDataWatcher.Registry.get(String::class.java)
-                ), nameTag
-            )
+            watcher.setString(2, nameTag)
 
-            val nameVisible = WrappedDataWatcherObject(
-                3, WrappedDataWatcher.Registry.get(Boolean::class.java)
-            )
-            watcher.setObject(nameVisible, true)
+            watcher.setBool(3, true)
         }
         if (setSmall) {
-            val small = WrappedDataWatcherObject(
-                10, WrappedDataWatcher.Registry.get(Byte::class.java)
-            )
-            watcher.setObject(small, (0x01 or 0x04).toByte())
+            watcher.setByte(10, (0x01 or 0x04).toByte())
         }
         if (handRotationNMS != null) {
-            val handRotation = WrappedDataWatcherObject(
-                19, WrappedDataWatcher.Registry.getVectorSerializer()
-            )
-            watcher.setObject(handRotation, handRotationNMS)
+            watcher.setVectorSerializer(19, handRotationNMS)
         }
 
         packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
@@ -262,8 +234,8 @@ open class PacketsV1_9V1_12 : IPackets {
         packet.doubles.write(0, location.x)
         packet.doubles.write(1, location.y)
         packet.doubles.write(2, location.z)
-        packet.bytes.write(0, this.getCompressAngle(location.yaw.toDouble()))
-        packet.bytes.write(1, this.getCompressAngle(location.pitch.toDouble()))
+        packet.bytes.write(0, location.yaw.toDouble().compressAngle)
+        packet.bytes.write(1, location.pitch.toDouble().compressAngle)
         packet.booleans.write(0, false)
         return packet
     }
@@ -271,7 +243,7 @@ open class PacketsV1_9V1_12 : IPackets {
     override fun rotatePackets(entityID: Int, from: Location, yaw: Float): List<PacketContainer> {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_LOOK)
         packet.integers.write(0, entityID)
-        packet.bytes.write(0, this.getCompressAngle(yaw.toDouble())).write(1, 0.toByte())
+        packet.bytes.write(0, yaw.toDouble().compressAngle).write(1, 0.toByte())
         packet.booleans.write(0, true)
         return listOf(packet)
     }
@@ -306,36 +278,18 @@ open class PacketsV1_13V1_16 : PacketsV1_9V1_12() {
         packet.integers.write(0, entityID)
         val watcher = WrappedDataWatcher()
         if (setInvisible) {
-            val visible = WrappedDataWatcherObject(
-                0, WrappedDataWatcher.Registry.get(Byte::class.java)
-            )
-            watcher.setObject(visible, 0x20.toByte())
+            watcher.setByte(0, 0x20.toByte())
         }
         if (nameTag != null) {
-            val opt: Optional<*> = Optional.of(WrappedChatComponent.fromChatMessage(nameTag)[0].handle)
-            watcher.setObject(
-                WrappedDataWatcherObject(
-                    2,
-                    WrappedDataWatcher.Registry.getChatComponentSerializer(true)
-                ), opt
-            )
+            watcher.setChatComponent(2, nameTag)
 
-            val nameVisible = WrappedDataWatcherObject(
-                3, WrappedDataWatcher.Registry.get(Boolean::class.java)
-            )
-            watcher.setObject(nameVisible, true)
+            watcher.setBool(3, true)
         }
         if (setSmall) {
-            val small = WrappedDataWatcherObject(
-                15, WrappedDataWatcher.Registry.get(Byte::class.java)
-            )
-            watcher.setObject(small, (0x01 or 0x04).toByte())
+            watcher.setByte(15, (0x01 or 0x04).toByte())
         }
         if (handRotationNMS != null) {
-            val handRotation = WrappedDataWatcherObject(
-                19, WrappedDataWatcher.Registry.getVectorSerializer()
-            )
-            watcher.setObject(handRotation, handRotationNMS)
+            watcher.setVectorSerializer(19, handRotationNMS)
         }
         packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
         return packet
@@ -403,6 +357,7 @@ class PacketsV1_19 : PacketsV1_17_V18() {
                         opt
                     )
                 )
+
                 wrappedDataValueList.add(
                     WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean::class.java), true)
                 )
@@ -426,40 +381,17 @@ class PacketsV1_19 : PacketsV1_17_V18() {
             packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
         } catch (e: ClassNotFoundException) {
             if (setInvisible) {
-                val visible = WrappedDataWatcherObject(
-                    0, WrappedDataWatcher.Registry.get(Byte::class.java)
-                )
-                watcher.setObject(visible, 0x20.toByte())
+                watcher.setByte(0, 0x20.toByte())
             }
             if (nameTag != null) {
-                val opt: Optional<*> = Optional.of(
-                    WrappedChatComponent.fromChatMessage(
-                        nameTag
-                    )[0].handle
-                )
-                watcher.setObject(
-                    WrappedDataWatcherObject(
-                        2,
-                        WrappedDataWatcher.Registry.getChatComponentSerializer(true)
-                    ), opt
-                )
-
-                val nameVisible = WrappedDataWatcherObject(
-                    3, WrappedDataWatcher.Registry.get(Boolean::class.java)
-                )
-                watcher.setObject(nameVisible, true)
+                watcher.setChatComponent(2, nameTag)
+                watcher.setBool(3, true)
             }
             if (setSmall) {
-                val small = WrappedDataWatcherObject(
-                    15, WrappedDataWatcher.Registry.get(Byte::class.java)
-                )
-                watcher.setObject(small, (0x01 or 0x04).toByte())
+                watcher.setByte(15, (0x01 or 0x04).toByte())
             }
             if (handRotationNMS != null) {
-                val handRotation = WrappedDataWatcherObject(
-                    19, WrappedDataWatcher.Registry.getVectorSerializer()
-                )
-                watcher.setObject(handRotation, handRotationNMS)
+                watcher.setVectorSerializer(19, handRotationNMS)
             }
             packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
         }

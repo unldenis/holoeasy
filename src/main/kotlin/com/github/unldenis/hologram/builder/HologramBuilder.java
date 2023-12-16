@@ -20,10 +20,6 @@ public class HologramBuilder {
         return Service.INSTANCE;
     }
 
-    public static void hologram(@NotNull Location location, @NotNull ILine<?> first, @NotNull ILine<?>... opt) {
-
-    }
-
     public static Hologram hologram(@NotNull Location location, @NotNull HologramSetupGroup setupGroup) {
         var holoConfig = new HologramConfig(location);
         getInstance().getStaticHologram().set(holoConfig);
