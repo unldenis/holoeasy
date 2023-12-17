@@ -326,7 +326,7 @@ open class PacketsV1_17_V18 : PacketsV1_13V1_16() {
 
 }
 
-class PacketsV1_19 : PacketsV1_17_V18() {
+open class PacketsV1_19 : PacketsV1_17_V18() {
     override fun spawnPacket(entityID: Int, location: Location, plugin: Plugin): PacketContainer {
         val extraData = 1
         return packet(PacketType.Play.Server.SPAWN_ENTITY) {
@@ -351,75 +351,93 @@ class PacketsV1_19 : PacketsV1_17_V18() {
         setSmall: Boolean,
         handRotationNMS: Any?
     ): PacketContainer {
+        val watcher = WrappedDataWatcher()
+
+        if (setInvisible) {
+            watcher.setByte(0, 0x20.toByte())
+        }
+        if (nameTag != null) {
+            watcher.setChatComponent(2, nameTag)
+            watcher.setBool(3, true)
+        }
+        if (setSmall) {
+            watcher.setByte(15, (0x01 or 0x04).toByte())
+        }
+        if (handRotationNMS != null) {
+            watcher.setVectorSerializer(19, handRotationNMS)
+        }
+
+        return packet(PacketType.Play.Server.ENTITY_METADATA) {
+            integers[0] = entityID
+            watchableCollectionModifier[0] = watcher.watchableObjects
+        }
+    }
+
+
+}
+
+
+class PacketsV1_20 : PacketsV1_19() {
+    override fun metadataPacket(
+        entityID: Int,
+        nameTag: String?,
+        setInvisible: Boolean,
+        setSmall: Boolean,
+        handRotationNMS: Any?
+    ): PacketContainer {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.integers.write(0, entityID)
 
         val watcher = WrappedDataWatcher()
 
-        try {
-            Class.forName("com.comphenix.protocol.wrappers.WrappedDataValue")
+        packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
+        val wrappedDataValueList: MutableList<WrappedDataValue> = ArrayList()
 
-            packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
-            val wrappedDataValueList: MutableList<WrappedDataValue> = ArrayList()
-
-            if (setInvisible) {
-                wrappedDataValueList.add(
-                    WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte::class.java), 0x20.toByte())
-                )
-            }
-            if (nameTag != null) {
-                val opt: Optional<*> = Optional.of(
-                    WrappedChatComponent.fromChatMessage(
-                        nameTag
-                    )[0].handle
-                )
-
-                wrappedDataValueList.add(
-                    WrappedDataValue(
-                        2, WrappedDataWatcher.Registry.getChatComponentSerializer(true),
-                        opt
-                    )
-                )
-
-                wrappedDataValueList.add(
-                    WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean::class.java), true)
-                )
-            }
-            if (setSmall) {
-                wrappedDataValueList.add(
-                    WrappedDataValue(
-                        15, WrappedDataWatcher.Registry.get(Byte::class.java),
-                        (0x01 or 0x04).toByte()
-                    )
-                )
-            }
-            if (handRotationNMS != null) {
-                wrappedDataValueList.add(
-                    WrappedDataValue(
-                        19, WrappedDataWatcher.Registry.getVectorSerializer(),
-                        handRotationNMS
-                    )
-                )
-            }
-            packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
-        } catch (e: ClassNotFoundException) {
-            if (setInvisible) {
-                watcher.setByte(0, 0x20.toByte())
-            }
-            if (nameTag != null) {
-                watcher.setChatComponent(2, nameTag)
-                watcher.setBool(3, true)
-            }
-            if (setSmall) {
-                watcher.setByte(15, (0x01 or 0x04).toByte())
-            }
-            if (handRotationNMS != null) {
-                watcher.setVectorSerializer(19, handRotationNMS)
-            }
-            packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
+        if (setInvisible) {
+            wrappedDataValueList.add(
+                WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte::class.java), 0x20.toByte())
+            )
         }
+
+        nameTag?.let {
+            val opt: Optional<*> = Optional.of(
+                WrappedChatComponent.fromChatMessage(
+                    it
+                )[0].handle
+            )
+
+            wrappedDataValueList.add(
+                WrappedDataValue(
+                    2, WrappedDataWatcher.Registry.getChatComponentSerializer(true),
+                    opt
+                )
+            )
+
+            wrappedDataValueList.add(
+                WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean::class.java), true)
+            )
+        }
+
+        if (setSmall) {
+            wrappedDataValueList.add(
+                WrappedDataValue(
+                    15, WrappedDataWatcher.Registry.get(Byte::class.java),
+                    (0x01 or 0x04).toByte()
+                )
+            )
+        }
+        handRotationNMS?.let {
+            wrappedDataValueList.add(
+                WrappedDataValue(
+                    19, WrappedDataWatcher.Registry.getVectorSerializer(),
+                    it
+                )
+            )
+        }
+
+
+        packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
+
         return packet
     }
-
-
 }

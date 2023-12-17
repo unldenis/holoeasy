@@ -1,8 +1,8 @@
 package com.github.unldenis.hologram.line
 
 import com.comphenix.protocol.events.PacketContainer
+import com.github.unldenis.hologram.ext.send
 import com.github.unldenis.hologram.packet.PacketsFactory
-import com.github.unldenis.hologram.packet.send
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

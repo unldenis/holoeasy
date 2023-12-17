@@ -17,8 +17,10 @@ class PacketsFactory {
                 PacketsV1_13V1_16()
             } else if (VersionUtil.isBetween(VersionEnum.V1_17, VersionEnum.V1_18)) {
                 PacketsV1_17_V18()
-            } else {
+            } else if (VersionUtil.isCompatible(VersionEnum.V1_19)) {
                 PacketsV1_19()
+            } else {
+                PacketsV1_20()
             }
         }
 

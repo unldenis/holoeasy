@@ -2,7 +2,6 @@ package com.github.unldenis.hologram.line
 
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun
 import org.bukkit.entity.Player
-import java.util.function.Function
 
 interface ITextLine : ILine<String> {
 
