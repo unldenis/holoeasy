@@ -24,7 +24,7 @@ import java.util.*
 object VersionUtil {
     private val VERSION: String
 
-    private val CLEAN_VERSION: VersionEnum
+    val CLEAN_VERSION: VersionEnum
 
     init {
         val bpName = Bukkit.getServer().javaClass.getPackage().name
@@ -49,21 +49,26 @@ object VersionUtil {
         return isAbove(ve1) && isBelow(ve2)
     }
 
+}
 
-    enum class VersionEnum(val order: Int) {
-        MOCKBUK(0),  // MockBukkit Test
-        V1_8(1),
-        V1_9(2),
-        V1_10(3),
-        V1_11(4),
-        V1_12(5),
-        V1_13(6),
-        V1_14(7),
-        V1_15(8),
-        V1_16(9),
-        V1_17(10),
-        V1_18(11),
-        V1_19(12),
-        V1_20(13)
-    }
+
+enum class VersionEnum(val order: Int) : Comparable<VersionEnum> {
+    MOCKBUK(0),  // MockBukkit Test
+    V1_8(1),
+    V1_9(2),
+    V1_10(3),
+    V1_11(4),
+    V1_12(5),
+    V1_13(6),
+    V1_14(7),
+    V1_15(8),
+    V1_16(9),
+    V1_17(10),
+    V1_18(11),
+    V1_19(12),
+    V1_20(13),
+
+    V1_21(14),
+    V1_22(15)
+
 }

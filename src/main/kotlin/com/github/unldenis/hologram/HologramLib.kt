@@ -6,26 +6,28 @@ import com.github.unldenis.hologram.pool.IHologramPool
 import com.github.unldenis.hologram.pool.InteractiveHologramPool
 import org.bukkit.plugin.Plugin
 
-class HologramLib {
+object HologramLib {
 
-    companion object {
-        @JvmStatic
-        fun startPool(plugin: Plugin, spawnDistance: Double): IHologramPool {
-            val simplepool = HologramPool(plugin, spawnDistance)
-            Service.lastPool.set(simplepool)
-            return simplepool
-        }
+    @JvmField
+    var useLastSupportedVersion : Boolean = false
 
-        @JvmStatic
-        fun startInteractivePool(
-            plugin: Plugin, spawnDistance: Double,
-            minHitDistance: Float, maxHitDistance: Float
-        ): IHologramPool {
-            val simplepool = HologramPool(plugin, spawnDistance)
-            val interactivepool = InteractiveHologramPool(simplepool, minHitDistance, maxHitDistance)
-            Service.lastPool.set(interactivepool)
-            return interactivepool
-        }
-
+    @JvmStatic
+    fun startPool(plugin: Plugin, spawnDistance: Double): IHologramPool {
+        val simplepool = HologramPool(plugin, spawnDistance)
+        Service.lastPool.set(simplepool)
+        return simplepool
     }
+
+    @JvmStatic
+    fun startInteractivePool(
+        plugin: Plugin, spawnDistance: Double,
+        minHitDistance: Float, maxHitDistance: Float
+    ): IHologramPool {
+        val simplepool = HologramPool(plugin, spawnDistance)
+        val interactivepool = InteractiveHologramPool(simplepool, minHitDistance, maxHitDistance)
+        Service.lastPool.set(interactivepool)
+        return interactivepool
+    }
+
+
 }

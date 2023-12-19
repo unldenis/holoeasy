@@ -3,6 +3,7 @@ package com.github.unldenis.hologram.ext
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject
+import org.bukkit.inventory.ItemStack
 import java.util.*
 
 
@@ -40,4 +41,10 @@ fun WrappedDataWatcher.setChatComponent(index: Int, value: String) {
             WrappedDataWatcher.Registry.getChatComponentSerializer(true)
         ), opt
     )
+}
+
+fun WrappedDataWatcher.setItemStack(index : Int, value : ItemStack) {
+    val obj = WrappedDataWatcherObject(index,
+        WrappedDataWatcher.Registry.get(ItemStack::class.java))
+    this.setObject(obj, value)
 }

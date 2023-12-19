@@ -1,6 +1,9 @@
 package test;
 import com.github.unldenis.hologram.HologramLib;
 import com.github.unldenis.hologram.animation.AnimationType;
+import com.github.unldenis.hologram.packet.IPacket;
+import com.github.unldenis.hologram.packet.metadata.item.MetadataItemPacketA;
+import com.github.unldenis.hologram.util.VersionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
