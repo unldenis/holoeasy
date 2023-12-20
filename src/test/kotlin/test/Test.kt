@@ -1,6 +1,5 @@
 package test
 
-import com.github.unldenis.hologram.HologramLib.Companion.startInteractivePool
 import com.github.unldenis.hologram.animation.AnimationType
 import com.github.unldenis.hologram.builder.HologramBuilder.*
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun
@@ -18,7 +17,7 @@ class Test {
 
 
     fun init(plugin: Plugin) {
-        startInteractivePool(plugin, 60.0, 0.5f, 5f)
+//        startInteractivePool(plugin, 60.0, 0.5f, 5f)
     }
 
     fun code(loc: Location) {
@@ -26,7 +25,7 @@ class Test {
         hologram(loc) {
 
             textline("Hello")
-            textline("{} Stats", Player::name)
+            textline("{} Stats", Player::getName)
             textline("Score {} - {}", { 0 }, { 1 })
             clickable("Click me")
 
