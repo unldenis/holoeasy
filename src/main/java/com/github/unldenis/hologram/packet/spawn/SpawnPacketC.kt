@@ -31,9 +31,6 @@ object SpawnPacketC : ISpawnPacket {
             doubles[1] = location.y
             doubles[2] = location.z
 
-            integers[3] = 0
-            integers[4] = 0
-
         }
     }
 

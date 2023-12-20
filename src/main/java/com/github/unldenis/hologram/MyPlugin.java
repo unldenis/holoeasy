@@ -45,7 +45,8 @@ public class MyPlugin extends JavaPlugin {
                 PacketContainerExtKt.send(IPacket.get(IPacket.Type.METADATA_ITEM)
                         .metadata(counter.getAndIncrement(), new ItemStack(Material.GOLDEN_APPLE)), player);
 
-                PacketContainerExtKt.send(IPacketsKt.entityVelocityTest(counter.get()), player);
+//                PacketContainerExtKt.send(IPacketsKt.entityVelocityTest(counter.get()), player);
+
 
 
                 player.sendMessage("Done");

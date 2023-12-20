@@ -23,14 +23,14 @@ class Test {
     fun code(loc: Location) {
 
         hologram(loc) {
-
             textline("Hello")
             textline("{} Stats", Player::getName)
             textline("Score {} - {}", { 0 }, { 1 })
             clickable("Click me")
 
-            block(ItemStack(Material.GOLD_BLOCK))
-            block(ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)
+            item(ItemStack(Material.GOLDEN_APPLE))
+            item(ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)
         }
+
     }
 }

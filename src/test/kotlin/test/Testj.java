@@ -34,9 +34,8 @@ class Testj {
             textline("Score {} - {}", $ -> 0, $ -> 1);
             clickable("Click me");
 
-            block(new ItemStack(Material.GOLD_BLOCK));
-            block(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE);
-
+            item(new ItemStack(Material.GOLDEN_APPLE));
+            item(new ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE);
         });
 
     }

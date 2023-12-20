@@ -3,14 +3,13 @@ package com.github.unldenis.hologram.builder
 import com.github.unldenis.hologram.animation.AnimationType
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun
-import com.github.unldenis.hologram.experimental.ItemLine
 import com.github.unldenis.hologram.hologram.TextBlockStandardLoader
 import com.github.unldenis.hologram.line.*
 import com.github.unldenis.hologram.line.animated.BlockALine
 import com.github.unldenis.hologram.line.animated.StandardAnimatedLine
 import com.github.unldenis.hologram.pool.IHologramPool
+import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
-import org.bukkit.util.EulerAngle
 import java.util.concurrent.atomic.AtomicReference
 
 object Service {
@@ -52,7 +51,7 @@ object Service {
     ) {
         val holo = getStaticHolo()
 
-        val line = Line(holo.plugin)
+        val line = Line(holo.plugin, EntityType.ARMOR_STAND)
         if (minHitDistance == null || maxHitDistance == null) {
             val textLine = TextLine(line, text, clickable = clickable, args = args)
             holo.lines.add(textLine)
@@ -64,12 +63,10 @@ object Service {
 
     }
 
-    fun blockline(block: ItemStack, animationType: AnimationType? = null) {
-        if (!block.type.isBlock) {
-            throw RuntimeException("Itemstack ${block.type} is not a block")
-        }
+    @JvmOverloads
+    fun itemline(block: ItemStack, animationType: AnimationType? = null) {
         val holo = getStaticHolo()
-        val line = Line(holo.plugin)
+        val line = Line(holo.plugin, EntityType.DROPPED_ITEM)
         val blockline = BlockLine(line, block)
         if (animationType == null) {
             holo.lines.add(blockline)
@@ -79,16 +76,6 @@ object Service {
                 blockALine.setAnimation(animationType, it)
             }
         }
-    }
-
-    fun itemline(item: ItemStack, handRotation: EulerAngle) {
-        if (!item.type.isItem) {
-            throw RuntimeException("Itemstack ${item.type} is not a item")
-        }
-        val holo = getStaticHolo()
-        val line = Line(holo.plugin)
-        val blockline = ItemLine(line, item, handRotation)
-        holo.lines.add(blockline)
     }
 
     fun customLine(customLine: ILine<*>) {

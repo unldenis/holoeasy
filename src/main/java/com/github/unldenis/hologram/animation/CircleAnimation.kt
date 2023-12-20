@@ -18,7 +18,9 @@
  */
 package com.github.unldenis.hologram.animation
 
+import com.github.unldenis.hologram.ext.send
 import com.github.unldenis.hologram.line.Line
+import com.github.unldenis.hologram.packet.IPacket
 import org.bukkit.entity.Player
 
 
@@ -32,11 +34,9 @@ class CircleAnimation : Animation {
     override fun nextFrame(player: Player, line: Line) {
         this.yaw += 10f
 
-        //  TODO: THIS
-//        PacketsFactory.get()
-//            .rotatePackets(line.entityID, line.location ?:
-//            throw RuntimeException("Location is not set to rotate"), yaw)
-//            .forEach { it.send(player) }
+        IPacket.get(IPacket.Type.ROTATE)
+            .rotate(line.entityID, line.location ?: throw RuntimeException("Location is not set to rotate"), yaw)
+            .forEach { it.send(player) }
     }
 
     override fun async(): Boolean {

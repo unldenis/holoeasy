@@ -14,13 +14,16 @@ object MetadataTextPacketB : IMetadataTextPacket {
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
         get() = arrayOf(VersionEnum.V1_9..VersionEnum.V1_12)
 
-    override fun metadata(entityId: Int, nameTag: String): PacketContainer {
+    override fun metadata(entityId: Int, nameTag: String?, invisible : Boolean): PacketContainer {
         val watcher = WrappedDataWatcher()
 
+        if(invisible)
         watcher.setByte(0, 0x20.toByte())
 
-        watcher.setString(2, nameTag)
-        watcher.setBool(3, true)
+        if(nameTag != null) {
+            watcher.setString(2, nameTag)
+            watcher.setBool(3, true)
+        }
 
         return packet(PacketType.Play.Server.ENTITY_METADATA) {
             modifier.writeDefaults()

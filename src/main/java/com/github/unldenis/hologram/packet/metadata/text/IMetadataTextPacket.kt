@@ -5,5 +5,5 @@ import com.github.unldenis.hologram.packet.IPacket
 
 interface IMetadataTextPacket : IPacket {
 
-    fun metadata(entityId: Int, nameTag: String): PacketContainer
+    fun metadata(entityId: Int, nameTag: String?, invisible : Boolean = true): PacketContainer
 }

@@ -1,6 +1,8 @@
 package com.github.unldenis.hologram.line
 
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun
+import com.github.unldenis.hologram.ext.send
+import com.github.unldenis.hologram.packet.IPacket
 import com.github.unldenis.hologram.util.AABB
 import com.github.unldenis.hologram.util.AABB.Vec3D
 import org.bukkit.Location
@@ -80,6 +82,9 @@ class TextLine(
         isEmpty = obj.isEmpty()
         if (!isEmpty) {
             line.spawn(player)
+            val packet = IPacket.get(IPacket.Type.METADATA_TEXT)
+                .metadata(entityId, parse(player))
+            packet.send(player)
 //            PacketsFactory.get()
 //                .metadataPacket(line.entityID, parse(player), setInvisible = true, setSmall = true, handRotationNMS = null)
 //                .send(player)
@@ -100,28 +105,16 @@ class TextLine(
             }
 
             0x01 -> {
-//                line.spawn(player)
-//                isEmpty = false
-//                PacketsFactory.get()
-//                    .metadataPacket(
-//                        line.entityID,
-//                        parse(player),
-//                        setInvisible = true,
-//                        setSmall = true,
-//                        handRotationNMS = null
-//                    )
-//                    .send(player)
+                line.spawn(player)
+                isEmpty = false
+                IPacket.get(IPacket.Type.METADATA_TEXT)
+                    .metadata(entityId, parse(player)).send(player)
             }
-//
-//            0x00 -> PacketsFactory.get()
-//                .metadataPacket(
-//                    line.entityID,
-//                    parse(player),
-//                    setInvisible = false,
-//                    setSmall = false,
-//                    handRotationNMS = null
-//                )
-//                .send(player)
+
+            0x00 ->
+                IPacket.get(IPacket.Type.METADATA_TEXT)
+                    .metadata(entityId, parse(player), invisible = false)
+                    .send(player)
         }
     }
 

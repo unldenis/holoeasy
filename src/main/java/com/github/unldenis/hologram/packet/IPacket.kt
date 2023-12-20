@@ -2,6 +2,8 @@ package com.github.unldenis.hologram.packet
 
 
 import com.github.unldenis.hologram.HologramLib
+import com.github.unldenis.hologram.packet.attach.AttachPacketA
+import com.github.unldenis.hologram.packet.attach.IAttachPacket
 import com.github.unldenis.hologram.packet.delete.DeletePacketA
 import com.github.unldenis.hologram.packet.delete.DeletePacketB
 import com.github.unldenis.hologram.packet.delete.IDeletePacket
@@ -100,6 +102,9 @@ interface IPacket {
 
             @JvmField
             val TELEPORT = Type(ITeleportPacket::class, TeleportPacketA, TeleportPacketB)
+
+            @JvmField
+            val ATTACH_ENTITY = Type(IAttachPacket::class, AttachPacketA)
         }
 
     }

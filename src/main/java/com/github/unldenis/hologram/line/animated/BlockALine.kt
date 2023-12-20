@@ -28,8 +28,8 @@ class BlockALine(private val blockLine: BlockLine, private val animatedLine: IAn
             blockLine.obj = value
         }
 
-    override fun setLocation(location: Location) {
-        blockLine.setLocation(location)
+    override fun setLocation(value: Location) {
+        blockLine.setLocation(value)
     }
 
     override fun hide(player: Player) {

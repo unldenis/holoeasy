@@ -76,16 +76,12 @@ public class HologramBuilder {
         );
     }
 
-    public static void item(@NotNull ItemStack item, @NotNull EulerAngle eulerAngle) {
-        getInstance().itemline(item, eulerAngle);
+    public static void item(@NotNull ItemStack block) {
+        getInstance().itemline(block);
     }
 
-    public static void block(@NotNull ItemStack block) {
-        getInstance().blockline(block, null);
-    }
-
-    public static void block(@NotNull ItemStack block, @NotNull AnimationType animationType) {
-        getInstance().blockline(block, animationType);
+    public static void item(@NotNull ItemStack block, @NotNull AnimationType animationType) {
+        getInstance().itemline(block, animationType);
     }
 
     public static void customline(@NotNull ILine<?> customLine) {
