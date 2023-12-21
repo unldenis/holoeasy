@@ -1,8 +1,6 @@
 package test
 
-import com.github.unldenis.hologram.animation.AnimationType
 import com.github.unldenis.hologram.builder.HologramBuilder.*
-import com.github.unldenis.hologram.builder.interfaces.PlayerFun
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -29,7 +27,7 @@ class Test {
             clickable("Click me")
 
             item(ItemStack(Material.GOLDEN_APPLE))
-            item(ItemStack(Material.DIAMOND_BLOCK), AnimationType.CIRCLE)
+            item(ItemStack(Material.DIAMOND_BLOCK))
         }
 
     }

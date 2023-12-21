@@ -1,7 +1,5 @@
 package com.github.unldenis.hologram.hologram
 
-import com.github.unldenis.hologram.event.PlayerHologramHideEvent
-import com.github.unldenis.hologram.event.PlayerHologramShowEvent
 import com.github.unldenis.hologram.line.ILine
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -48,9 +46,12 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
         for (line in this.hLines) {
             line.show(player)
         }
-        Bukkit.getScheduler().runTask(
-            plugin,
-            Runnable { Bukkit.getPluginManager().callEvent(PlayerHologramShowEvent(player, this)) })
+
+
+        // TODO:
+//        Bukkit.getScheduler().runTask(
+//            plugin,
+//            Runnable { Bukkit.getPluginManager().callEvent(PlayerHologramShowEvent(player, this)) })
     }
 
     fun hide(player: Player) {
@@ -59,9 +60,10 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
         }
         seeingPlayers.remove(player)
 
-        Bukkit.getScheduler().runTask(
-            plugin,
-            Runnable { Bukkit.getPluginManager().callEvent(PlayerHologramHideEvent(player, this)) })
+        // TODO:
+//        Bukkit.getScheduler().runTask(
+//            plugin,
+//            Runnable { Bukkit.getPluginManager().callEvent(PlayerHologramHideEvent(player, this)) })
     }
 
     override fun hashCode(): Int {

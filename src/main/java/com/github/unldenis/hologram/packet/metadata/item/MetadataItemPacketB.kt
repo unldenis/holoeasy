@@ -9,17 +9,15 @@ import com.github.unldenis.hologram.util.VersionEnum
 import org.bukkit.inventory.ItemStack
 
 
-object MetadataItemPacketA : IMetadataItemPacket {
+object MetadataItemPacketB : IMetadataItemPacket {
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_8..VersionEnum.V1_8)
+        get() = arrayOf(VersionEnum.V1_9..VersionEnum.V1_12)
 
     override fun metadata(entityId: Int, item: ItemStack): PacketContainer {
         val watcher = WrappedDataWatcher()
 
-
-        watcher.setObject(5, true)
-        watcher.setObject(10, item.bukkitGeneric())
-
+        watcher.setBool(5, true)
+        watcher.setItemStack(6, item)
 
         return packet(PacketType.Play.Server.ENTITY_METADATA) {
             integers[0] = entityId

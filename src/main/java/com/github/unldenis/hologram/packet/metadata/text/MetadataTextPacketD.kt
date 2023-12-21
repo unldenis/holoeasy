@@ -5,6 +5,8 @@ import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
+import com.github.unldenis.hologram.util.BOOL_SERIALIZER
+import com.github.unldenis.hologram.util.BYTE_SERIALIZER
 import com.github.unldenis.hologram.util.VersionEnum
 import java.util.*
 
@@ -21,10 +23,14 @@ object MetadataTextPacketD : IMetadataTextPacket {
         packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
         val wrappedDataValueList: MutableList<WrappedDataValue> = ArrayList()
 
-        if(invisible)
-        wrappedDataValueList.add(
-            WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte::class.java), 0x20.toByte())
-        )
+
+
+        if(invisible) {
+            wrappedDataValueList.add(
+                WrappedDataValue(0, BYTE_SERIALIZER, 0x20.toByte())
+            )
+        }
+
 
         nameTag?.let {
             val opt: Optional<*> = Optional.of(
@@ -41,7 +47,7 @@ object MetadataTextPacketD : IMetadataTextPacket {
             )
 
             wrappedDataValueList.add(
-                WrappedDataValue(3, WrappedDataWatcher.Registry.get(Boolean::class.java), true)
+                WrappedDataValue(3, BOOL_SERIALIZER, true)
             )
         }
 

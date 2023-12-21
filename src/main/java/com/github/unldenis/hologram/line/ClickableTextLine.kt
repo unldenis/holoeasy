@@ -1,8 +1,6 @@
 package com.github.unldenis.hologram.line
 
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun
-import com.github.unldenis.hologram.collection.IntHashSet
-import com.github.unldenis.hologram.experimental.PlayerTextLineInteractEvent
 import com.github.unldenis.hologram.util.AABB
 import com.github.unldenis.hologram.util.AABB.Ray3D
 import com.github.unldenis.hologram.util.AABB.Vec3D
@@ -22,7 +20,7 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
     private val maxHitDistance: Float
     private var hitbox: AABB? = null
 
-    private val playersClickable = IntHashSet()
+    private val playersClickable = mutableSetOf<Int>()
 
     init {
         require(!(minHitDistance < 0)) { "minHitDistance must be positive" }
@@ -110,9 +108,10 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
 
         val intersects = hitbox!!.intersectsRay(Ray3D(player.eyeLocation), minHitDistance, maxHitDistance) ?: return
 
-        Bukkit.getScheduler().runTask(
-            line.plugin,
-            Runnable { Bukkit.getPluginManager().callEvent(PlayerTextLineInteractEvent(player, this)) })
+        // TODO:
+//        Bukkit.getScheduler().runTask(
+//            line.plugin,
+//            Runnable { Bukkit.getPluginManager().callEvent(PlayerTextLineInteractEvent(player, this)) })
     }
 
     private fun updateHitBox() {

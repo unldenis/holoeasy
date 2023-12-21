@@ -19,7 +19,7 @@ class TextSequentialLoader : IHologramLoader {
         val cloned = hologram.location.clone()
         for (line in lines) {
             when (line.type) {
-                ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
+                ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
                     val tL = (line as ITextLine).textLine
 
                     // add to lines

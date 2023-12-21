@@ -27,22 +27,20 @@ class TextBlockStandardLoader : IHologramLoader {
             if (j > 0) {
                 val before: ILine.Type = lines[j - 1].type
                 when (before) {
-                    ILine.Type.BLOCK_LINE, ILine.Type.BLOCK_ANIMATED_LINE -> up = 0.0
+                    ILine.Type.BLOCK_LINE -> up = -1.5
                     ILine.Type.EXTERNAL -> {}
                     ILine.Type.TEXT_LINE -> {}
-                    ILine.Type.TEXT_ANIMATED_LINE -> {}
                     ILine.Type.CLICKABLE_TEXT_LINE -> {}
-                    ILine.Type.ITEM_LINE -> {}
                 }
             }
 
             when (line.type) {
-                ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
+                ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
                     line.setLocation(cloned.add(0.0, up, 0.0).clone())
                     hologram.lines.add(0, line)
                 }
 
-                ILine.Type.BLOCK_LINE, ILine.Type.BLOCK_ANIMATED_LINE -> {
+                ILine.Type.BLOCK_LINE -> {
                     line.setLocation(cloned.add(0.0, 0.6, 0.0).clone())
                     hologram.lines.add(0, line)
                 }
@@ -61,8 +59,8 @@ class TextBlockStandardLoader : IHologramLoader {
         var destY = (hologram.location.y - 0.28)
 
         destY += when (firstLine.type) {
-            ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> 0.28
-            else -> 0.60
+            ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> 0.28
+            else -> 0.6
         }
 
         // Teleport the first line

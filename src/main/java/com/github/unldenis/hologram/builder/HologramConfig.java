@@ -2,6 +2,7 @@ package com.github.unldenis.hologram.builder;
 
 import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.hologram.IHologramLoader;
+import com.github.unldenis.hologram.hologram.TextBlockStandardLoader;
 import com.github.unldenis.hologram.line.ILine;
 import com.github.unldenis.hologram.pool.IHologramPool;
 import org.bukkit.Location;
@@ -21,11 +22,12 @@ public class HologramConfig {
     @NotNull
     final Location location;
     final List<ILine<?>> lines = new ArrayList<>();
-    final Set<Consumer<Hologram>> onLoad = new HashSet<>();
     public String name;
-    public IHologramLoader loader;
+    public IHologramLoader loader = new TextBlockStandardLoader();
     public IHologramPool pool = getInstance().getLastPool().get();
-    public Plugin plugin;
+    public Plugin plugin = pool == null ? null : pool.getPlugin();
+
+
     HologramConfig(@NotNull Location location) {
         this.location = location;
     }

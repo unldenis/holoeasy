@@ -3,6 +3,10 @@ package com.github.unldenis.hologram.ext
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject
+import com.github.unldenis.hologram.util.BOOL_SERIALIZER
+import com.github.unldenis.hologram.util.BYTE_SERIALIZER
+import com.github.unldenis.hologram.util.ITEM_SERIALIZER
+import com.github.unldenis.hologram.util.STRING_SERIALIZER
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
@@ -10,7 +14,7 @@ import java.util.*
 fun WrappedDataWatcher.setByte(index: Int, value: Byte) {
     val obj = WrappedDataWatcherObject(
         index,
-        WrappedDataWatcher.Registry.get(Byte::class.java)
+        BYTE_SERIALIZER
     )
     this.setObject(obj, value)
 }
@@ -19,7 +23,7 @@ fun WrappedDataWatcher.setString(index: Int, value: String) {
     this.setObject(
         WrappedDataWatcherObject(
             index,
-            WrappedDataWatcher.Registry.get(String::class.java)
+            STRING_SERIALIZER
         ), value
     )
 }
@@ -27,7 +31,7 @@ fun WrappedDataWatcher.setString(index: Int, value: String) {
 fun WrappedDataWatcher.setBool(index: Int, value: Boolean) {
     val obj = WrappedDataWatcherObject(
         index,
-        WrappedDataWatcher.Registry.get(Boolean::class.java)
+        BOOL_SERIALIZER
     )
     this.setObject(obj, value)
 }
@@ -51,9 +55,6 @@ fun WrappedDataWatcher.setChatComponent(index: Int, value: String) {
 }
 
 fun WrappedDataWatcher.setItemStack(index: Int, value: ItemStack) {
-    val obj = WrappedDataWatcherObject(
-        index,
-        WrappedDataWatcher.Registry.get(ItemStack::class.java)
-    )
-    this.setObject(obj, value)
+    val obj = WrappedDataWatcherObject(index, ITEM_SERIALIZER)
+    this.setObject(obj, value.bukkitGeneric())
 }

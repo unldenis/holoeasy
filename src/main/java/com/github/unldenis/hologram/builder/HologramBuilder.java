@@ -1,6 +1,5 @@
 package com.github.unldenis.hologram.builder;
 
-import com.github.unldenis.hologram.animation.AnimationType;
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup;
 import com.github.unldenis.hologram.builder.interfaces.HologramSetupGroup;
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun;
@@ -8,7 +7,6 @@ import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.line.ILine;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -25,16 +23,20 @@ public class HologramBuilder {
         setupGroup.setup();
         getInstance().getStaticHologram().remove();
 
-        Hologram holo = new Hologram(holoConfig.plugin, holoConfig.location, holoConfig.loader);
-        holo.setName(holoConfig.name);
-
-        // TODO: Add to pool and load?
-
-        holo.getLines().addAll(holo.getLines());
-
-        for (Consumer<Hologram> task : holoConfig.onLoad) {
-            task.accept(holo);
+        if(holoConfig.pool == null && holoConfig.plugin == null) {
+            throw new RuntimeException("Missing a pool or a org.bukkit.Plugin");
         }
+
+        Hologram holo = new Hologram(holoConfig.plugin, holoConfig.location, holoConfig.loader);
+        if(holoConfig.name != null) {
+            holo.setName(holoConfig.name);
+        }
+        holo.load(holoConfig.lines.toArray(new ILine[0]));
+
+        if(holoConfig.pool != null) {
+            holoConfig.pool.takeCareOf(holo);
+        }
+
 
         return holo;
     }
@@ -78,10 +80,6 @@ public class HologramBuilder {
 
     public static void item(@NotNull ItemStack block) {
         getInstance().itemline(block);
-    }
-
-    public static void item(@NotNull ItemStack block, @NotNull AnimationType animationType) {
-        getInstance().itemline(block, animationType);
     }
 
     public static void customline(@NotNull ILine<?> customLine) {

@@ -36,16 +36,10 @@ interface ILine<T> {
     enum class Type {
         EXTERNAL,
         TEXT_LINE,
-        TEXT_ANIMATED_LINE,
-
         @ApiStatus.Experimental
         CLICKABLE_TEXT_LINE,
 
-
         BLOCK_LINE,
-        BLOCK_ANIMATED_LINE,
 
-
-        ITEM_LINE,
     }
 }

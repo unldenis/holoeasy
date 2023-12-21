@@ -1,6 +1,5 @@
 package com.github.unldenis.hologram.pool
 
-import com.github.unldenis.hologram.event.PlayerHologramInteractEvent
 import com.github.unldenis.hologram.hologram.Hologram
 import com.github.unldenis.hologram.line.ILine
 import com.github.unldenis.hologram.line.ITextLine
@@ -55,7 +54,7 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
                 }
                 for (line in hologram.lines) {
                     when (line.type) {
-                        ILine.Type.TEXT_LINE, ILine.Type.TEXT_ANIMATED_LINE -> {
+                        ILine.Type.TEXT_LINE -> {
                             val iTextLine = line as ITextLine
                             if (!iTextLine.clickable) {
                                 continue
@@ -73,20 +72,19 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
                                 continue
                             }
 
-                            Bukkit.getScheduler().runTask(
-                                plugin,
-                                Runnable {
-                                    Bukkit.getPluginManager()
-                                        .callEvent(PlayerHologramInteractEvent(player, hologram, iTextLine))
-                                })
+                            // TODO:
+//                            Bukkit.getScheduler().runTask(
+//                                plugin,
+//                                Runnable {
+//                                    Bukkit.getPluginManager()
+//                                        .callEvent(PlayerHologramInteractEvent(player, hologram, iTextLine))
+//                                })
                             break@FST
                         }
 
                         ILine.Type.EXTERNAL -> {}
                         ILine.Type.CLICKABLE_TEXT_LINE -> {}
                         ILine.Type.BLOCK_LINE -> {}
-                        ILine.Type.BLOCK_ANIMATED_LINE -> {}
-                        ILine.Type.ITEM_LINE -> {}
                     }
                 }
             }

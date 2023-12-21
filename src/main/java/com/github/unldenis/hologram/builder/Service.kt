@@ -1,14 +1,10 @@
 package com.github.unldenis.hologram.builder
 
-import com.github.unldenis.hologram.animation.AnimationType
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun
 import com.github.unldenis.hologram.hologram.TextBlockStandardLoader
 import com.github.unldenis.hologram.line.*
-import com.github.unldenis.hologram.line.animated.BlockALine
-import com.github.unldenis.hologram.line.animated.StandardAnimatedLine
 import com.github.unldenis.hologram.pool.IHologramPool
-import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
 import java.util.concurrent.atomic.AtomicReference
 
@@ -27,6 +23,7 @@ object Service {
     fun config(configGroup: HologramConfigGroup) {
         val config = getStaticHolo()
 
+        configGroup.configure(config)
 
         if (config.plugin == null) {
             if (config.pool == null) {
@@ -51,12 +48,11 @@ object Service {
     ) {
         val holo = getStaticHolo()
 
-        val line = Line(holo.plugin, EntityType.ARMOR_STAND)
         if (minHitDistance == null || maxHitDistance == null) {
-            val textLine = TextLine(line, text, clickable = clickable, args = args)
+            val textLine = TextLine(holo.plugin, text, clickable = clickable, args = args)
             holo.lines.add(textLine)
         } else {
-            val textLine = TextLine(line, text, clickable = false, args = args)
+            val textLine = TextLine(holo.plugin, text, clickable = false, args = args)
             val clickableTextLine = ClickableTextLine(textLine, minHitDistance, maxHitDistance)
             holo.lines.add(clickableTextLine)
         }
@@ -64,18 +60,10 @@ object Service {
     }
 
     @JvmOverloads
-    fun itemline(block: ItemStack, animationType: AnimationType? = null) {
+    fun itemline(block: ItemStack) {
         val holo = getStaticHolo()
-        val line = Line(holo.plugin, EntityType.DROPPED_ITEM)
-        val blockline = BlockLine(line, block)
-        if (animationType == null) {
-            holo.lines.add(blockline)
-        } else {
-            val blockALine = BlockALine(blockline, StandardAnimatedLine(line))
-            holo.onLoad.add {
-                blockALine.setAnimation(animationType, it)
-            }
-        }
+        val blockline = BlockLine(holo.plugin, block)
+        holo.lines.add(blockline)
     }
 
     fun customLine(customLine: ILine<*>) {
@@ -83,7 +71,4 @@ object Service {
         holo.lines.add(customLine)
     }
 
-    private fun <T> getFirstNonNull(vararg elements: T?): T? {
-        return elements.firstOrNull() { it != null }
-    }
 }

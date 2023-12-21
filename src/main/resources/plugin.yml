@@ -2,5 +2,6 @@ name: MyPlugin
 main: com.github.unldenis.hologram.MyPlugin
 version: 1.0
 depend: [ProtocolLib]
+api-version: 1.13
 commands:
   test:

@@ -6,14 +6,15 @@ import com.github.unldenis.hologram.packet.IPacket
 import com.github.unldenis.hologram.util.AABB
 import com.github.unldenis.hologram.util.AABB.Vec3D
 import org.bukkit.Location
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 
-class TextLine(
-    val line: Line, obj: String, override val args: Array<PlayerFun>? = null,
+class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>? = null,
     override val clickable: Boolean = false
 ) : ITextLine {
 
+    private val line: Line = Line(plugin, EntityType.ARMOR_STAND)
 
     override var obj: String = ""
 
@@ -39,10 +40,10 @@ class TextLine(
         }
         val res = arrayOfNulls<Any>(args.size)
         for (i in args.indices) {
-            res[i] = args[i].invoke(player)
+            res[i] = args[i](player)
         }
 
-        return String.format(obj, args)
+        return String.format(obj, args = res)
     }
 
     override val plugin: Plugin
@@ -85,9 +86,6 @@ class TextLine(
             val packet = IPacket.get(IPacket.Type.METADATA_TEXT)
                 .metadata(entityId, parse(player))
             packet.send(player)
-//            PacketsFactory.get()
-//                .metadataPacket(line.entityID, parse(player), setInvisible = true, setSmall = true, handRotationNMS = null)
-//                .send(player)
         }
     }
 

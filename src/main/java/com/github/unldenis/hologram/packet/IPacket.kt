@@ -2,21 +2,11 @@ package com.github.unldenis.hologram.packet
 
 
 import com.github.unldenis.hologram.HologramLib
-import com.github.unldenis.hologram.packet.attach.AttachPacketA
-import com.github.unldenis.hologram.packet.attach.IAttachPacket
 import com.github.unldenis.hologram.packet.delete.DeletePacketA
 import com.github.unldenis.hologram.packet.delete.DeletePacketB
 import com.github.unldenis.hologram.packet.delete.IDeletePacket
-import com.github.unldenis.hologram.packet.equipment.EquipmentPacketA
-import com.github.unldenis.hologram.packet.equipment.EquipmentPacketB
-import com.github.unldenis.hologram.packet.equipment.EquipmentPacketC
-import com.github.unldenis.hologram.packet.equipment.IEquipmentPacket
-import com.github.unldenis.hologram.packet.metadata.item.IMetadataItemPacket
-import com.github.unldenis.hologram.packet.metadata.item.MetadataItemPacketA
+import com.github.unldenis.hologram.packet.metadata.item.*
 import com.github.unldenis.hologram.packet.metadata.text.*
-import com.github.unldenis.hologram.packet.rotate.IRotatePacket
-import com.github.unldenis.hologram.packet.rotate.RotatePacketA
-import com.github.unldenis.hologram.packet.rotate.RotatePacketB
 import com.github.unldenis.hologram.packet.spawn.ISpawnPacket
 import com.github.unldenis.hologram.packet.spawn.SpawnPacketA
 import com.github.unldenis.hologram.packet.spawn.SpawnPacketB
@@ -80,9 +70,6 @@ interface IPacket {
             val DELETE = Type(IDeletePacket::class, DeletePacketA, DeletePacketB)
 
             @JvmField
-            val EQUIPMENT = Type(IEquipmentPacket::class, EquipmentPacketA, EquipmentPacketB, EquipmentPacketC)
-
-            @JvmField
             val METADATA_TEXT = Type(
                 IMetadataTextPacket::class,
                 MetadataTextPacketA,
@@ -92,10 +79,13 @@ interface IPacket {
             )
 
             @JvmField
-            val METADATA_ITEM = Type(IMetadataItemPacket::class, MetadataItemPacketA)
-
-            @JvmField
-            val ROTATE = Type(IRotatePacket::class, RotatePacketA, RotatePacketB)
+            val METADATA_ITEM = Type(
+                IMetadataItemPacket::class,
+                MetadataItemPacketA,
+                MetadataItemPacketB,
+                MetadataItemPacketC,
+                MetadataItemPacketD
+            )
 
             @JvmField
             val SPAWN = Type(ISpawnPacket::class, SpawnPacketA, SpawnPacketB, SpawnPacketC)
@@ -103,8 +93,6 @@ interface IPacket {
             @JvmField
             val TELEPORT = Type(ITeleportPacket::class, TeleportPacketA, TeleportPacketB)
 
-            @JvmField
-            val ATTACH_ENTITY = Type(IAttachPacket::class, AttachPacketA)
         }
 
     }
