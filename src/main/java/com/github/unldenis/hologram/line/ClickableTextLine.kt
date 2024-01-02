@@ -49,6 +49,10 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         return line.parse(player)
     }
 
+    override fun onClick(clickEvent: ClickEvent) {
+        line.onClick(clickEvent)
+    }
+
     override val plugin: Plugin
         get() = line.plugin
 
@@ -107,11 +111,7 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         }
 
         val intersects = hitbox!!.intersectsRay(Ray3D(player.eyeLocation), minHitDistance, maxHitDistance) ?: return
-
-        // TODO:
-//        Bukkit.getScheduler().runTask(
-//            line.plugin,
-//            Runnable { Bukkit.getPluginManager().callEvent(PlayerTextLineInteractEvent(player, this)) })
+        line.clickEvent?.onClick(line, player)
     }
 
     private fun updateHitBox() {

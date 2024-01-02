@@ -3,13 +3,14 @@ package com.github.unldenis.hologram.builder;
 import com.github.unldenis.hologram.builder.interfaces.HologramConfigGroup;
 import com.github.unldenis.hologram.builder.interfaces.HologramSetupGroup;
 import com.github.unldenis.hologram.builder.interfaces.PlayerFun;
+import com.github.unldenis.hologram.config.HologramKey;
 import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.line.ILine;
+import com.github.unldenis.hologram.line.ITextLine;
+import com.github.unldenis.hologram.pool.IHologramPool;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 public class HologramBuilder {
 
@@ -17,24 +18,19 @@ public class HologramBuilder {
         return Service.INSTANCE;
     }
 
-    public static Hologram hologram(@NotNull Location location, @NotNull HologramSetupGroup setupGroup) {
-        HologramConfig holoConfig = new HologramConfig(location);
+    public static Hologram hologram(
+            @NotNull HologramKey key, @NotNull Location location, @NotNull HologramSetupGroup setupGroup) {
+        HologramConfig holoConfig = new HologramConfig(key, location);
         getInstance().getStaticHologram().set(holoConfig);
         setupGroup.setup();
         getInstance().getStaticHologram().remove();
 
-        if(holoConfig.pool == null && holoConfig.plugin == null) {
-            throw new RuntimeException("Missing a pool or a org.bukkit.Plugin");
-        }
-
-        Hologram holo = new Hologram(holoConfig.plugin, holoConfig.location, holoConfig.loader);
-        if(holoConfig.name != null) {
-            holo.setName(holoConfig.name);
-        }
+        Hologram holo = new Hologram(key, holoConfig.location, holoConfig.loader);
         holo.load(holoConfig.lines.toArray(new ILine[0]));
 
-        if(holoConfig.pool != null) {
-            holoConfig.pool.takeCareOf(holo);
+        IHologramPool pool = key.getPool();
+        if(pool != null) {
+            pool.takeCareOf(key, holo);
         }
 
 
@@ -56,8 +52,8 @@ public class HologramBuilder {
         );
     }
 
-    public static void clickable(@NotNull String text, @NotNull PlayerFun... args) {
-        getInstance().textline(
+    public static ITextLine clickable(@NotNull String text, @NotNull PlayerFun... args) {
+        return getInstance().textline(
                 text,
                 true,
                 null,
@@ -67,9 +63,9 @@ public class HologramBuilder {
         );
     }
 
-    public static void clickable(@NotNull String text, float minHitDistance, float maxHitDistance,
+    public static ITextLine clickable(@NotNull String text, float minHitDistance, float maxHitDistance,
                                  @NotNull PlayerFun... args) {
-        getInstance().textline(
+        return getInstance().textline(
                 text,
                 false,
                 minHitDistance,

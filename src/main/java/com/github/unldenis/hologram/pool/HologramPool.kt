@@ -1,5 +1,6 @@
 package com.github.unldenis.hologram.pool
 
+import com.github.unldenis.hologram.config.HologramKey
 import com.github.unldenis.hologram.hologram.Hologram
 import com.google.common.collect.ImmutableList
 import org.bukkit.Bukkit
@@ -9,11 +10,14 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.plugin.Plugin
-import java.util.concurrent.CopyOnWriteArraySet
+import java.util.concurrent.ConcurrentHashMap
+
+class KeyAlreadyExistsException(key: HologramKey) : IllegalStateException("Key '$key' already exists")
+class NoValueForKeyException(key: String) : IllegalStateException("No value for key '$key'")
 
 class HologramPool(override val plugin: Plugin, private val spawnDistance: Double) : Listener, IHologramPool {
-    override val holograms: MutableSet<Hologram> =
-        CopyOnWriteArraySet() // writes are slow and Iterators are fast and consistent.
+
+    val holograms: MutableMap<HologramKey, Hologram> = ConcurrentHashMap()
 
     init {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -21,8 +25,24 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
         hologramTick()
     }
 
-    override fun takeCareOf(hologram: Hologram) {
-        holograms.add(hologram)
+    override fun get(key: HologramKey): Hologram {
+        return holograms[key] ?: throw NoValueForKeyException(key.id)
+    }
+
+    override fun get(keyId: String) : Hologram {
+        for((key, holo) in holograms) {
+            if(key.id == keyId) {
+                return holo
+            }
+        }
+        throw NoValueForKeyException(keyId)
+    }
+
+    override fun takeCareOf(key: HologramKey, value: Hologram) {
+        if (holograms.containsKey(key)) {
+            throw KeyAlreadyExistsException(key)
+        }
+        holograms[key] = value
     }
 
     /**
@@ -31,23 +51,23 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
      * @param hologram the hologram of the pool to remove.
      * @return true if any elements were removed
      */
-    override fun remove(hologram: Hologram): Boolean {
+    override fun remove(key: HologramKey): Hologram? {
         // if removed
-        val removed = holograms.removeIf { h -> h == hologram }
-        if (removed) {
-            // hide from seeing players
-
-            for (player in hologram.seeingPlayers) {
-                hologram.hide(player)
+        val removed = holograms.remove(key)
+        removed?.let {
+            for (player in it.seeingPlayers) {
+                it.hide(player)
             }
+            return it
         }
-        return removed
+        return null
     }
 
     @EventHandler
     fun handleRespawn(event: PlayerRespawnEvent) {
         val player = event.player
         holograms
+            .values
             .filter { it.isShownFor(player) }
             .forEach { it.hide(player) }
     }
@@ -56,6 +76,7 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
     fun handleQuit(event: PlayerQuitEvent) {
         val player = event.player
         holograms
+            .values
             .filter { it.isShownFor(player) }
             .forEach { it.seeingPlayers.remove(player) }
     }
@@ -66,7 +87,7 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
     private fun hologramTick() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, Runnable {
             for (player in ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
-                for (hologram in this.holograms) {
+                for (hologram in this.holograms.values) {
                     val holoLoc = hologram.location
                     val playerLoc: Location = player.location
                     val isShown = hologram.isShownFor(player)

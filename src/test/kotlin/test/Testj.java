@@ -1,5 +1,7 @@
 package test;
 import com.github.unldenis.hologram.HologramLib;
+import com.github.unldenis.hologram.config.HologramKey;
+import com.github.unldenis.hologram.pool.IHologramPool;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,20 +13,23 @@ import static com.github.unldenis.hologram.builder.HologramBuilder.*;
 class Testj {
 
 
-    public void init(Plugin plugin) {
-        HologramLib.startInteractivePool(plugin, 60, 0.5f, 5f);
+    private final IHologramPool pool;
+
+    public Testj(Plugin plugin) {
+        pool = HologramLib.startInteractivePool(plugin, 60, 0.5f, 5f);
     }
 
 
-    public void code(Location loc) {
+    public void code(Location loc, String id) {
 
-        hologram(loc, () -> {
+        hologram(new HologramKey(pool, id), loc, () -> {
 
             textline("Hello");
 
             textline("{} Stats", Player::getName);
             textline("Score {} - {}", $ -> 0, $ -> 1);
-            clickable("Click me");
+            clickable("Click me")
+                    .onClick((line, p) -> p.sendMessage("Hi"));
 
             item(new ItemStack(Material.GOLDEN_APPLE));
             item(new ItemStack(Material.DIAMOND_BLOCK));

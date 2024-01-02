@@ -18,6 +18,8 @@ class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>?
 
     override var obj: String = ""
 
+    var clickEvent : ClickEvent? = null
+
     init {
 
         if (args == null) {
@@ -44,6 +46,10 @@ class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>?
         }
 
         return String.format(obj, args = res)
+    }
+
+    override fun onClick(clickEvent: ClickEvent) {
+        this.clickEvent = clickEvent
     }
 
     override val plugin: Plugin

@@ -1,15 +1,15 @@
 package com.github.unldenis.hologram.hologram
 
+import com.github.unldenis.hologram.config.HologramKey
 import com.github.unldenis.hologram.line.ILine
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoader) {
+class Hologram(val key: HologramKey, location: Location, val loader: IHologramLoader) {
+
     var location: Location = location
         private set
 
@@ -22,14 +22,10 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
 
     val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
 
-    var name: String = UUID.randomUUID().toString()
-
-    private var hashCode: Int? = null
 
     fun load(vararg lines: ILine<*>) {
         hLines.clear()
         loader.load(this, lines)
-        this.hashCode = hLines.map { it.entityId }.toIntArray().contentHashCode()
     }
 
     fun teleport(to: Location) {
@@ -67,7 +63,7 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
     }
 
     override fun hashCode(): Int {
-        return hashCode ?: super.hashCode()
+        return key.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -79,13 +75,10 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
         }
         val hologram = other as Hologram
 
-        return name == hologram.name && location == hologram.location && hashCode() == other.hashCode()
+        return Objects.equals(key, hologram.key)
     }
 
     override fun toString(): String {
-        return "Hologram{" +
-                ", name='" + name + '\'' +
-                ", location=" + location +
-                '}'
+        return "Hologram[key=${key.id}]"
     }
 }

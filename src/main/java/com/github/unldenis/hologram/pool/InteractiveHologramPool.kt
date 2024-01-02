@@ -1,5 +1,6 @@
 package com.github.unldenis.hologram.pool
 
+import com.github.unldenis.hologram.config.HologramKey
 import com.github.unldenis.hologram.hologram.Hologram
 import com.github.unldenis.hologram.line.ILine
 import com.github.unldenis.hologram.line.ITextLine
@@ -17,8 +18,22 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
     override val plugin: Plugin
         get() = pool.plugin
 
-    override val holograms: Collection<Hologram>
-        get() = pool.holograms
+    override fun get(key: HologramKey): Hologram {
+        return pool.get(key)
+    }
+
+    override fun get(keyId: String): Hologram {
+        return pool.get(keyId)
+    }
+
+    override fun takeCareOf(key: HologramKey, value: Hologram) {
+        pool.takeCareOf(key, value)
+    }
+
+    override fun remove(key: HologramKey): Hologram? {
+        return pool.remove(key)
+    }
+
 
     val minHitDistance: Float
     val maxHitDistance: Float
@@ -32,14 +47,6 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
         Bukkit.getPluginManager().registerEvents(this, plugin)
     }
 
-    override fun takeCareOf(hologram: Hologram) {
-        pool.takeCareOf(hologram)
-    }
-
-
-    override fun remove(hologram: Hologram): Boolean {
-        return pool.remove(hologram)
-    }
 
     @EventHandler
     fun handleInteract(e: PlayerInteractEvent) {
@@ -48,7 +55,7 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
             if (e.action != Action.LEFT_CLICK_AIR) {
                 return@Runnable
             }
-            FST@ for (hologram in pool.holograms) {
+            FST@ for (hologram in pool.holograms.values) {
                 if (!hologram.isShownFor(player)) {
                     continue
                 }
@@ -72,13 +79,7 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
                                 continue
                             }
 
-                            // TODO:
-//                            Bukkit.getScheduler().runTask(
-//                                plugin,
-//                                Runnable {
-//                                    Bukkit.getPluginManager()
-//                                        .callEvent(PlayerHologramInteractEvent(player, hologram, iTextLine))
-//                                })
+                            tL.clickEvent?.onClick(tL, player)
                             break@FST
                         }
 

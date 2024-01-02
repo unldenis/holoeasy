@@ -14,7 +14,6 @@ object HologramLib {
     @JvmStatic
     fun startPool(plugin: Plugin, spawnDistance: Double): IHologramPool {
         val simplepool = HologramPool(plugin, spawnDistance)
-        Service.lastPool.set(simplepool)
         return simplepool
     }
 
@@ -25,7 +24,6 @@ object HologramLib {
     ): IHologramPool {
         val simplepool = HologramPool(plugin, spawnDistance)
         val interactivepool = InteractiveHologramPool(simplepool, minHitDistance, maxHitDistance)
-        Service.lastPool.set(interactivepool)
         return interactivepool
     }
 

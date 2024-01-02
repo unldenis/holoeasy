@@ -13,4 +13,6 @@ interface ITextLine : ILine<String> {
 
     fun parse(player: Player): String
 
+    fun onClick(clickEvent: ClickEvent)
+
 }

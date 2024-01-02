@@ -12,9 +12,6 @@ object Service {
 
     val staticHologram: ThreadLocal<HologramConfig> = ThreadLocal()
 
-    val lastPool: AtomicReference<IHologramPool> = AtomicReference()
-
-
     private fun getStaticHolo(): HologramConfig {
         val holo = staticHologram.get() ?: throw RuntimeException("You must call config() inside hologram block")
         return holo
@@ -25,44 +22,33 @@ object Service {
 
         configGroup.configure(config)
 
-        if (config.plugin == null) {
-            if (config.pool == null) {
-                throw RuntimeException("Missing Plugin or Pool")
-            } else {
-                config.plugin = config.pool.plugin
-            }
-        }
 
         config.loader = config.loader ?: TextBlockStandardLoader()
-
-        config.name?.let {
-            config.name = it
-        }
-
     }
 
     @JvmOverloads
     fun textline(
         text: String, clickable: Boolean = false, minHitDistance: Float? = null,
         maxHitDistance: Float? = null, args: Array<PlayerFun>? = null
-    ) {
+    ) : ITextLine {
         val holo = getStaticHolo()
 
         if (minHitDistance == null || maxHitDistance == null) {
-            val textLine = TextLine(holo.plugin, text, clickable = clickable, args = args)
+            val textLine = TextLine(holo.key.plugin, text, clickable = clickable, args = args)
             holo.lines.add(textLine)
+            return textLine
         } else {
-            val textLine = TextLine(holo.plugin, text, clickable = false, args = args)
+            val textLine = TextLine(holo.key.plugin, text, clickable = false, args = args)
             val clickableTextLine = ClickableTextLine(textLine, minHitDistance, maxHitDistance)
             holo.lines.add(clickableTextLine)
+            return clickableTextLine
         }
 
     }
 
-    @JvmOverloads
     fun itemline(block: ItemStack) {
         val holo = getStaticHolo()
-        val blockline = BlockLine(holo.plugin, block)
+        val blockline = BlockLine(holo.key.plugin, block)
         holo.lines.add(blockline)
     }
 

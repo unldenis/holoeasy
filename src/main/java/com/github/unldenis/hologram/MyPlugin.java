@@ -1,5 +1,7 @@
 package com.github.unldenis.hologram;
 
+import com.github.unldenis.hologram.config.HologramKey;
+import com.github.unldenis.hologram.pool.IHologramPool;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -9,9 +11,11 @@ import static com.github.unldenis.hologram.builder.HologramBuilder.*;
 
 public class MyPlugin extends JavaPlugin {
 
+    private static IHologramPool pool;
+
     @Override
     public void onEnable() {
-        HologramLib.startInteractivePool(this, 60, 0.5f, 5f);
+        pool = HologramLib.startInteractivePool(this, 60, 0.5f, 5f);
 
         getCommand("test").setExecutor((commandSender, command, s, strings) -> {
 
@@ -19,13 +23,14 @@ public class MyPlugin extends JavaPlugin {
                 Player player = (Player) commandSender;
 
 
-                hologram(player.getLocation(), () -> {
+                hologram(new HologramKey(pool, "my-holo"), player.getLocation(), () -> {
 
                     textline("Hello");
 
                     textline("{} Stats", Player::getName);
                     textline("Score {} - {}", $ -> 0, $ -> 1);
-                    clickable("Click me");
+                    clickable("Click me")
+                            .onClick((line, p) -> p.sendMessage("Hi"));
 
                     item(new ItemStack(Material.GOLDEN_AXE));
                 });
