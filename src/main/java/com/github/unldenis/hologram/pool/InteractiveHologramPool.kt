@@ -79,7 +79,7 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
                                 continue
                             }
 
-                            tL.clickEvent?.onClick(tL, player)
+                            tL.clickEvent?.onClick(player)
                             break@FST
                         }
 

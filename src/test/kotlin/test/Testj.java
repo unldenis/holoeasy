@@ -12,13 +12,11 @@ import static com.github.unldenis.hologram.builder.HologramBuilder.*;
 
 class Testj {
 
-
     private final IHologramPool pool;
 
     public Testj(Plugin plugin) {
         pool = HologramLib.startInteractivePool(plugin, 60, 0.5f, 5f);
     }
-
 
     public void code(Location loc, String id) {
 
@@ -29,7 +27,7 @@ class Testj {
             textline("{} Stats", Player::getName);
             textline("Score {} - {}", $ -> 0, $ -> 1);
             clickable("Click me")
-                    .onClick((line, p) -> p.sendMessage("Hi"));
+                    .onClick(p -> p.sendMessage("Hi"));
 
             item(new ItemStack(Material.GOLDEN_APPLE));
             item(new ItemStack(Material.DIAMOND_BLOCK));

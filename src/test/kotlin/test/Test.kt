@@ -12,10 +12,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 
-fun main() {
-
-}
-
 class Test(plugin: Plugin) {
 
     private val pool: IHologramPool
@@ -24,14 +20,13 @@ class Test(plugin: Plugin) {
         pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
     }
 
-
     fun code(loc: Location, id: String) {
         hologram(HologramKey(pool, id), loc) {
             textline("Hello")
             textline("{} Stats", Player::getName)
             textline("Score {} - {}", { 0 }, { 1 })
             clickable("Click me")
-                .onClick { _, p -> p.sendMessage("Hi") }
+                .onClick { it.sendMessage("Hi") }
 
             item(ItemStack(Material.GOLDEN_APPLE))
             item(ItemStack(Material.DIAMOND_BLOCK))

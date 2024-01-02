@@ -111,7 +111,7 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         }
 
         val intersects = hitbox!!.intersectsRay(Ray3D(player.eyeLocation), minHitDistance, maxHitDistance) ?: return
-        line.clickEvent?.onClick(line, player)
+        line.clickEvent?.onClick(player)
     }
 
     private fun updateHitBox() {

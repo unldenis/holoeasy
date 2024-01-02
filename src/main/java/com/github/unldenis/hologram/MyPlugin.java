@@ -30,7 +30,7 @@ public class MyPlugin extends JavaPlugin {
                     textline("{} Stats", Player::getName);
                     textline("Score {} - {}", $ -> 0, $ -> 1);
                     clickable("Click me")
-                            .onClick((line, p) -> p.sendMessage("Hi"));
+                            .onClick(p -> p.sendMessage("Hi"));
 
                     item(new ItemStack(Material.GOLDEN_AXE));
                 });
