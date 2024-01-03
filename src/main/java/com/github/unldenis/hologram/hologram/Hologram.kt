@@ -9,10 +9,8 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 class Hologram(val key: HologramKey, location: Location, val loader: IHologramLoader) {
-
     var location: Location = location
         private set
-
 
     private val hLines: MutableList<ILine<*>> =
         CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
@@ -22,6 +20,18 @@ class Hologram(val key: HologramKey, location: Location, val loader: IHologramLo
 
     val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
 
+    private var showEvent: ShowEvent? = null
+    private var hideEvent : HideEvent? = null
+
+    fun onShow(showEvent: ShowEvent) : Hologram {
+        this.showEvent = showEvent
+        return this
+    }
+
+    fun onHide(hideEvent: HideEvent) : Hologram {
+        this.hideEvent = hideEvent
+        return this
+    }
 
     fun load(vararg lines: ILine<*>) {
         hLines.clear()
@@ -43,11 +53,7 @@ class Hologram(val key: HologramKey, location: Location, val loader: IHologramLo
             line.show(player)
         }
 
-
-        // TODO:
-//        Bukkit.getScheduler().runTask(
-//            plugin,
-//            Runnable { Bukkit.getPluginManager().callEvent(PlayerHologramShowEvent(player, this)) })
+        showEvent?.onShow(player)
     }
 
     fun hide(player: Player) {
@@ -56,10 +62,7 @@ class Hologram(val key: HologramKey, location: Location, val loader: IHologramLo
         }
         seeingPlayers.remove(player)
 
-        // TODO:
-//        Bukkit.getScheduler().runTask(
-//            plugin,
-//            Runnable { Bukkit.getPluginManager().callEvent(PlayerHologramHideEvent(player, this)) })
+        hideEvent?.onHide(player)
     }
 
     override fun hashCode(): Int {
