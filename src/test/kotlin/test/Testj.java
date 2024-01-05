@@ -1,6 +1,7 @@
 package test;
 import com.github.unldenis.hologram.HologramLib;
 import com.github.unldenis.hologram.config.HologramKey;
+import com.github.unldenis.hologram.hologram.Hologram;
 import com.github.unldenis.hologram.pool.IHologramPool;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +32,11 @@ class Testj {
 
             item(new ItemStack(Material.GOLDEN_APPLE));
             item(new ItemStack(Material.DIAMOND_BLOCK));
-        });
+        }).onHide(player -> player.sendMessage("Hi im " + id));
+    }
 
+    public void getAndAddHideEvent(HologramKey key) {
+        Hologram hologram = pool.get(key);
+        hologram.onHide(player -> player.sendMessage("See you again..."));
     }
 }
