@@ -1,21 +1,21 @@
 package test
 
-import com.github.unldenis.hologram.HologramLib.startInteractivePool
-import com.github.unldenis.hologram.builder.HologramBuilder.*
-import com.github.unldenis.hologram.config.HologramKey
-import com.github.unldenis.hologram.pool.IHologramPool
+import org.holoeasy.builder.HologramBuilder.*
+import org.holoeasy.config.HologramKey
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import org.holoeasy.HoloEasy
+import org.holoeasy.pool.IHologramPool
 
 class Test(plugin: Plugin) {
 
     private val pool: IHologramPool
 
     init {
-        pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
+        pool = HoloEasy.startInteractivePool(plugin, 60.0, 0.5f, 5f)
     }
 
     fun code(loc: Location, id: String) {

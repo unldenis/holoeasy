@@ -1,22 +1,22 @@
 package test;
-import com.github.unldenis.hologram.HologramLib;
-import com.github.unldenis.hologram.config.HologramKey;
-import com.github.unldenis.hologram.hologram.Hologram;
-import com.github.unldenis.hologram.pool.IHologramPool;
+import org.holoeasy.HoloEasy;
+import org.holoeasy.config.HologramKey;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.holoeasy.hologram.Hologram;
+import org.holoeasy.pool.IHologramPool;
 
-import static com.github.unldenis.hologram.builder.HologramBuilder.*;
+import static org.holoeasy.builder.HologramBuilder.*;
 
 class Testj {
 
     private final IHologramPool pool;
 
     public Testj(Plugin plugin) {
-        pool = HologramLib.startInteractivePool(plugin, 60, 0.5f, 5f);
+        pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
     }
 
     public void code(Location loc, String id) {
