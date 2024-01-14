@@ -32,7 +32,7 @@ class Testj {
 
             item(new ItemStack(Material.GOLDEN_APPLE));
             item(new ItemStack(Material.DIAMOND_BLOCK));
-        }).onHide(player -> player.sendMessage("Hi im " + id));
+        }).onShow(player -> player.sendMessage("Hi im " + id));
     }
 
     public void getAndAddHideEvent(HologramKey key) {

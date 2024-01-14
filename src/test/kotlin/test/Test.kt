@@ -28,7 +28,7 @@ class Test(plugin: Plugin) {
 
             item(ItemStack(Material.GOLDEN_APPLE))
             item(ItemStack(Material.DIAMOND_BLOCK))
-        }.onHide { it.sendMessage("Hi im $id") }
+        }.onShow { it.sendMessage("Hi im $id") }
     }
 
     fun getAndAddHideEvent(key: HologramKey) {
