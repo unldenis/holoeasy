@@ -121,6 +121,6 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
             AABB.Vec3D(-dist, -0.039, -dist),
             AABB.Vec3D(dist, +0.039, dist)
         )
-        hitbox!!.translate(fromLocation(location!!.clone().add(0.0, 1.40, 0.0)))
+        hitbox!!.translate(fromLocation(location!!.clone().add(0.0, 2.42, 0.0)))
     }
 }

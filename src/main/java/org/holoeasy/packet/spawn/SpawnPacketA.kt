@@ -12,6 +12,7 @@ import org.holoeasy.ext.set
 import org.holoeasy.packet.packet
 import org.holoeasy.util.BukkitFuture
 import org.holoeasy.util.VersionEnum
+import org.holoeasy.util.VersionUtil
 import java.util.concurrent.CompletableFuture
 
 object SpawnPacketA : ISpawnPacket {
@@ -21,8 +22,7 @@ object SpawnPacketA : ISpawnPacket {
             val world = Bukkit.getWorlds()[0]
             val entity =
                 world.spawnEntity(Location(world, 0.0, 256.0, 0.0), EntityType.ARMOR_STAND)
-            defaultDataWatcher =
-                WrappedDataWatcher.getEntityWatcher(entity).deepClone()
+            defaultDataWatcher = WrappedDataWatcher.getEntityWatcher(entity).deepClone()
             entity.remove()
         }
     }
@@ -36,7 +36,7 @@ object SpawnPacketA : ISpawnPacket {
     override fun spawn(entityId: Int, entityType: EntityType, location: Location, plugin: Plugin?): PacketContainer {
         return packet(PacketType.Play.Server.SPAWN_ENTITY) {
             integers[0] = entityId
-            integers[1] = entityType.typeId.toInt()
+            integers[1] = if(entityType == EntityType.ARMOR_STAND) VersionUtil.CLEAN_VERSION.armorstandId else VersionUtil.CLEAN_VERSION.droppedItemId
             integers[2] = (location.x * 32).toInt()
             integers[3] = (location.y * 32).toInt()
             integers[4] = (location.z * 32).toInt()

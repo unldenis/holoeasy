@@ -71,7 +71,7 @@ class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>?
                 AABB.Vec3D(-dist, -0.039, -dist),
                 AABB.Vec3D(dist, +0.039, dist)
             ).also {
-                it.translate(AABB.Vec3D.fromLocation(value.clone().add(0.0, 1.40, 0.0)))
+                it.translate(AABB.Vec3D.fromLocation(value.clone().add(0.0, 2.42, 0.0)))
             }
         }
     }
