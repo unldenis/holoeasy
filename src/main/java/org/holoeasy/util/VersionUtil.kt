@@ -38,11 +38,11 @@ object VersionUtil {
     }
 
     fun isAbove(ve: VersionEnum): Boolean {
-        return CLEAN_VERSION.order >= ve.order
+        return CLEAN_VERSION.ordinal >= ve.ordinal
     }
 
     fun isBelow(ve: VersionEnum): Boolean {
-        return CLEAN_VERSION.order <= ve.order
+        return CLEAN_VERSION.ordinal <= ve.ordinal
     }
 
     fun isBetween(ve1: VersionEnum, ve2: VersionEnum): Boolean {
@@ -52,27 +52,61 @@ object VersionUtil {
 }
 
 
-enum class VersionEnum(val order: Int, val armorstandId: Int, val droppedItemId : Int) : Comparable<VersionEnum> {
-    MOCKBUK(0, 0, 0),  // MockBukkit Test
+enum class VersionEnum(armorstandId: Int, droppedItemId : Int) : Comparable<VersionEnum> {
+    MOCKBUK,  // MockBukkit Test
 
-
-    V1_8(1, 30, 1),
-    V1_9(2, 30, 1),
-    V1_10(3, 30, 1),
-    V1_11(4, 30, 1),
-    V1_12(5, 30, 1),
-    V1_13(6, 1, 32),
-    V1_14(7, 1, 34),
-    V1_15(8, 1, 35),
-    V1_16(9, 1, 37),
-    V1_17(10, 1, 41),
-    V1_18(11, 1, 41),
-    V1_19(12, 2, 55),
-    V1_20(13, 2, 55),
+    V1_8(30, 1),
+    V1_9,
+    V1_10,
+    V1_11,
+    V1_12,
+    V1_13(1, 32),
+    V1_14(1, 34),
+    V1_15(1, 35),
+    V1_16(1, 37),
+    V1_17(1, 41),
+    V1_18,
+    V1_19(2, 55),
+    V1_20,
 
     // for non breaking in future
-    V1_21(14, 2, 55),
-    V1_22(15, 2, 55)
+    V1_21,
+    V1_22
+    ;
+
+    var armorstandId : Int
+        private set
+        get() {
+            if(field == -1) {
+                field = entries
+                    .last { it.newNMS && it.ordinal < ordinal }
+                    .armorstandId
+            }
+            return field
+        }
+    var droppedItemId : Int
+        private set
+        get() {
+            if(field == -1) {
+                field = entries
+                    .last { it.newNMS && it.ordinal < ordinal }
+                    .droppedItemId
+            }
+            return field
+        }
+
+    private var newNMS : Boolean
+
+    init {
+        this.armorstandId = armorstandId
+        this.droppedItemId = droppedItemId
+        this.newNMS = true
+    }
+
+    constructor() : this(-1, -1) {
+        newNMS = false
+    }
+
 
     // retrieved with https://www.spigotmc.org/threads/entity-id-fetcher-for-protocol-use.444784/
     //    var versions: Array<String> = arrayOf(
@@ -90,5 +124,4 @@ enum class VersionEnum(val order: Int, val armorstandId: Int, val droppedItemId 
     //        "1.19.4",
     //        "1.20.4"
     //    )
-
 }
