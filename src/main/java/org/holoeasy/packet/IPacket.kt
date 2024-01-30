@@ -7,10 +7,7 @@ import org.holoeasy.packet.delete.DeletePacketB
 import org.holoeasy.packet.delete.IDeletePacket
 import org.holoeasy.packet.metadata.item.*
 import org.holoeasy.packet.metadata.text.*
-import org.holoeasy.packet.spawn.ISpawnPacket
-import org.holoeasy.packet.spawn.SpawnPacketA
-import org.holoeasy.packet.spawn.SpawnPacketB
-import org.holoeasy.packet.spawn.SpawnPacketC
+import org.holoeasy.packet.spawn.*
 import org.holoeasy.packet.teleport.ITeleportPacket
 import org.holoeasy.packet.teleport.TeleportPacketA
 import org.holoeasy.packet.teleport.TeleportPacketB
@@ -88,7 +85,7 @@ interface IPacket {
             )
 
             @JvmField
-            val SPAWN = Type(ISpawnPacket::class, SpawnPacketA, SpawnPacketB, SpawnPacketC)
+            val SPAWN = Type(ISpawnPacket::class, SpawnPacketA, SpawnPacketB, SpawnPacketC, SpawnPacketD)
 
             @JvmField
             val TELEPORT = Type(ITeleportPacket::class, TeleportPacketA, TeleportPacketB)

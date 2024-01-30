@@ -9,16 +9,20 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedRegistry;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.holoeasy.config.HologramKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.builder.HologramBuilder;
+import org.holoeasy.hologram.Hologram;
+import org.holoeasy.packet.IPacket;
 import org.holoeasy.packet.spawn.SpawnPacketB;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.util.VersionUtil;
@@ -42,55 +46,39 @@ public class MyPlugin extends JavaPlugin {
     public void onEnable() {
         pool = HoloEasy.startInteractivePool(this, 60, 0.5f, 5f);
 
-        ProtocolLibrary.getProtocolManager().addPacketListener(
-        new PacketAdapter(this, PacketType.Play.Server.SPAWN_ENTITY) {
-            // Note that this is executed asynchronously
-            @Override
-            public void onPacketSending(PacketEvent event) {
-                PacketContainer packet = event.getPacket();
-
-                Player player = event.getPlayer();
-                player.sendMessage("Entity " + packet.getId());
-                player.sendMessage("Type " + packet.getType());
-
-
-                player.sendMessage("Id " + packet.getIntegers().read(1));
-                Object p =packet.getHandle();
-                for(Field f: p.getClass().getDeclaredFields()) {
-                    if(!f.isAccessible()) {
-                        f.setAccessible(true);
-                    }
-                    try {
-                        System.out.println(f.getName() + ":" + f.getType().getName() + " to " + f.get(p));
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                event.setReadOnly(true);
-            }
-        });
 
         getCommand("test").setExecutor((commandSender, command, s, strings) -> {
 
             if (commandSender instanceof Player) {
                 Player player = (Player) commandSender;
 
-                SpawnPacketB.INSTANCE.loadDefaultWatcher(this, player.getLocation()).forEach(wrappedWatchableObject -> {
-                    System.out.println(wrappedWatchableObject.getIndex() + " " + wrappedWatchableObject.getRawValue());
+                Hologram hologram = hologram(new HologramKey(pool, UUID.randomUUID().toString()), player.getLocation(), () -> {
+
+                    textline("Hello");
+
+                    textline("{} Stats", Player::getName);
+                    textline("Score {} - {}", $ -> 0, $ -> 1);
+                    clickable("Click me")
+                            .onClick(p -> p.sendMessage("Hi"));
+
+                    item(new ItemStack(Material.GOLDEN_AXE));
                 });
 
-//                hologram(new HologramKey(pool, UUID.randomUUID().toString()), player.getLocation(), () -> {
-//
-//                    textline("Hello");
-//
-//                    textline("{} Stats", Player::getName);
-//                    textline("Score {} - {}", $ -> 0, $ -> 1);
-//                    clickable("Click me")
-//                            .onClick(p -> p.sendMessage("Hi"));
-//
-//                    item(new ItemStack(Material.GOLD_AXE));
-//                });
+                Bukkit.getScheduler().runTaskLater(this, () -> {
+
+                    PacketContainer packet = new PacketContainer(PacketType.Play.Server.ATTACH_ENTITY);
+                    packet.getIntegers().write(0, hologram.getLines().get(4).getEntityId());
+                    packet.getIntegers().write(1, hologram.getLines().get(0).getEntityId());
+
+                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+
+                    ProtocolLibrary.getProtocolManager().sendServerPacket(player,
+                            IPacket.get(IPacket.Type.TELEPORT).teleport(
+                                    hologram.getLines().get(4).getEntityId(),
+                                    player.getLocation()
+                            ));
+                }, 40L);
+
 
                 player.sendMessage("Done");
 

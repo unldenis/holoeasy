@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -136,7 +136,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <outputDirectory>C:\Users\mehil\OneDrive\Desktop\Spigot 1.12.2\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\mehil\OneDrive\Desktop\Spigot 1.16.5\plugins</outputDirectory>
                 </configuration>
             </plugin>
 

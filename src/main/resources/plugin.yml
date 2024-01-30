@@ -2,6 +2,6 @@ name: MyPlugin
 main: org.holoeasy.MyPlugin
 version: 1.0
 depend: [ProtocolLib]
-api-version: 1.12
+api-version: 1.13
 commands:
   test:

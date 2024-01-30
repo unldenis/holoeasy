@@ -8,32 +8,26 @@ import org.bukkit.plugin.Plugin
 import org.holoeasy.ext.set
 import org.holoeasy.packet.packet
 import org.holoeasy.util.VersionEnum
-import org.holoeasy.util.VersionUtil
 import java.util.*
 
-object SpawnPacketB : ISpawnPacket {
+object SpawnPacketD : ISpawnPacket {
 
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_9..VersionEnum.V1_15)
+        get() = arrayOf(VersionEnum.V1_19..VersionEnum.V1_20)
 
     override fun spawn(entityId: Int, entityType: EntityType, location: Location, plugin: Plugin?): PacketContainer {
-        val extraData = 1
-
-        return packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
-            modifier.writeDefaults()
-
+        return packet(PacketType.Play.Server.SPAWN_ENTITY) {
             integers[0] = entityId
-            integers[1] = if(entityType == EntityType.ARMOR_STAND)
-                VersionUtil.CLEAN_VERSION.armorstandId else VersionUtil.CLEAN_VERSION.droppedItemId
-            integers[2] = extraData
+
+            entityTypeModifier[0] = entityType
 
             uuiDs[0] = UUID.randomUUID()
 
             doubles[0] = location.x
             doubles[1] = location.y
             doubles[2] = location.z
-        }
 
+        }
     }
 
 }

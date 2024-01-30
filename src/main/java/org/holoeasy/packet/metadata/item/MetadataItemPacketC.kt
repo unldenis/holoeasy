@@ -2,6 +2,7 @@ package org.holoeasy.packet.metadata.item
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
+import com.comphenix.protocol.wrappers.EnumWrappers.EntityPose
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import org.bukkit.inventory.ItemStack
 import org.holoeasy.ext.set
