@@ -21,8 +21,6 @@ object SpawnPacketC : ISpawnPacket {
     override fun spawn(entityId: Int, entityType: EntityType, location: Location, plugin: Plugin?): PacketContainer {
         val extraData = 1
 
-        println("$entityId $entityType ${location.y}")
-
         if(entityType == EntityType.ARMOR_STAND) {
             return packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
                 modifier.writeDefaults()

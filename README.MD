@@ -11,24 +11,20 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 * ProtocolLib installed on your server
 
 ### Add dependency
-
-> [!WARNING]
-> If you're having trouble with Jitpack you can always find the build <a href="https://github.com/unldenis/holoeasy/releases/tag/3.0.0">here</a>.
-
 #### Maven
 
 ```xml
 <dependency>
     <groupId>com.github.unldenis</groupId>
     <artifactId>holoeasy</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 </dependency>
 ```
 
 #### Gradle
 
 ```kotlin
-implementation("com.github.unldenis:holoeasy:3.0.0")
+implementation("com.github.unldenis:holoeasy:3.0.1")
 ```
 
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
