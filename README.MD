@@ -12,7 +12,9 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 
 ### Add dependency
 
-Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
+> [!WARNING]
+> Jitpack currently returns a 'Please Sign In first' error. You can find the build of the library on the release page.
+
 #### Maven
 
 ```xml
@@ -29,8 +31,7 @@ Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 implementation("com.github.unldenis:holoeasy:3.0.0")
 ```
 
-> [!WARNING]
-> Jitpack currently returns a 'Please Sign In first' error. You can find the build of the library on the release page.
+Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 
 ### Start programming (Java)
 
