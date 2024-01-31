@@ -25,7 +25,7 @@
 
     <groupId>org.holoeasy</groupId>
     <artifactId>holoeasy</artifactId>
-    <version>2.6.0-SNAPSHOT</version>
+    <version>3.0.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -131,14 +131,14 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <outputDirectory>C:\Users\mehil\OneDrive\Desktop\Spigot 1.16.5\plugins</outputDirectory>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <version>3.3.0</version>-->
+<!--                <configuration>-->
+<!--                    <outputDirectory>C:\Users\mehil\OneDrive\Desktop\Spigot 1.16.5\plugins</outputDirectory>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
             <!-- Plugin Maven Shade -->
             <plugin>
