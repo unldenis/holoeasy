@@ -6,7 +6,6 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 </p>
 
 ## Quickstart
-<hr>
 
 ### As a dependency
 
