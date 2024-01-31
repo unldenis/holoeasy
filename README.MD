@@ -8,7 +8,7 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 ## Quickstart
 
 ### Add dependency
-
+Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 #### Maven
 
 ```xml
