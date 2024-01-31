@@ -70,4 +70,4 @@ fun addHologram(location: Location) {
 
 
 ## Ex (Hologram-Lib)
-Are you using a version older than 3.0.0? You can find the documentation <a href="https://unldenis.github.io/hologramlib/">here</a
+Are you using a version older than 3.0.0? You can find the documentation <a href="https://unldenis.github.io/hologramlib/">here</a>
