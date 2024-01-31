@@ -11,6 +11,8 @@ import org.holoeasy.packet.spawn.*
 import org.holoeasy.packet.teleport.ITeleportPacket
 import org.holoeasy.packet.teleport.TeleportPacketA
 import org.holoeasy.packet.teleport.TeleportPacketB
+import org.holoeasy.packet.velocity.IVelocityPacket
+import org.holoeasy.packet.velocity.VelocityPacketA
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
 import kotlin.reflect.KClass
@@ -90,6 +92,8 @@ interface IPacket {
             @JvmField
             val TELEPORT = Type(ITeleportPacket::class, TeleportPacketA, TeleportPacketB)
 
+            @JvmField
+            val VELOCITY = Type(IVelocityPacket::class, VelocityPacketA)
         }
 
     }

@@ -12,6 +12,7 @@ import org.holoeasy.packet.IPacket
 class BlockLine(plugin: Plugin, override var obj: ItemStack) : ILine<ItemStack> {
 
     private val line: Line = Line(plugin, EntityType.DROPPED_ITEM)
+    private val resetVelocity = IPacket.get(IPacket.Type.VELOCITY).velocity(line.entityID, 0, 0,0)
 
     override val plugin: Plugin
         get() = line.plugin
@@ -40,6 +41,8 @@ class BlockLine(plugin: Plugin, override var obj: ItemStack) : ILine<ItemStack> 
     override fun show(player: Player) {
         line.spawn(player)
         this.update(player)
+
+        resetVelocity.send(player)
     }
 
     override fun update(player: Player) {
