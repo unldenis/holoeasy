@@ -10,6 +10,7 @@ import org.holoeasy.hologram.Hologram;
 import org.holoeasy.line.ILine;
 import org.holoeasy.line.ITextLine;
 import org.holoeasy.pool.IHologramPool;
+import org.holoeasy.reactive.MutableState;
 import org.jetbrains.annotations.NotNull;
 
 public class HologramBuilder {
@@ -78,8 +79,15 @@ public class HologramBuilder {
         getInstance().itemline(block);
     }
 
+    public static void item(@NotNull MutableState<ItemStack> block) {
+        getInstance().itemline(block);
+    }
+
     public static void customline(@NotNull ILine<?> customLine) {
         getInstance().customLine(customLine);
     }
 
+    public static <T> MutableState<T> mutableStateOf(T initialValue) {
+        return new MutableState<>(initialValue);
+    }
 }

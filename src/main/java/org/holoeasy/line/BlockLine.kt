@@ -10,13 +10,16 @@ import org.holoeasy.ext.send
 import org.holoeasy.packet.IPacket
 import org.holoeasy.reactive.MutableState
 
-class BlockLine(plugin: Plugin, obj: ItemStack) : ILine<ItemStack> {
+class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> {
 
 
     private val line: Line = Line(plugin, EntityType.DROPPED_ITEM)
     private val resetVelocity = IPacket.get(IPacket.Type.VELOCITY).velocity(line.entityID, 0, 0,0)
 
-    private val _mutableStateOf = MutableState(obj)
+    private val _mutableStateOf = obj.also { it.addObserver(pvt) }
+
+    constructor(plugin: Plugin, obj: ItemStack) : this(plugin, MutableState(obj)){
+    }
 
     override val plugin: Plugin
         get() = line.plugin

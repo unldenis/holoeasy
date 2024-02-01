@@ -11,9 +11,9 @@ interface ILine<T> {
 
     data class PrivateConfig(private val line: ILine<*>) : Observer {
 
-        var hologram : Hologram? = null
+        lateinit var hologram: Hologram
         override fun observerUpdate() {
-            hologram?.let {
+            hologram.let {
                 line.update(it.seeingPlayers)
             }
         }

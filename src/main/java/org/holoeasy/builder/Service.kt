@@ -6,6 +6,7 @@ import org.holoeasy.builder.interfaces.HologramConfigGroup
 import org.holoeasy.builder.interfaces.PlayerFun
 import org.holoeasy.hologram.TextBlockStandardLoader
 import org.holoeasy.line.*
+import org.holoeasy.reactive.MutableState
 
 object Service {
 
@@ -46,6 +47,12 @@ object Service {
     }
 
     fun itemline(block: ItemStack) {
+        val holo = getStaticHolo()
+        val blockline = BlockLine(holo.key.plugin, block)
+        holo.lines.add(blockline)
+    }
+
+    fun itemline(block: MutableState<ItemStack>) {
         val holo = getStaticHolo()
         val blockline = BlockLine(holo.key.plugin, block)
         holo.lines.add(blockline)
