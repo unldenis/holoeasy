@@ -8,11 +8,15 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.holoeasy.ext.send
 import org.holoeasy.packet.IPacket
+import org.holoeasy.reactive.MutableState
 
-class BlockLine(plugin: Plugin, override var obj: ItemStack) : ILine<ItemStack> {
+class BlockLine(plugin: Plugin, obj: ItemStack) : ILine<ItemStack> {
+
 
     private val line: Line = Line(plugin, EntityType.DROPPED_ITEM)
     private val resetVelocity = IPacket.get(IPacket.Type.VELOCITY).velocity(line.entityID, 0, 0,0)
+
+    private val _mutableStateOf = MutableState(obj)
 
     override val plugin: Plugin
         get() = line.plugin
@@ -25,6 +29,12 @@ class BlockLine(plugin: Plugin, override var obj: ItemStack) : ILine<ItemStack> 
 
     override val location: Location?
         get() = line.location
+
+    override var obj : ItemStack
+        get() = _mutableStateOf.get()
+        set(value) = _mutableStateOf.set(value)
+
+    override lateinit var pvt: ILine.PrivateConfig
 
     override fun setLocation(value: Location) {
         line.location = value

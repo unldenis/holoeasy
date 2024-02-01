@@ -15,6 +15,7 @@ class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>?
 
     private val line: Line = Line(plugin, EntityType.ARMOR_STAND)
 
+
     override var obj: String = ""
 
     var clickEvent : ClickEvent? = null
@@ -59,6 +60,9 @@ class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>?
         get() = line.entityID
     override val location: Location?
         get() = line.location
+
+
+    override lateinit var pvt: ILine.PrivateConfig
 
     override fun setLocation(value: Location) {
         line.location = value

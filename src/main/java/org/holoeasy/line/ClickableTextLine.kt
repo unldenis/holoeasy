@@ -69,6 +69,8 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
             line.obj = value
         }
 
+    override var pvt: ILine.PrivateConfig = line.pvt
+
     override fun setLocation(value: Location) {
         line.setLocation(value)
         this.updateHitBox()

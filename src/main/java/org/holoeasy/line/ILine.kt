@@ -3,9 +3,21 @@ package org.holoeasy.line
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import org.holoeasy.hologram.Hologram
+import org.holoeasy.reactive.Observer
 import org.jetbrains.annotations.ApiStatus
 
 interface ILine<T> {
+
+    data class PrivateConfig(private val line: ILine<*>) : Observer {
+
+        var hologram : Hologram? = null
+        override fun observerUpdate() {
+            hologram?.let {
+                line.update(it.seeingPlayers)
+            }
+        }
+    }
 
     val plugin: Plugin
 
@@ -16,6 +28,8 @@ interface ILine<T> {
     val location: Location?
 
     var obj: T
+
+    var pvt : PrivateConfig
 
     fun setLocation(value: Location)
 
