@@ -73,7 +73,7 @@ fun addHologram(location: Location) {
 ```
 
 ## Reactive Holograms
-From 3.1.0 version, the parameters of the text lines **_can also be reactive_**. This means that you can update the line by simply calling the 'set' method to these.
+From 3.1.0 version, the parameters of text lines and item lines **_can also be reactive_**. This means that you can update the line by simply calling the 'set' method to these.
 
 <p align="center">
   <img src="state.gif"  alt="holoeasy state video"/>
