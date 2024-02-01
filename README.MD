@@ -102,7 +102,7 @@ val clickCount = mutableStateOf(0) // can be any type
 
 val holo = hologram(HologramKey(plugin, "unique-id-holo"), location) {
     textline("{}!", "Static")
-    textline("Dynamic: {}", clickCount)
+    textline("Count: {}", clickCount)
     clickable("Click me", 0.5f, 5f).onClick { clickCount.set(clickCount.get() + 1)}
 }
 
