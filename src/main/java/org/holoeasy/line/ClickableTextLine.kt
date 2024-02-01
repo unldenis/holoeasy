@@ -68,7 +68,7 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
             line.obj = value
         }
 
-    override var pvt: ILine.PrivateConfig = line.pvt
+    override var pvt = ILine.PrivateConfig(this)
 
     override fun setLocation(value: Location) {
         line.setLocation(value)
@@ -119,9 +119,9 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         val dist = size * (chars / 2.0)
 
         hitbox = AABB(
-            AABB.Vec3D(-dist, -0.039, -dist),
-            AABB.Vec3D(dist, +0.039, dist)
+            AABB.Vec3D(-dist, -0.040, -dist),
+            AABB.Vec3D(dist, +0.040, dist)
         )
-        hitbox!!.translate(fromLocation(location!!.clone().add(0.0, 2.42, 0.0)))
+        hitbox!!.translate(fromLocation(location!!.clone().add(0.0, 2.35, 0.0)))
     }
 }

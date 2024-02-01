@@ -17,19 +17,21 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 <dependency>
     <groupId>com.github.unldenis</groupId>
     <artifactId>holoeasy</artifactId>
-    <version>3.0.1</version>
+    <version>3.1.0</version>
 </dependency>
 ```
 
 #### Gradle
 
 ```kotlin
-implementation("com.github.unldenis:holoeasy:3.0.1")
+implementation("com.github.unldenis:holoeasy:3.1.0")
 ```
 
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 
-### Start programming (Java)
+## Start programming
+
+### Java
 
 ```java
 import static org.holoeasy.builder.HologramBuilder.*;
@@ -40,8 +42,7 @@ IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
 public void addHologram(Location location) {
     hologram(new HologramKey(pool, "unique-id-holo"), location, () -> {
         textline("Hello");
-        textline("{} Stats", Player::getName);
-        textline("Score {} - {}", $ -> 0, $ -> 1);
+        textline("Score {} - {}", 0, 1);
         clickable("Click me").onClick(p -> {
             p.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
                     20, 20, 20);
@@ -51,7 +52,7 @@ public void addHologram(Location location) {
 }
 ```
 
-### Start programming (Kotlin)
+### Kotlin
 ```kotlin
 import org.holoeasy.builder.HologramBuilder.*
 
@@ -61,8 +62,7 @@ val pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
 fun addHologram(location: Location) {
     hologram(HologramKey(pool, "unique-id-holo"), location) {
         textline("Hello")
-        textline("{} Stats", Player::getName)
-        textline("Score {} - {}", { 0 }, { 1 })
+        textline("Score {} - {}", 0, 1)
         clickable("Click me").onClick {
             it.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
                 20, 20, 20)
@@ -70,6 +70,45 @@ fun addHologram(location: Location) {
         item(ItemStack(Material.ENCHANTED_GOLDEN_APPLE))
     }
 }
+```
+
+## Reactive Holograms
+From 3.1.0 version, the parameters of the text lines **_can also be reactive_**. This means that you can update the line by simply calling the 'set' method to these.
+
+<p align="center">
+  <img src="state.gif"  alt="holoeasy state video"/>
+</p>
+
+> [!WARNING]
+> Mutable states have no player information at this time. If you need to create a hologram for a specific player, it is recommended that you do **_not_** add it to a Pool.
+### Java
+```java
+var clickCount = mutableStateOf(0); // can be any type
+
+var holo = hologram(new HologramKey(plugin, "unique-id-holo"), location, () -> {
+    textline("{}!", "Static");
+    textline("Count: {}", clickCount);
+    clickable("Click me", 0.5f, 5f).onClick($ -> clickCount.set(clickCount.get() + 1));
+});
+
+// It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
+// HologramKey decides whether to add it to a pool or not.
+holo.show(player);
+```
+
+### Kotlin
+```kotlin
+val clickCount = mutableStateOf(0) // can be any type
+
+val holo = hologram(HologramKey(plugin, "unique-id-holo"), location) {
+    textline("{}!", "Static")
+    textline("Dynamic: {}", clickCount)
+    clickable("Click me", 0.5f, 5f).onClick { clickCount.set(clickCount.get() + 1)}
+}
+
+// It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
+// HologramKey decides whether to add it to a pool or not.
+holo.show(player)
 ```
 
 

@@ -37,7 +37,7 @@ class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack>
         get() = _mutableStateOf.get()
         set(value) = _mutableStateOf.set(value)
 
-    override lateinit var pvt: ILine.PrivateConfig
+    override var pvt = ILine.PrivateConfig(this)
 
     override fun setLocation(value: Location) {
         line.location = value

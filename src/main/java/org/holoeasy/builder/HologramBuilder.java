@@ -60,7 +60,7 @@ public class HologramBuilder {
                                  @NotNull Object... args) {
         return getInstance().textline(
                 text,
-                false,
+                true,
                 minHitDistance,
                 maxHitDistance,
                 args.length == 0 ? null : args
@@ -79,7 +79,7 @@ public class HologramBuilder {
         getInstance().customLine(customLine);
     }
 
-    public static <T> MutableState<T> mutableStateOf(T initialValue) {
+    public static <T> MutableState<T> mutableStateOf(@NotNull T initialValue) {
         return new MutableState<>(initialValue);
     }
 }

@@ -71,7 +71,7 @@ class TextLine(
         get() = line.location
 
 
-    override lateinit var pvt: ILine.PrivateConfig
+    override var pvt = ILine.PrivateConfig(this)
 
     override fun setLocation(value: Location) {
         line.location = value
@@ -81,10 +81,10 @@ class TextLine(
             val dist = size * (chars / 2.0)
 
             hitbox = AABB(
-                AABB.Vec3D(-dist, -0.039, -dist),
-                AABB.Vec3D(dist, +0.039, dist)
+                AABB.Vec3D(-dist, -0.040, -dist),
+                AABB.Vec3D(dist, +0.040, dist)
             ).also {
-                it.translate(AABB.Vec3D.fromLocation(value.clone().add(0.0, 2.42, 0.0)))
+                it.translate(AABB.Vec3D.fromLocation(value.clone().add(0.0, 2.35, 0.0)))
             }
         }
     }
