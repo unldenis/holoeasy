@@ -9,6 +9,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 class Hologram(val key: HologramKey, location: Location, val loader: IHologramLoader) {
+    init {
+        key.pool?.takeCareOf(key, this)
+    }
+
     var location: Location = location
         private set
 

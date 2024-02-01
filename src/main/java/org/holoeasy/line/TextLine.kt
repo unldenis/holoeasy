@@ -1,27 +1,27 @@
 package org.holoeasy.line
 
-import org.holoeasy.builder.interfaces.PlayerFun
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.holoeasy.ext.send
 import org.holoeasy.packet.IPacket
+import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.AABB
 
-class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>? = null,
-               override val clickable: Boolean = false
+class TextLine(
+    plugin: Plugin,
+    obj: String,
+    override val args: Array<*>? = null,
+    override val clickable: Boolean = false
 ) : ITextLine {
 
     private val line: Line = Line(plugin, EntityType.ARMOR_STAND)
-
-
     override var obj: String = ""
-
     var clickEvent : ClickEvent? = null
+    private var firstRender = true
 
     init {
-
         if (args == null) {
             this.obj = obj
         } else {
@@ -42,7 +42,16 @@ class TextLine(plugin: Plugin, obj: String, override val args: Array<PlayerFun>?
         }
         val res = arrayOfNulls<Any>(args.size)
         for (i in args.indices) {
-            res[i] = args[i](player)
+            val tmp = args[i]
+            if(tmp is MutableState<*>) {
+                res[i] = tmp.get()
+                if(firstRender) {
+                    firstRender = false
+                    tmp.addObserver(pvt)
+                }
+            } else {
+                res[i] = tmp
+            }
         }
 
         return String.format(obj, args = res)

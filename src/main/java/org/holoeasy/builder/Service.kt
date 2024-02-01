@@ -3,7 +3,6 @@ package org.holoeasy.builder
 
 import org.bukkit.inventory.ItemStack
 import org.holoeasy.builder.interfaces.HologramConfigGroup
-import org.holoeasy.builder.interfaces.PlayerFun
 import org.holoeasy.hologram.TextBlockStandardLoader
 import org.holoeasy.line.*
 import org.holoeasy.reactive.MutableState
@@ -29,7 +28,7 @@ object Service {
     @JvmOverloads
     fun textline(
         text: String, clickable: Boolean = false, minHitDistance: Float? = null,
-        maxHitDistance: Float? = null, args: Array<PlayerFun>? = null
+        maxHitDistance: Float? = null, args: Array<*>? = null
     ) : ITextLine {
         val holo = getStaticHolo()
 

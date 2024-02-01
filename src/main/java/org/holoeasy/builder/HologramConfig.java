@@ -2,7 +2,6 @@ package org.holoeasy.builder;
 
 import org.holoeasy.config.HologramKey;
 import org.bukkit.Location;
-import org.holoeasy.config.HologramKey;
 import org.holoeasy.hologram.IHologramLoader;
 import org.holoeasy.hologram.TextBlockStandardLoader;
 import org.holoeasy.line.ILine;

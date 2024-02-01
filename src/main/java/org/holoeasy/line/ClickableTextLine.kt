@@ -1,6 +1,5 @@
 package org.holoeasy.line
 
-import org.holoeasy.builder.interfaces.PlayerFun
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -39,7 +38,7 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
     override val textLine: TextLine
         get() = line
 
-    override val args: Array<PlayerFun>?
+    override val args: Array<*>?
         get() = textLine.args
 
 

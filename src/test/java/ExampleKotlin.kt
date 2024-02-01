@@ -1,6 +1,4 @@
 import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.holoeasy.HoloEasy.startInteractivePool
 import org.holoeasy.builder.HologramBuilder.*
@@ -14,13 +12,11 @@ data class ExampleKotlin(val plugin: Plugin) {
 
 
     fun addHologram(location: Location) {
-        val itemState = mutableStateOf(ItemStack(Material.APPLE))
+        val clickCount = mutableStateOf(0)
 
         hologram(HologramKey(pool, "unique-id-holo"), location) {
-            clickable("Click me").onClick {
-                itemState.set(ItemStack(Material.ENCHANTED_GOLDEN_APPLE))
-            }
-            item(itemState)
+            textline("Count: {}", clickCount)
+            clickable("Click me").onClick { clickCount.set(clickCount.get() + 1)}
         }
 
     }

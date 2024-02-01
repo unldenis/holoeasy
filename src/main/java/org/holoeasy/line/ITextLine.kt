@@ -1,6 +1,5 @@
 package org.holoeasy.line
 
-import org.holoeasy.builder.interfaces.PlayerFun
 import org.bukkit.entity.Player
 
 interface ITextLine : ILine<String> {
@@ -9,7 +8,7 @@ interface ITextLine : ILine<String> {
 
     val textLine: TextLine
 
-    val args: Array<PlayerFun>?
+    val args: Array<*>?
 
     fun parse(player: Player): String
 

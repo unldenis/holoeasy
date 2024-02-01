@@ -2,7 +2,6 @@ package org.holoeasy.builder;
 
 import org.holoeasy.builder.interfaces.HologramConfigGroup;
 import org.holoeasy.builder.interfaces.HologramSetupGroup;
-import org.holoeasy.builder.interfaces.PlayerFun;
 import org.holoeasy.config.HologramKey;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -28,13 +27,6 @@ public class HologramBuilder {
 
         Hologram holo = new Hologram(key, holoConfig.location, holoConfig.loader);
         holo.load(holoConfig.lines.toArray(new ILine[0]));
-
-        IHologramPool pool = key.getPool();
-        if(pool != null) {
-            pool.takeCareOf(key, holo);
-        }
-
-
         return holo;
     }
 
@@ -43,7 +35,7 @@ public class HologramBuilder {
     }
 
 
-    public static void textline(@NotNull String text, @NotNull PlayerFun... args) {
+    public static void textline(@NotNull String text, @NotNull Object... args) {
         getInstance().textline(
                 text,
                 false,
@@ -53,7 +45,7 @@ public class HologramBuilder {
         );
     }
 
-    public static ITextLine clickable(@NotNull String text, @NotNull PlayerFun... args) {
+    public static ITextLine clickable(@NotNull String text, @NotNull Object... args) {
         return getInstance().textline(
                 text,
                 true,
@@ -65,7 +57,7 @@ public class HologramBuilder {
     }
 
     public static ITextLine clickable(@NotNull String text, float minHitDistance, float maxHitDistance,
-                                 @NotNull PlayerFun... args) {
+                                 @NotNull Object... args) {
         return getInstance().textline(
                 text,
                 false,
