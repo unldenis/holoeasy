@@ -4,7 +4,7 @@
 HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Hologram library for 1.8-1.20.4 servers.
 
 <p align="center">
-  <img src="gif.gif"  alt="holoeasy video"/>
+  <img src="preview/gif.gif"  alt="holoeasy video"/>
 </p>
 
 ## Quickstart
@@ -78,7 +78,7 @@ fun addHologram(location: Location) {
 From 3.1.0 version, the parameters of text lines and item lines **_can also be reactive_**. This means that you can update the line by simply calling the 'set' method to these.
 
 <p align="center">
-  <img src="state.gif"  alt="holoeasy state video"/>
+  <img src="preview/state.gif"  alt="holoeasy state video"/>
 </p>
 
 > [!WARNING]
