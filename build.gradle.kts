@@ -27,16 +27,25 @@ tasks {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId =  "org.holoeasy"
-            artifactId = "holoeasy"
-            version = "3.1.1"
+//publishing {
+//    publications {
+//        create<MavenPublication>("maven") {
+//            groupId =  "org.holoeasy"
+//            artifactId = "holoeasy"
+//            version = "3.1.1"
+//
+//            from(components["java"])
+//        }
+//    }
+//}
 
-            from(components["java"])
-        }
-    }
+
+shadowJar {
+    archiveName = "$baseName-$version.$extension"
+}
+
+artifacts {
+    archives shadowJar
 }
 
 kotlin {
