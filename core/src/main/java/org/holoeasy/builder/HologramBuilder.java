@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.holoeasy.hologram.Hologram;
 import org.holoeasy.line.ILine;
 import org.holoeasy.line.ITextLine;
-import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
 import org.jetbrains.annotations.NotNull;
 
