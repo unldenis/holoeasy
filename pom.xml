@@ -30,7 +30,6 @@
     <modules>
         <module>core</module>
     </modules>
-
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -111,4 +110,11 @@
 <!--            </plugin>-->
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
+    </repositories>
 </project>
