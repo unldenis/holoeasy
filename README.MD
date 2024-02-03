@@ -116,3 +116,11 @@ holo.show(player)
 
 ## Ex (Hologram-Lib)
 Are you using a version older than 3.0.0? You can find the documentation <a href="https://unldenis.github.io/hologramlib/">here</a>.
+
+## Contributors
+
+<a href="https://github.com/unldenis/holoeasy/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=unldenis/holoeasy" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
