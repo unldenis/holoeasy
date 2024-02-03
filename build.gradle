@@ -5,6 +5,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
+apply from: "$rootDir/gradle/publish.gradle"
+
 group 'org.holoeasy'
 version '3.1.1'
 
@@ -50,3 +52,6 @@ shadowJar {
     relocate 'org.intellij.lang.annotations', 'org.holoeasy.annotations'
     relocate 'org.jetbrains.annotations', 'org.holoeasy.annotations'
 }
+
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)

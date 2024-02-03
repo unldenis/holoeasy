@@ -1,0 +1,48 @@
+apply plugin: 'maven-publish'
+
+static def getBranch() {
+    def process = 'git branch --show-current'.execute()
+    process.waitFor()
+    return process.text.trim()
+}
+
+static def getHash() {
+    def process = 'git rev-parse HEAD'.execute()
+    process.waitFor()
+    return process.text.trim()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Build-Jdk': "${System.properties['java.vendor']} ${System.properties['java.vm.version']}",
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Git-Branch': getBranch(),
+                'Git-Hash': getHash()
+        )
+    }
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+            artifactId = project.getName().toLowerCase()
+            groupId = ((String) project.getGroup()).toLowerCase()
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
