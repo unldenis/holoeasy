@@ -114,4 +114,6 @@ run/
 /example-plugin/build/
 /api/build/
 
-
+# Gradle
+**/build/**
+**/.gradle/**
