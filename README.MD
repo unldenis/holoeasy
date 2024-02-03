@@ -19,14 +19,14 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 <dependency>
     <groupId>com.github.unldenis</groupId>
     <artifactId>holoeasy</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.1</version>
 </dependency>
 ```
 
 #### Gradle
 
 ```kotlin
-implementation("com.github.unldenis:holoeasy:3.1.0")
+implementation("com.github.unldenis:holoeasy:3.1.1")
 ```
 
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
