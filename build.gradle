@@ -5,10 +5,10 @@ plugins {
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
-apply from: "$rootDir/gradle/publish.gradle"
-
 group 'org.holoeasy'
 version '3.1.1'
+
+apply from: "$rootDir/gradle/publish.gradle"
 
 repositories {
     mavenCentral()
@@ -27,6 +27,8 @@ subprojects {
 
     sourceSets {
         main.java.srcDirs += 'src/main/java'
+        main.kotlin.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/java'
         test.kotlin.srcDirs += 'src/test/kotlin'
     }
 
@@ -54,4 +56,5 @@ shadowJar {
 }
 
 tasks.build.dependsOn(shadowJar)
+tasks.publishShadowPublicationToMavenLocal.dependsOn(jar, shadowJar)
 tasks.publish.dependsOn(shadowJar)
