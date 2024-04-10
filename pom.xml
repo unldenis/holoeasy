@@ -28,7 +28,8 @@
     <version>3.1.1</version>
     <packaging>pom</packaging>
     <modules>
-        <module>core</module>
+        <module>holoeasy-core</module>
+        <module>holoeasy-example</module>
     </modules>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
