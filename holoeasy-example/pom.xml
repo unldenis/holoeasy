@@ -42,9 +42,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.unldenis</groupId>
-            <artifactId>holoeasy</artifactId>
-            <version>3.1.0</version>
+            <groupId>com.github.unldenis.holoeasy</groupId>
+            <artifactId>core</artifactId>
+            <version>3.1.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

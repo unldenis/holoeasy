@@ -30,6 +30,7 @@
     <modules>
         <module>holoeasy-core</module>
         <module>holoeasy-example</module>
+        <module>holoeasy-dsl</module>
     </modules>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
