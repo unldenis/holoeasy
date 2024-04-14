@@ -38,7 +38,7 @@ Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 ```java
 import static org.holoeasy.builder.HologramBuilder.*;
 
-// you can use a Pool or a org.bukkit.Plugin for HologramKey
+// you can use a Pool or a org.bukkit.Plugin
 IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
 
 public void addHologram(Location location) {
@@ -53,6 +53,7 @@ public void addHologram(Location location) {
             });
             item(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE));
         });
+        // other holograms...
     });
 
 }
@@ -62,7 +63,7 @@ public void addHologram(Location location) {
 ```kotlin
 import org.holoeasy.builder.HologramBuilder.*
 
-// you can use a Pool or a org.bukkit.Plugin for HologramKey
+// you can use a Pool or a org.bukkit.Plugin 
 val pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
 
 fun addHologram(location: Location) {
@@ -77,6 +78,7 @@ fun addHologram(location: Location) {
             }
             item(ItemStack(Material.ENCHANTED_GOLDEN_APPLE))
         }
+        // other holograms...
     }
 
 }
@@ -112,7 +114,7 @@ registerHolograms(plugin, () -> {
 plugin.registerHolograms {
     val clickCount = mutableStateOf(0) // can be any type
 
-    val holo = hologram(HologramKey(plugin, "unique-id-holo"), location) {
+    val holo = hologram(location) {
         textline("{}!", "Static")
         textline("Count: {}", clickCount)
         clickable("Click me", 0.5f, 5f).onClick { clickCount.set(clickCount.get() + 1)}
