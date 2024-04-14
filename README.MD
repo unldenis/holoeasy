@@ -17,16 +17,16 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 
 ```xml
 <dependency>
-    <groupId>com.github.unldenis</groupId>
-    <artifactId>holoeasy</artifactId>
-    <version>3.1.1</version>
+    <groupId>com.github.unldenis.holoeasy</groupId>
+    <artifactId>holoeasy-core</artifactId>
+    <version>3.2.0</version>
 </dependency>
 ```
 
 #### Gradle
 
 ```kotlin
-implementation("com.github.unldenis:holoeasy:3.1.1")
+implementation("com.github.unldenis.holoeasy:holoeasy-core:3.2.0")
 ```
 
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
@@ -42,15 +42,19 @@ import static org.holoeasy.builder.HologramBuilder.*;
 IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
 
 public void addHologram(Location location) {
-    hologram(new HologramKey(pool, "unique-id-holo"), location, () -> {
-        textline("Hello");
-        textline("Score {} - {}", 0, 1);
-        clickable("Click me").onClick(p -> {
-            p.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
-                    20, 20, 20);
+    pool.registerHolograms(() -> {
+        
+        hologram(location, () -> {
+            textline("Hello");
+            textline("Score {} - {}", 0, 1);
+            clickable("Click me").onClick(p -> {
+                p.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
+                        20, 20, 20);
+            });
+            item(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE));
         });
-        item(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE));
     });
+
 }
 ```
 
@@ -62,15 +66,19 @@ import org.holoeasy.builder.HologramBuilder.*
 val pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
 
 fun addHologram(location: Location) {
-    hologram(HologramKey(pool, "unique-id-holo"), location) {
-        textline("Hello")
-        textline("Score {} - {}", 0, 1)
-        clickable("Click me").onClick {
-            it.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
-                20, 20, 20)
+    pool.registerHolograms {
+
+        hologram(location) {
+            textline("Hello")
+            textline("Score {} - {}", 0, 1)
+            clickable("Click me").onClick {
+                it.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
+                    20, 20, 20)
+            }
+            item(ItemStack(Material.ENCHANTED_GOLDEN_APPLE))
         }
-        item(ItemStack(Material.ENCHANTED_GOLDEN_APPLE))
     }
+
 }
 ```
 
@@ -85,32 +93,34 @@ From 3.1.0 version, the parameters of text lines and item lines **_can also be r
 > Mutable states have no player information at this time. If you need to create a hologram for a specific player, it is recommended that you do **_not_** add it to a Pool.
 ### Java
 ```java
-var clickCount = mutableStateOf(0); // can be any type
-
-var holo = hologram(new HologramKey(plugin, "unique-id-holo"), location, () -> {
-    textline("{}!", "Static");
-    textline("Count: {}", clickCount);
-    clickable("Click me", 0.5f, 5f).onClick($ -> clickCount.set(clickCount.get() + 1));
+registerHolograms(plugin, () -> {
+    var clickCount = mutableStateOf(0); // can be any type
+    
+    var holo = hologram(location, () -> {
+        textline("{}!", "Static");
+        textline("Count: {}", clickCount);
+        clickable("Click me", 0.5f, 5f).onClick($ -> clickCount.set(clickCount.get() + 1));
+    });
+    
+    // It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
+    holo.show(player);
 });
-
-// It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
-// HologramKey decides whether to add it to a pool or not.
-holo.show(player);
 ```
 
 ### Kotlin
 ```kotlin
-val clickCount = mutableStateOf(0) // can be any type
+plugin.registerHolograms {
+    val clickCount = mutableStateOf(0) // can be any type
 
-val holo = hologram(HologramKey(plugin, "unique-id-holo"), location) {
-    textline("{}!", "Static")
-    textline("Count: {}", clickCount)
-    clickable("Click me", 0.5f, 5f).onClick { clickCount.set(clickCount.get() + 1)}
+    val holo = hologram(HologramKey(plugin, "unique-id-holo"), location) {
+        textline("{}!", "Static")
+        textline("Count: {}", clickCount)
+        clickable("Click me", 0.5f, 5f).onClick { clickCount.set(clickCount.get() + 1)}
+    }
+
+    // It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
+    holo.show(player)
 }
-
-// It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
-// HologramKey decides whether to add it to a pool or not.
-holo.show(player)
 ```
 
 
