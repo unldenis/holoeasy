@@ -43,8 +43,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.unldenis.holoeasy</groupId>
-            <artifactId>core</artifactId>
-            <version>3.1.1</version>
+            <artifactId>holoeasy-core</artifactId>
+            <version>df932dce91</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
