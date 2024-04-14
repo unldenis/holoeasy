@@ -1,17 +1,16 @@
 package org.holoeasy.hologram
 
-import org.holoeasy.config.HologramKey
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 import org.holoeasy.line.ILine
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hologram(val key: HologramKey, location: Location, val loader: IHologramLoader) {
-    init {
-        key.pool?.takeCareOf(key, this)
-    }
+class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoader) {
+
+    val id = UUID.randomUUID()!!
 
     var location: Location = location
         private set
@@ -70,23 +69,18 @@ class Hologram(val key: HologramKey, location: Location, val loader: IHologramLo
         hideEvent?.onHide(player)
     }
 
-    override fun hashCode(): Int {
-        return key.hashCode()
-    }
-
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
-            return true
-        }
-        if (other == null || javaClass != other.javaClass) {
-            return false
-        }
-        val hologram = other as Hologram
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-        return Objects.equals(key, hologram.key)
+        other as Hologram
+
+        return id == other.id
     }
 
-    override fun toString(): String {
-        return "Hologram[key=${key.id}]"
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
+
+
 }

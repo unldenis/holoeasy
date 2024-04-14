@@ -1,6 +1,5 @@
 package org.holoeasy.pool
 
-import org.holoeasy.config.HologramKey
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -11,6 +10,7 @@ import org.holoeasy.hologram.Hologram
 import org.holoeasy.line.ILine
 import org.holoeasy.line.ITextLine
 import org.holoeasy.util.AABB
+import java.util.UUID
 
 class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float) : Listener,
     IHologramPool {
@@ -18,20 +18,17 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
     override val plugin: Plugin
         get() = pool.plugin
 
-    override fun get(key: HologramKey): Hologram {
-        return pool.get(key)
+    override fun get(id: UUID): Hologram {
+        return pool.get(id)
     }
 
-    override fun get(keyId: String): Hologram {
-        return pool.get(keyId)
+
+    override fun takeCareOf(value: Hologram) {
+        pool.takeCareOf(value)
     }
 
-    override fun takeCareOf(key: HologramKey, value: Hologram) {
-        pool.takeCareOf(key, value)
-    }
-
-    override fun remove(key: HologramKey): Hologram? {
-        return pool.remove(key)
+    override fun remove(id : UUID): Hologram? {
+        return pool.remove(id)
     }
 
 

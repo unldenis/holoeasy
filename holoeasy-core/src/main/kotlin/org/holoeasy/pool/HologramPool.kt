@@ -1,6 +1,5 @@
 package org.holoeasy.pool
 
-import org.holoeasy.config.HologramKey
 import com.google.common.collect.ImmutableList
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -10,14 +9,15 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.plugin.Plugin
 import org.holoeasy.hologram.Hologram
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-class KeyAlreadyExistsException(key: HologramKey) : IllegalStateException("Key '$key' already exists")
-class NoValueForKeyException(key: String) : IllegalStateException("No value for key '$key'")
+class KeyAlreadyExistsException(key: UUID) : IllegalStateException("Id '$key' already exists")
+class NoValueForKeyException(key: UUID) : IllegalStateException("No value for id '$key'")
 
 class HologramPool(override val plugin: Plugin, private val spawnDistance: Double) : Listener, IHologramPool {
 
-    val holograms: MutableMap<HologramKey, Hologram> = ConcurrentHashMap()
+    val holograms: MutableMap<UUID, Hologram> = ConcurrentHashMap()
 
     init {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -25,24 +25,15 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
         hologramTick()
     }
 
-    override fun get(key: HologramKey): Hologram {
-        return holograms[key] ?: throw NoValueForKeyException(key.id)
+    override fun get(id: UUID): Hologram {
+        return holograms[id] ?: throw NoValueForKeyException(id)
     }
 
-    override fun get(keyId: String) : Hologram {
-        for((key, holo) in holograms) {
-            if(key.id == keyId) {
-                return holo
-            }
+    override fun takeCareOf(value: Hologram) {
+        if (holograms.containsKey(value.id)) {
+            throw KeyAlreadyExistsException(value.id)
         }
-        throw NoValueForKeyException(keyId)
-    }
-
-    override fun takeCareOf(key: HologramKey, value: Hologram) {
-        if (holograms.containsKey(key)) {
-            throw KeyAlreadyExistsException(key)
-        }
-        holograms[key] = value
+        holograms[value.id] = value
     }
 
     /**
@@ -51,9 +42,9 @@ class HologramPool(override val plugin: Plugin, private val spawnDistance: Doubl
      * @param hologram the hologram of the pool to remove.
      * @return true if any elements were removed
      */
-    override fun remove(key: HologramKey): Hologram? {
+    override fun remove(id : UUID): Hologram? {
         // if removed
-        val removed = holograms.remove(key)
+        val removed = holograms.remove(id)
         removed?.let {
             for (player in it.seeingPlayers) {
                 it.hide(player)

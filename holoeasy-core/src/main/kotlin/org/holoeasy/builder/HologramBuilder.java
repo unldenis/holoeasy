@@ -1,8 +1,10 @@
 package org.holoeasy.builder;
 
+import kotlin.Pair;
+import org.bukkit.plugin.Plugin;
 import org.holoeasy.builder.interfaces.HologramConfigGroup;
+import org.holoeasy.builder.interfaces.HologramRegisterGroup;
 import org.holoeasy.builder.interfaces.HologramSetupGroup;
-import org.holoeasy.config.HologramKey;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.holoeasy.hologram.Hologram;
@@ -18,15 +20,46 @@ public class HologramBuilder {
         return Service.INSTANCE;
     }
 
-    public static Hologram hologram(
-            @NotNull HologramKey key, @NotNull Location location, @NotNull HologramSetupGroup setupGroup) {
-        HologramConfig holoConfig = new HologramConfig(key, location);
+    public static void registerHolograms(@NotNull IHologramPool pool, @NotNull HologramRegisterGroup registerGroup) {
+        getInstance().getStaticPool().set(new Pair<>(Service.RegistrationType.POOL, pool));
+        registerGroup.register();
+        getInstance().getStaticPool().remove();
+    }
+
+    public static void registerHolograms(@NotNull Plugin plugin, @NotNull HologramRegisterGroup registerGroup) {
+        getInstance().getStaticPool().set(new Pair<>(Service.RegistrationType.PLUGIN, plugin));
+        registerGroup.register();
+        getInstance().getStaticPool().remove();
+    }
+
+    public static Hologram hologram( @NotNull Location location, @NotNull HologramSetupGroup setupGroup) {
+
+        Pair<Service.RegistrationType, Object> registrationType = getInstance().getStaticRegistration();
+
+        HologramConfig holoConfig = null;
+        IHologramPool pool = null;
+        switch (registrationType.component1()) {
+            case POOL:
+                pool = ((IHologramPool) registrationType.component2());
+                holoConfig = new HologramConfig(pool.getPlugin(), location);
+                break;
+            case PLUGIN:
+                holoConfig = new HologramConfig(((Plugin) registrationType.component2()), location);
+                break;
+            default:
+                throw new RuntimeException("invalid registration type " + registrationType.component1().name());
+        }
+
         getInstance().getStaticHologram().set(holoConfig);
         setupGroup.setup();
         getInstance().getStaticHologram().remove();
 
-        Hologram holo = new Hologram(key, holoConfig.location, holoConfig.loader);
+        Hologram holo = new Hologram(holoConfig.plugin, holoConfig.location, holoConfig.loader);
         holo.load(holoConfig.lines.toArray(new ILine[0]));
+
+        if(pool != null) {
+            pool.takeCareOf(holo);
+        }
         return holo;
     }
 

@@ -6,11 +6,24 @@ import org.holoeasy.builder.interfaces.HologramConfigGroup
 import org.holoeasy.hologram.TextBlockStandardLoader
 import org.holoeasy.line.*
 import org.holoeasy.reactive.MutableState
-import kotlin.math.min
 
 object Service {
 
+    enum class RegistrationType {
+        PLUGIN,
+        POOL
+    }
+
+    // might be Plugin as well
+    val staticPool : ThreadLocal<Pair<RegistrationType, Any>> = ThreadLocal()
+
     val staticHologram: ThreadLocal<HologramConfig> = ThreadLocal()
+
+    fun getStaticRegistration(): Pair<RegistrationType, Any> {
+        val pair = staticPool.get() ?: throw IllegalStateException("hologram block must be inside a registerHolograms block")
+        return pair
+    }
+
 
     private fun getStaticHolo(): HologramConfig {
         val holo = staticHologram.get() ?: throw RuntimeException("You must call config() inside hologram block")
@@ -34,16 +47,16 @@ object Service {
         val holo = getStaticHolo()
 
         if (minHitDistance == null || maxHitDistance == null) {
-            if(holo.key.pool == null && clickable) {
-                throw IllegalStateException("This hologram is not in a pool,so use the method #clickable(text, minHitDistance, maxHitDistance)")
-            }
+//            if(holo.pool == null && clickable) {
+//                throw IllegalStateException("This hologram is not in a pool,so use the method #clickable(text, minHitDistance, maxHitDistance)")
+//            }
 
-            val textLine = TextLine(holo.key.plugin, text, clickable = clickable, args = args)
+            val textLine = TextLine(holo.plugin, text, clickable = clickable, args = args)
             holo.lines.add(textLine)
             return textLine
 
         }
-        val textLine = TextLine(holo.key.plugin, text, clickable = false, args = args)
+        val textLine = TextLine(holo.plugin, text, clickable = false, args = args)
         val clickableTextLine = ClickableTextLine(textLine, minHitDistance, maxHitDistance)
         holo.lines.add(clickableTextLine)
         return clickableTextLine
@@ -51,13 +64,13 @@ object Service {
 
     fun itemline(block: ItemStack) {
         val holo = getStaticHolo()
-        val blockline = BlockLine(holo.key.plugin, block)
+        val blockline = BlockLine(holo.plugin, block)
         holo.lines.add(blockline)
     }
 
     fun itemlineMutable(block: MutableState<ItemStack>) {
         val holo = getStaticHolo()
-        val blockline = BlockLine(holo.key.plugin, block)
+        val blockline = BlockLine(holo.plugin, block)
         holo.lines.add(blockline)
     }
 

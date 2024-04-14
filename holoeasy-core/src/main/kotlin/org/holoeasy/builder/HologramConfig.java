@@ -1,6 +1,6 @@
 package org.holoeasy.builder;
 
-import org.holoeasy.config.HologramKey;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.Location;
 import org.holoeasy.hologram.IHologramLoader;
 import org.holoeasy.hologram.TextBlockStandardLoader;
@@ -14,14 +14,14 @@ import java.util.List;
 public class HologramConfig {
 
     @NotNull
-    final HologramKey key;
+    final Plugin plugin;
     @NotNull
     final Location location;
     final List<ILine<?>> lines = new ArrayList<>();
     public IHologramLoader loader = new TextBlockStandardLoader();
 
-    HologramConfig(@NotNull HologramKey key, @NotNull Location location) {
-        this.key = key;
+    HologramConfig(@NotNull Plugin plugin, @NotNull Location location) {
+        this.plugin = plugin;
         this.location = location;
     }
 

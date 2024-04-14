@@ -1,21 +1,23 @@
 package org.holoeasy.pool
 
-import org.holoeasy.config.HologramKey
 import org.bukkit.plugin.Plugin
+import org.holoeasy.builder.HologramBuilder
+import org.holoeasy.builder.interfaces.HologramRegisterGroup
 import org.holoeasy.hologram.Hologram
-import org.jetbrains.annotations.ApiStatus.Experimental
+import java.util.UUID
 
 interface IHologramPool {
 
     val plugin: Plugin
 
-    fun get(key: HologramKey): Hologram
+    fun get(id: UUID): Hologram
 
-    @Experimental
-    fun get(keyId: String) : Hologram
+    fun takeCareOf(value: Hologram)
 
-    fun takeCareOf(key: HologramKey, value: Hologram)
+    fun remove(id : UUID): Hologram?
 
-    fun remove(key: HologramKey): Hologram?
+    fun registerHolograms(registerGroup: HologramRegisterGroup) {
+        HologramBuilder.registerHolograms(this, registerGroup)
+    }
 
 }
