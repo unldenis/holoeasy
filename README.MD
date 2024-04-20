@@ -18,7 +18,7 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 ```xml
 <dependency>
     <groupId>com.github.unldenis.holoeasy</groupId>
-    <artifactId>holoeasy-core</artifactId>
+    <artifactId>holoeasy</artifactId>
     <version>3.2.0</version>
 </dependency>
 ```
