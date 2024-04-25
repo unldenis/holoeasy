@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.holoeasy.ext.send
 import org.holoeasy.packet.IPacket
+import org.holoeasy.packet.PacketType
 import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
@@ -21,7 +22,7 @@ class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack>
     }
 
     private val line: Line = Line(plugin, EntityType.DROPPED_ITEM)
-    private val resetVelocity = IPacket.get(IPacket.Type.VELOCITY).velocity(line.entityID, 0, 0,0)
+    private val resetVelocity = PacketType.VELOCITY.velocity(line.entityID, 0, 0,0)
 
     private val _mutableStateOf = obj
 
@@ -73,7 +74,7 @@ class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack>
     }
 
     override fun update(player: Player) {
-        IPacket.get(IPacket.Type.METADATA_ITEM)
+        PacketType.METADATA_ITEM
             .metadata(entityId, obj).send(player)
     }
 }

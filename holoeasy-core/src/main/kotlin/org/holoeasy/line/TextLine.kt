@@ -6,6 +6,7 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.holoeasy.ext.send
 import org.holoeasy.packet.IPacket
+import org.holoeasy.packet.PacketType
 import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.AABB
 
@@ -101,8 +102,7 @@ class TextLine(
         isEmpty = obj.isEmpty()
         if (!isEmpty) {
             line.spawn(player)
-            val packet = IPacket.get(IPacket.Type.METADATA_TEXT)
-                .metadata(entityId, parse(player))
+            val packet = PacketType.METADATA_TEXT.metadata(entityId, parse(player))
             packet.send(player)
         }
     }
@@ -123,12 +123,12 @@ class TextLine(
             0x01 -> {
                 line.spawn(player)
                 isEmpty = false
-                IPacket.get(IPacket.Type.METADATA_TEXT)
+                PacketType.METADATA_TEXT
                     .metadata(entityId, parse(player)).send(player)
             }
 
             0x00 ->
-                IPacket.get(IPacket.Type.METADATA_TEXT)
+                PacketType.METADATA_TEXT
                     .metadata(entityId, parse(player), invisible = false)
                     .send(player)
         }

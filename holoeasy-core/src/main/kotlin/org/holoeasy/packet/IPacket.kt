@@ -1,6 +1,11 @@
 package org.holoeasy.packet
 
 
+import com.comphenix.protocol.events.PacketContainer
+import org.bukkit.Location
+import org.bukkit.entity.EntityType
+import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
 import org.holoeasy.HoloEasy
 import org.holoeasy.packet.delete.DeletePacketA
 import org.holoeasy.packet.delete.DeletePacketB
@@ -21,7 +26,7 @@ interface IPacket {
 
     val versionSupport: Array<out ClosedRange<VersionEnum>>
 
-    private fun isCurrentVersion(): Boolean {
+    fun isCurrentVersion(): Boolean {
         for (range in versionSupport) {
             if (VersionUtil.CLEAN_VERSION in range) {
                 return true
@@ -30,75 +35,104 @@ interface IPacket {
         return false
     }
 
-    companion object {
+}
 
-        private val cache = mutableMapOf<Type<*>, IPacket>()
+sealed class PacketType<T : IPacket>(private vararg val impls: T) {
 
-        @JvmStatic
-        fun <T : IPacket> get(type: Type<T>): T {
-            val cached = cache[type]
-            if (cached != null) {
-                return cached as T
-            }
+    protected val currImpl : T by lazy {
+        val rightImpl = impls.firstOrNull(IPacket::isCurrentVersion)
+        if (rightImpl != null) {
+            return@lazy rightImpl as T
+        }
 
-            val rightImpl = type.impls.firstOrNull(IPacket::isCurrentVersion)
-            if (rightImpl != null) {
-                cache[type] = rightImpl
-                return rightImpl as T
-            }
+        if (HoloEasy.useLastSupportedVersion) {
+            return@lazy impls.last() as T
+        }
 
-            if (HoloEasy.useLastSupportedVersion) {
-                return type.impls.last() as T
-            }
-
-            throw RuntimeException(
-                """
-                No version support for ${type.abs.simpleName} packet
-                Set HologramLib.useLastSupportedVersion to true or
-                open an issue at https://github.com/unldenis/Hologram-Lib
+        throw RuntimeException(
+            """
+            No version support for this packet
+            Set HoloEasy.useLastSupportedVersion to true or
+            open an issue at https://github.com/unldenis/holoeasy
             """.trimIndent()
-            )
+        )
+    }
+
+    data object DELETE : PacketType<IDeletePacket>(DeletePacketA, DeletePacketB)
+        , IDeletePacket {
+        override fun delete(entityId: Int): PacketContainer {
+            return currImpl.delete(entityId)
         }
+
+        override val versionSupport: Array<out ClosedRange<VersionEnum>>
+            get() = currImpl.versionSupport
 
     }
 
-    class Type<T : IPacket>(internal val abs: KClass<T>, vararg val impls: IPacket) {
-
-        companion object {
-            @JvmField
-            val DELETE = Type(IDeletePacket::class, DeletePacketA, DeletePacketB)
-
-            @JvmField
-            val METADATA_TEXT = Type(
-                IMetadataTextPacket::class,
-                MetadataTextPacketA,
-                MetadataTextPacketB,
-                MetadataTextPacketC,
-                MetadataTextPacketD,
-                MetadataTextPacketE
-            )
-
-            @JvmField
-            val METADATA_ITEM = Type(
-                IMetadataItemPacket::class,
-                MetadataItemPacketA,
-                MetadataItemPacketB,
-                MetadataItemPacketC,
-                MetadataItemPacketD,
-                MetadataItemPacketE
-            )
-
-            @JvmField
-            val SPAWN = Type(ISpawnPacket::class, SpawnPacketA, SpawnPacketB, SpawnPacketC, SpawnPacketD)
-
-            @JvmField
-            val TELEPORT = Type(ITeleportPacket::class, TeleportPacketA, TeleportPacketB)
-
-            @JvmField
-            val VELOCITY = Type(IVelocityPacket::class, VelocityPacketA)
+    data object METADATA_TEXT : PacketType<IMetadataTextPacket>(MetadataTextPacketA, MetadataTextPacketB, MetadataTextPacketC, MetadataTextPacketD, MetadataTextPacketE)
+        , IMetadataTextPacket {
+        override fun metadata(entityId: Int, nameTag: String?, invisible: Boolean): PacketContainer {
+            return currImpl.metadata(entityId, nameTag, invisible)
         }
 
+        override val versionSupport: Array<out ClosedRange<VersionEnum>>
+            get() = currImpl.versionSupport
+
     }
+
+    data object METADATA_ITEM : PacketType<IMetadataItemPacket>(MetadataItemPacketA, MetadataItemPacketB, MetadataItemPacketC, MetadataItemPacketD, MetadataItemPacketE)
+        , IMetadataItemPacket {
+        override fun metadata(entityId: Int, item: ItemStack): PacketContainer {
+            return currImpl.metadata(entityId, item)
+        }
+
+        override val versionSupport: Array<out ClosedRange<VersionEnum>>
+            get() = currImpl.versionSupport
+
+    }
+
+    data object SPAWN : PacketType<ISpawnPacket>(SpawnPacketA, SpawnPacketB, SpawnPacketC, SpawnPacketD)
+        , ISpawnPacket {
+        override fun spawn(
+            entityId: Int,
+            entityType: EntityType,
+            location: Location,
+            plugin: Plugin?
+        ): PacketContainer {
+            return currImpl.spawn(entityId, entityType, location, plugin)
+        }
+
+        override val versionSupport: Array<out ClosedRange<VersionEnum>>
+            get() = currImpl.versionSupport
+
+    }
+
+    data object TELEPORT : PacketType<ITeleportPacket>(TeleportPacketA, TeleportPacketB)
+        , ITeleportPacket {
+        override fun teleport(entityId: Int, location: Location): PacketContainer {
+            return currImpl.teleport(entityId, location)
+        }
+
+        override val versionSupport: Array<out ClosedRange<VersionEnum>>
+            get() = currImpl.versionSupport
+
+    }
+
+    data object VELOCITY : PacketType<IVelocityPacket>(VelocityPacketA)
+        , IVelocityPacket {
+        override fun velocity(entityId: Int, x: Int, y: Int, z: Int): PacketContainer {
+            return currImpl.velocity(entityId, x, y, z)
+        }
+
+        override val versionSupport: Array<out ClosedRange<VersionEnum>>
+            get() = currImpl.versionSupport
+
+
+    }
+
+
+
+
 
 
 }
