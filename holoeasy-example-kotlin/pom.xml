@@ -19,10 +19,6 @@
 
     <repositories>
         <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/repository/public/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -98,7 +94,7 @@
         <dependency>
             <groupId>com.github.unldenis.holoeasy</groupId>
             <artifactId>holoeasy-core</artifactId>
-            <version>df932dce91</version>
+            <version>d30cc110f3</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
