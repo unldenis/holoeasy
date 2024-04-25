@@ -1,26 +1,18 @@
 package org.holoeasy.packet
 
 
-import com.comphenix.protocol.events.PacketContainer
-import org.bukkit.Location
-import org.bukkit.entity.EntityType
-import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 import org.holoeasy.HoloEasy
 import org.holoeasy.packet.delete.DeletePacketA
 import org.holoeasy.packet.delete.DeletePacketB
-import org.holoeasy.packet.delete.IDeletePacket
 import org.holoeasy.packet.metadata.item.*
 import org.holoeasy.packet.metadata.text.*
 import org.holoeasy.packet.spawn.*
-import org.holoeasy.packet.teleport.ITeleportPacket
 import org.holoeasy.packet.teleport.TeleportPacketA
 import org.holoeasy.packet.teleport.TeleportPacketB
 import org.holoeasy.packet.velocity.IVelocityPacket
 import org.holoeasy.packet.velocity.VelocityPacketA
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
-import kotlin.reflect.KClass
 
 interface IPacket {
 
@@ -37,16 +29,16 @@ interface IPacket {
 
 }
 
-sealed class PacketType<T : IPacket>(private vararg val impls: T) {
 
-    protected val currImpl : T by lazy {
+object PacketType {
+    private fun <T : IPacket> getCurrImpl(vararg impls: T): T {
         val rightImpl = impls.firstOrNull(IPacket::isCurrentVersion)
         if (rightImpl != null) {
-            return@lazy rightImpl as T
+            return rightImpl as T
         }
 
         if (HoloEasy.useLastSupportedVersion) {
-            return@lazy impls.last() as T
+            return impls.last() as T
         }
 
         throw RuntimeException(
@@ -58,81 +50,36 @@ sealed class PacketType<T : IPacket>(private vararg val impls: T) {
         )
     }
 
-    data object DELETE : PacketType<IDeletePacket>(DeletePacketA, DeletePacketB)
-        , IDeletePacket {
-        override fun delete(entityId: Int): PacketContainer {
-            return currImpl.delete(entityId)
-        }
+    val DELETE by lazy { getCurrImpl(DeletePacketA, DeletePacketB) }
 
-        override val versionSupport: Array<out ClosedRange<VersionEnum>>
-            get() = currImpl.versionSupport
-
+    val METADATA_TEXT by lazy {
+        getCurrImpl(
+            MetadataTextPacketA,
+            MetadataTextPacketB,
+            MetadataTextPacketC,
+            MetadataTextPacketD,
+            MetadataTextPacketE
+        )
     }
 
-    data object METADATA_TEXT : PacketType<IMetadataTextPacket>(MetadataTextPacketA, MetadataTextPacketB, MetadataTextPacketC, MetadataTextPacketD, MetadataTextPacketE)
-        , IMetadataTextPacket {
-        override fun metadata(entityId: Int, nameTag: String?, invisible: Boolean): PacketContainer {
-            return currImpl.metadata(entityId, nameTag, invisible)
-        }
-
-        override val versionSupport: Array<out ClosedRange<VersionEnum>>
-            get() = currImpl.versionSupport
-
+    val METADATA_ITEM by lazy {
+        getCurrImpl(
+            MetadataItemPacketA,
+            MetadataItemPacketB,
+            MetadataItemPacketC,
+            MetadataItemPacketD,
+            MetadataItemPacketE
+        )
     }
 
-    data object METADATA_ITEM : PacketType<IMetadataItemPacket>(MetadataItemPacketA, MetadataItemPacketB, MetadataItemPacketC, MetadataItemPacketD, MetadataItemPacketE)
-        , IMetadataItemPacket {
-        override fun metadata(entityId: Int, item: ItemStack): PacketContainer {
-            return currImpl.metadata(entityId, item)
-        }
-
-        override val versionSupport: Array<out ClosedRange<VersionEnum>>
-            get() = currImpl.versionSupport
-
+    val SPAWN by lazy {
+        getCurrImpl(SpawnPacketA, SpawnPacketB, SpawnPacketC, SpawnPacketD)
     }
 
-    data object SPAWN : PacketType<ISpawnPacket>(SpawnPacketA, SpawnPacketB, SpawnPacketC, SpawnPacketD)
-        , ISpawnPacket {
-        override fun spawn(
-            entityId: Int,
-            entityType: EntityType,
-            location: Location,
-            plugin: Plugin?
-        ): PacketContainer {
-            return currImpl.spawn(entityId, entityType, location, plugin)
-        }
-
-        override val versionSupport: Array<out ClosedRange<VersionEnum>>
-            get() = currImpl.versionSupport
-
+    val TELEPORT by lazy {
+        getCurrImpl(TeleportPacketA, TeleportPacketB)
     }
 
-    data object TELEPORT : PacketType<ITeleportPacket>(TeleportPacketA, TeleportPacketB)
-        , ITeleportPacket {
-        override fun teleport(entityId: Int, location: Location): PacketContainer {
-            return currImpl.teleport(entityId, location)
-        }
-
-        override val versionSupport: Array<out ClosedRange<VersionEnum>>
-            get() = currImpl.versionSupport
-
-    }
-
-    data object VELOCITY : PacketType<IVelocityPacket>(VelocityPacketA)
-        , IVelocityPacket {
-        override fun velocity(entityId: Int, x: Int, y: Int, z: Int): PacketContainer {
-            return currImpl.velocity(entityId, x, y, z)
-        }
-
-        override val versionSupport: Array<out ClosedRange<VersionEnum>>
-            get() = currImpl.versionSupport
-
-
-    }
-
-
-
-
-
+    val VELOCITY by lazy { getCurrImpl<IVelocityPacket>(VelocityPacketA) }
 
 }
