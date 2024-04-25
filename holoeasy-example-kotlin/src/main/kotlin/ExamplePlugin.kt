@@ -20,11 +20,11 @@ class ExamplePlugin : JavaPlugin() {
             pool.registerHolograms {
 
                 hologram(location) {
-                    val clickCount = mutableStateOf(0) // can be any type
+                    var clickCount by mutableStateOf(0) // can be any type
 
                     textline("Hello")
                     textline("Count {}", clickCount)
-                    clickable("Click me").onClick { player -> clickCount.set(clickCount.get() + 1) }
+                    clickable("Click me").onClick { player -> clickCount += 1 }
                     item(ItemStack(Material.APPLE))
                 }
 

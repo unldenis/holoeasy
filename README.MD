@@ -19,14 +19,25 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 <dependency>
     <groupId>com.github.unldenis.holoeasy</groupId>
     <artifactId>holoeasy-core</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
+</dependency>
+
+<!-- For java projects include also the kotlin stdlib -->
+<dependency>
+    <groupId>org.jetbrains.kotlin</groupId>
+    <artifactId>kotlin-stdlib</artifactId>
+    <version>1.9.21</version>
 </dependency>
 ```
 
 #### Gradle
 
 ```kotlin
-implementation("com.github.unldenis.holoeasy:holoeasy-core:3.2.0")
+implementation("com.github.unldenis.holoeasy:holoeasy-core:3.3.0")
+
+// For java projects include also the kotlin stdlib
+implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
+
 ```
 
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
@@ -112,12 +123,12 @@ registerHolograms(plugin, () -> {
 ### Kotlin
 ```kotlin
 plugin.registerHolograms {
-    val clickCount = mutableStateOf(0) // can be any type
+    var clickCount by mutableStateOf(0) // can be any type
 
     val holo = hologram(location) {
         textline("{}!", "Static")
         textline("Count: {}", clickCount)
-        clickable("Click me", 0.5f, 5f).onClick { clickCount.set(clickCount.get() + 1)}
+        clickable("Click me", 0.5f, 5f).onClick { clickCount += 1 }
     }
 
     // It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
