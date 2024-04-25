@@ -1,8 +1,18 @@
 package org.holoeasy.reactive
 
+import kotlin.reflect.KProperty
+
 data class MutableState<T>(private var value : T) {
 
     private val observers= mutableListOf<Observer>()
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        return this.get()
+    }
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        this.set(value)
+    }
 
     fun get() : T {
         return value
