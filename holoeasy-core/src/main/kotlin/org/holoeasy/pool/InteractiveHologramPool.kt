@@ -36,8 +36,8 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
     val maxHitDistance: Float
 
     init {
-        require(!(minHitDistance < 0)) { "minHitDistance must be positive" }
-        require(!(maxHitDistance > 120)) { "maxHitDistance cannot be greater than 120" }
+        require(minHitDistance > 0) { "minHitDistance must be positive" }
+        require(maxHitDistance < 120) { "maxHitDistance cannot be greater than 120" }
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
 
@@ -52,6 +52,7 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
             if (e.action != Action.LEFT_CLICK_AIR) {
                 return@Runnable
             }
+
             FST@ for (hologram in pool.holograms.values) {
                 if (!hologram.isShownFor(player)) {
                     continue

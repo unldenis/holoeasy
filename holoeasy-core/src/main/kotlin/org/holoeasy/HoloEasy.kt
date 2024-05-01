@@ -18,9 +18,12 @@ object HoloEasy {
     }
 
     @JvmStatic
+    @JvmOverloads
     fun startInteractivePool(
-        plugin: Plugin, spawnDistance: Double,
-        minHitDistance: Float, maxHitDistance: Float
+        plugin: Plugin,
+        spawnDistance: Double,
+        minHitDistance: Float = 0.5f,
+        maxHitDistance: Float = 5f
     ): IHologramPool {
         val simplepool = HologramPool(plugin, spawnDistance)
         val interactivepool = InteractiveHologramPool(simplepool, minHitDistance, maxHitDistance)
