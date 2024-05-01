@@ -17,7 +17,7 @@ public class ExamplePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        IHologramPool pool = HoloEasy.startInteractivePool(this, 60, 0.5f, 5f);
+        IHologramPool pool = HoloEasy.startInteractivePool(this, 60);
 
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {

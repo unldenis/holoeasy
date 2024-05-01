@@ -10,7 +10,7 @@ import org.holoeasy.builder.HologramBuilder.*
 class ExamplePlugin : JavaPlugin() {
 
     override fun onEnable() {
-        val pool = HoloEasy.startInteractivePool(this, 60.0, 0.5f, 5f)
+        val pool = HoloEasy.startInteractivePool(this, 60.0, minHitDistance = 0.5f, maxHitDistance = 5f)
 
 
         getCommand("hologram")?.setExecutor { sender, _, _, _ ->
@@ -20,11 +20,11 @@ class ExamplePlugin : JavaPlugin() {
             pool.registerHolograms {
 
                 hologram(location) {
-                    var clickCount by mutableStateOf(0) // can be any type
+                    var clickCount = mutableStateOf(0) // can be any type
 
                     textline("Hello")
                     textline("Count {}", clickCount)
-                    clickable("Click me").onClick { player -> clickCount += 1 }
+                    clickable("Click me").onClick { player -> clickCount.set(clickCount.get() + 1) }
                     item(ItemStack(Material.APPLE))
                 }
 

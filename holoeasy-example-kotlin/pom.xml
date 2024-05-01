@@ -100,7 +100,7 @@
         <dependency>
             <groupId>com.github.unldenis.holoeasy</groupId>
             <artifactId>holoeasy-core</artifactId>
-            <version>c442f489d4</version>
+            <version>9850617ef3</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -50,8 +50,7 @@
         <dependency>
             <groupId>com.github.unldenis.holoeasy</groupId>
             <artifactId>holoeasy-core</artifactId>
-            <version>df932dce91</version>
-<!--            <scope>compile</scope>-->
+            <version>9850617ef3</version>
         </dependency>
     </dependencies>
 

@@ -1,5 +1,7 @@
 package org.holoeasy.reactive
 
+import java.util.function.Function
+
 
 data class MutableState<T>(private var value : T) {
 
@@ -21,6 +23,10 @@ data class MutableState<T>(private var value : T) {
     fun set(newValue : T) {
         value = newValue
         this.notifyObservers()
+    }
+
+    fun update(newFun : Function<T, T>) {
+        newFun.apply(get())
     }
 
     fun addObserver(observer: Observer) {
