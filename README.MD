@@ -121,9 +121,10 @@ registerHolograms(plugin, () -> {
 ```
 
 ### Kotlin
+
 ```kotlin
 plugin.registerHolograms {
-    var clickCount by mutableStateOf(0) // can be any type
+    val clickCount = mutableStateOf(0) // can be any type
 
     val holo = hologram(location) {
         textline("{}!", "Static")
