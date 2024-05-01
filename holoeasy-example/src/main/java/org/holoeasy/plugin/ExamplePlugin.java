@@ -32,7 +32,7 @@ public class ExamplePlugin extends JavaPlugin {
 
                     textline("Hello");
                     textline("Count {}", clickCount);
-                    clickable("Click me").onClick(p -> clickCount.set(clickCount.get() + 1));
+                    clickable("Click me").onClick(player -> clickCount.update(it -> it + 1));
                     item(new ItemStack(Material.APPLE));
                 });
 

@@ -24,7 +24,7 @@ class ExamplePlugin : JavaPlugin() {
 
                     textline("Hello")
                     textline("Count {}", clickCount)
-                    clickable("Click me").onClick { player -> clickCount.set(clickCount.get() + 1) }
+                    clickable("Click me").onClick { clickCount.update { it + 1 } }
                     item(ItemStack(Material.APPLE))
                 }
 
