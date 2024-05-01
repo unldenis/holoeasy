@@ -112,7 +112,7 @@ registerHolograms(plugin, () -> {
     var holo = hologram(location, () -> {
         textline("{}!", "Static");
         textline("Count: {}", clickCount);
-        clickable("Click me", 0.5f, 5f).onClick($ -> clickCount.set(clickCount.get() + 1));
+        clickable("Click me").onClick(player -> clickCount.update(it -> it + 1));
     });
     
     // It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
@@ -128,7 +128,7 @@ plugin.registerHolograms {
     val holo = hologram(location) {
         textline("{}!", "Static")
         textline("Count: {}", clickCount)
-        clickable("Click me", 0.5f, 5f).onClick { clickCount += 1 }
+        clickable("Click me").onClick { clickCount.update { it + 1 } }
     }
 
     // It hasn't been added to a pool, so it's up to us to make it visible and hide it from players. It's better to use a pool because it's automatic and performs asynchronous operations.
