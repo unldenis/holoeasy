@@ -34,7 +34,7 @@ class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> 
         get() = line.plugin
 
     override val type: ILine.Type
-        get() = ILine.Type.BLOCK_LINE
+        get() = ILine.Type.ITEM_LINE
 
     override val entityId: Int
         get() = line.entityID

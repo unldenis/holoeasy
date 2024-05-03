@@ -27,6 +27,7 @@ class TextBlockStandardLoader : IHologramLoader {
             if (j > 0) {
                 val before: ILine.Type = lines[j - 1].type
                 when (before) {
+                    ILine.Type.ITEM_LINE -> up = -1.5
                     ILine.Type.BLOCK_LINE -> up = -1.5
                     ILine.Type.EXTERNAL -> {}
                     ILine.Type.TEXT_LINE -> {}
@@ -40,7 +41,7 @@ class TextBlockStandardLoader : IHologramLoader {
                     hologram.lines.add(0, line)
                 }
 
-                ILine.Type.BLOCK_LINE -> {
+                ILine.Type.ITEM_LINE -> {
                     line.setLocation(cloned.add(0.0, 0.6, 0.0).clone())
                     hologram.lines.add(0, line)
                 }

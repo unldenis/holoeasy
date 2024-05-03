@@ -53,7 +53,9 @@ interface ILine<T> {
         @ApiStatus.Experimental
         CLICKABLE_TEXT_LINE,
 
-        BLOCK_LINE,
+        ITEM_LINE,
 
+        @ApiStatus.Experimental
+        BLOCK_LINE
     }
 }

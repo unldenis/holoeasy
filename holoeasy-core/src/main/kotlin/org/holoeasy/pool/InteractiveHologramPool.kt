@@ -83,6 +83,7 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
 
                         ILine.Type.EXTERNAL -> {}
                         ILine.Type.CLICKABLE_TEXT_LINE -> {}
+                        ILine.Type.ITEM_LINE -> {}
                         ILine.Type.BLOCK_LINE -> {}
                     }
                 }
