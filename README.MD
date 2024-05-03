@@ -161,7 +161,7 @@ pool.registerHolograms(() -> {
         MutableState<ItemStack> currBlock = mutableStateOf(blocks.next()); // can be any type
     
         textline("Hello");
-        clickable("Update me", currBlock).onClick(p -> currBlock.set(blocks.next()));
+        clickable("Update me").onClick(p -> currBlock.set(blocks.next()));
         block(currBlock);
     });
                 
