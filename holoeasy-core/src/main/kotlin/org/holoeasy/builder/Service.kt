@@ -68,10 +68,22 @@ object Service {
         holo.lines.add(itemline)
     }
 
-    fun itemlineMutable(block: MutableState<ItemStack>) {
+    fun itemlineMutable(item: MutableState<ItemStack>) {
         val holo = getStaticHolo()
-        val itemline = ItemLine(holo.plugin, block)
+        val itemline = ItemLine(holo.plugin, item)
         holo.lines.add(itemline)
+    }
+
+    fun blockline(block: ItemStack) {
+        val holo = getStaticHolo()
+        val blockline = BlockLine(holo.plugin, block)
+        holo.lines.add(blockline)
+    }
+
+    fun blocklineMutable(block: MutableState<ItemStack>) {
+        val holo = getStaticHolo()
+        val blockline = BlockLine(holo.plugin, block)
+        holo.lines.add(blockline)
     }
 
     fun customLine(customLine: ILine<*>) {

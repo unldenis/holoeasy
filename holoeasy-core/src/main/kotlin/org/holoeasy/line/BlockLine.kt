@@ -12,21 +12,12 @@ import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
 
-class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> {
-
+class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> {
     constructor(plugin: Plugin, obj: ItemStack) : this(plugin, MutableState(obj))
 
-    init {
-        if(VersionUtil.isCompatible(VersionEnum.V1_8)) {
-            throw IllegalStateException("This version does not support item lines")
-        }
-    }
 
-    private val line: Line = Line(plugin, EntityType.DROPPED_ITEM)
-    private val resetVelocity = PacketType.VELOCITY.velocity(line.entityID, 0, 0,0)
-
+    private val line: Line = Line(plugin, EntityType.ARMOR_STAND)
     private val _mutableStateOf = obj
-
     private var firstRender = true
 
 
@@ -34,7 +25,7 @@ class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> 
         get() = line.plugin
 
     override val type: ILine.Type
-        get() = ILine.Type.ITEM_LINE
+        get() = ILine.Type.BLOCK_LINE
 
     override val entityId: Int
         get() = line.entityID
@@ -62,9 +53,10 @@ class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> 
 
     override fun show(player: Player) {
         line.spawn(player)
-        this.update(player)
+        PacketType.METADATA_TEXT
+            .metadata(entityId, nameTag = null, invisible = true).send(player)
 
-        resetVelocity.send(player)
+        this.update(player)
 
         if(firstRender) {
             firstRender = false
@@ -73,7 +65,7 @@ class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> 
     }
 
     override fun update(player: Player) {
-        PacketType.METADATA_ITEM
-            .metadata(entityId, obj).send(player)
+        PacketType.EQUIPMENT
+            .equip(entityId, helmet = _mutableStateOf.get()).send(player)
     }
 }

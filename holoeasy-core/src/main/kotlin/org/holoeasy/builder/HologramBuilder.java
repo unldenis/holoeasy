@@ -100,13 +100,23 @@ public class HologramBuilder {
         );
     }
 
-    public static void item(@NotNull ItemStack block) {
-        getInstance().itemline(block);
+    public static void item(@NotNull ItemStack item) {
+        getInstance().itemline(item);
     }
 
-    public static void item(@NotNull MutableState<ItemStack> block) {
-        getInstance().itemlineMutable(block);
+    public static void item(@NotNull MutableState<ItemStack> item) {
+        getInstance().itemlineMutable(item);
     }
+
+
+    public static void block(@NotNull ItemStack block) {
+        getInstance().blockline(block);
+    }
+
+    public static void block(@NotNull MutableState<ItemStack> block) {
+        getInstance().blocklineMutable(block);
+    }
+
 
     public static void customline(@NotNull ILine<?> customLine) {
         getInstance().customLine(customLine);
