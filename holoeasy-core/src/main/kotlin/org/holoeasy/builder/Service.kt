@@ -64,14 +64,14 @@ object Service {
 
     fun itemline(block: ItemStack) {
         val holo = getStaticHolo()
-        val blockline = BlockLine(holo.plugin, block)
-        holo.lines.add(blockline)
+        val itemline = ItemLine(holo.plugin, block)
+        holo.lines.add(itemline)
     }
 
     fun itemlineMutable(block: MutableState<ItemStack>) {
         val holo = getStaticHolo()
-        val blockline = BlockLine(holo.plugin, block)
-        holo.lines.add(blockline)
+        val itemline = ItemLine(holo.plugin, block)
+        holo.lines.add(itemline)
     }
 
     fun customLine(customLine: ILine<*>) {
