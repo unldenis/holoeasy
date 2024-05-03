@@ -3,7 +3,7 @@
 
 HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Hologram library for 1.8-1.20.4 servers.
 
-Lightweight replacement for Holographic Display. Hologram-Lib only uses packets instead of registering the entity in the actual Minecraft server.
+Lightweight replacement for Holographic Display. HoloEasy only uses packets instead of registering the entity in the actual Minecraft server.
 <p align="center">
   <img src="preview/gif.gif"  alt="holoeasy video"/>
 </p>
