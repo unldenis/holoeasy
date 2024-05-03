@@ -4,8 +4,14 @@ package org.holoeasy.packet
 import org.holoeasy.HoloEasy
 import org.holoeasy.packet.delete.DeletePacketA
 import org.holoeasy.packet.delete.DeletePacketB
+import org.holoeasy.packet.equipment.EquipmentPacketA
+import org.holoeasy.packet.equipment.EquipmentPacketB
+import org.holoeasy.packet.equipment.EquipmentPacketC
+import org.holoeasy.packet.equipment.IEquipmentPacket
 import org.holoeasy.packet.metadata.item.*
 import org.holoeasy.packet.metadata.text.*
+import org.holoeasy.packet.rotate.IRotatePacket
+import org.holoeasy.packet.rotate.RotatePacketA
 import org.holoeasy.packet.spawn.*
 import org.holoeasy.packet.teleport.TeleportPacketA
 import org.holoeasy.packet.teleport.TeleportPacketB
@@ -81,5 +87,15 @@ object PacketType {
     }
 
     val VELOCITY by lazy { getCurrImpl<IVelocityPacket>(VelocityPacketA) }
+
+    val ROTATE by lazy { getCurrImpl<IRotatePacket>(RotatePacketA) }
+
+    val EQUIPMENT by lazy {
+        getCurrImpl(
+            EquipmentPacketA,
+            EquipmentPacketB,
+            EquipmentPacketC
+        )
+    }
 
 }
