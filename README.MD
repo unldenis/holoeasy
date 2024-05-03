@@ -1,5 +1,5 @@
 > [!NOTE]
-> New update: 3.1.0: Reactive holograms. Scroll down for more information.
+> New update: 3.4.0: BlockLines & Animations. Scroll down for more information.
 
 HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Hologram library for 1.8-1.20.4 servers.
 
