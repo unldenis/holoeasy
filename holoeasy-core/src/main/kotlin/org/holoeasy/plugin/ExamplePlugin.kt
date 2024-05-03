@@ -27,11 +27,12 @@ class ExamplePlugin : JavaPlugin() {
                     textline("Hello")
                     textline("Count {}", clickCount)
                     clickable("Click me").onClick { clickCount.update { it + 1 } }
-                    item(ItemStack(Material.APPLE))
+                    block(ItemStack(Material.DIAMOND_BLOCK))
+//                    item(ItemStack(Material.APPLE))
                 }
 
 
-                holo.lineAt<ITextLine>(1)
+//                holo.lineAt<ITextLine>(1)
 
                 // other holograms...
 

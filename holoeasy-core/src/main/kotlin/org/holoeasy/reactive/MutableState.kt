@@ -26,7 +26,7 @@ data class MutableState<T>(private var value : T) {
     }
 
     fun update(newFun : Function<T, T>) {
-        newFun.apply(get())
+        set(newFun.apply(get()))
     }
 
     fun addObserver(observer: Observer) {
