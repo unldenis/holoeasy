@@ -49,13 +49,11 @@ interface ILine<T> {
 
     enum class Type {
         EXTERNAL,
+
         TEXT_LINE,
-        @ApiStatus.Experimental
-        CLICKABLE_TEXT_LINE,
+        @ApiStatus.Experimental CLICKABLE_TEXT_LINE,
 
         ITEM_LINE,
-
-        @ApiStatus.Experimental
-        BLOCK_LINE
+        @ApiStatus.Experimental BLOCK_LINE
     }
 }
