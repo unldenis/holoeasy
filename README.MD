@@ -137,6 +137,41 @@ plugin.registerHolograms {
 }
 ```
 
+## BlockLine & Animations
+From 3.4.0 version, library added support for:
+- BlockLine: Instead of a dropping item it spawns an hologram with the block as helmet.
+- Animations: You can apply animations to hologram lines.
+<p align="center">
+  <img src="preview/blockline-and-animations.gif"  alt="holoeasy state video"/>
+</p>
+
+### Java
+```java
+// TODO
+```
+
+### Kotlin
+
+```kotlin
+val blocks = arrayOf(
+    ItemStack(Material.DIRT),
+    ItemStack(Material.IRON_BLOCK),
+    ItemStack(Material.GOLD_BLOCK),
+    ItemStack(Material.DIAMOND_BLOCK),
+).iterator()
+
+pool.registerHolograms {
+
+    val holo = hologram(location) {
+        val currBlock = mutableStateOf(blocks.next()) 
+
+        textline("Hello")
+        clickable("Update me").onClick { currBlock.set(blocks.next()) }
+        block(currBlock)
+    }
+    holo[2].setAnimation(Animations.CIRCLE)
+}
+```
 
 ## Ex (Hologram-Lib)
 Are you using a version older than 3.0.0? You can find the documentation <a href="https://unldenis.github.io/hologramlib/">here</a>.

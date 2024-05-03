@@ -32,7 +32,7 @@ class TextBlockStandardLoader : IHologramLoader {
             if (j > 0) {
                 when (lines[j - 1].type) {
                     ILine.Type.ITEM_LINE -> up = -1.5
-                    ILine.Type.BLOCK_LINE -> up = -0.14
+                    ILine.Type.BLOCK_LINE -> up = -0.19
                     ILine.Type.EXTERNAL -> {}
                     ILine.Type.TEXT_LINE -> {}
                     ILine.Type.CLICKABLE_TEXT_LINE -> {}

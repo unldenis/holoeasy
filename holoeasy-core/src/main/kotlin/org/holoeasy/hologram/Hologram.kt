@@ -42,6 +42,7 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
 
     fun load(vararg lines: ILine<*>) {
         hLines.clear()
+
         lines.forEach { it.pvt.hologram = this }
         loader.load(this, lines)
     }

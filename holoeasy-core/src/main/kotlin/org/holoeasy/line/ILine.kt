@@ -3,6 +3,8 @@ package org.holoeasy.line
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitTask
+import org.holoeasy.animation.Animations
 import org.holoeasy.hologram.Hologram
 import org.holoeasy.reactive.Observer
 import org.jetbrains.annotations.ApiStatus
@@ -12,6 +14,9 @@ interface ILine<T> {
     data class PrivateConfig(private val line: ILine<*>) : Observer {
 
         lateinit var hologram: Hologram
+
+        var animationTask : BukkitTask? = null
+
         override fun observerUpdate() {
             hologram.let {
                 line.update(it.seeingPlayers)
@@ -45,6 +50,16 @@ interface ILine<T> {
         for (player in seeingPlayers) {
             update(player)
         }
+    }
+
+    fun setAnimation(animation: Animations) {
+        this.cancelAnimation()
+        pvt.animationTask = animation.task(this)
+    }
+
+    fun cancelAnimation() {
+        pvt.animationTask?.cancel()
+        pvt.animationTask = null
     }
 
     enum class Type {
