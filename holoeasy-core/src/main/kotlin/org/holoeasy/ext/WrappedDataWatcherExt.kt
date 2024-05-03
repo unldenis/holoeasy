@@ -11,7 +11,7 @@ import org.holoeasy.util.STRING_SERIALIZER
 import java.util.*
 
 
-fun WrappedDataWatcher.setByte(index: Int, value: Byte) {
+internal fun WrappedDataWatcher.setByte(index: Int, value: Byte) {
     val obj = WrappedDataWatcherObject(
         index,
         BYTE_SERIALIZER
@@ -19,7 +19,7 @@ fun WrappedDataWatcher.setByte(index: Int, value: Byte) {
     this.setObject(obj, value)
 }
 
-fun WrappedDataWatcher.setString(index: Int, value: String) {
+internal fun WrappedDataWatcher.setString(index: Int, value: String) {
     this.setObject(
         WrappedDataWatcherObject(
             index,
@@ -28,7 +28,7 @@ fun WrappedDataWatcher.setString(index: Int, value: String) {
     )
 }
 
-fun WrappedDataWatcher.setBool(index: Int, value: Boolean) {
+internal fun WrappedDataWatcher.setBool(index: Int, value: Boolean) {
     val obj = WrappedDataWatcherObject(
         index,
         BOOL_SERIALIZER
@@ -36,7 +36,7 @@ fun WrappedDataWatcher.setBool(index: Int, value: Boolean) {
     this.setObject(obj, value)
 }
 
-fun WrappedDataWatcher.setVectorSerializer(index: Int, value: Any) {
+internal fun WrappedDataWatcher.setVectorSerializer(index: Int, value: Any) {
     val obj = WrappedDataWatcherObject(
         index,
         WrappedDataWatcher.Registry.getVectorSerializer()
@@ -44,7 +44,7 @@ fun WrappedDataWatcher.setVectorSerializer(index: Int, value: Any) {
     this.setObject(obj, value)
 }
 
-fun WrappedDataWatcher.setChatComponent(index: Int, value: String) {
+internal fun WrappedDataWatcher.setChatComponent(index: Int, value: String) {
     val opt: Optional<*> = Optional.of(WrappedChatComponent.fromChatMessage(value)[0].handle)
     this.setObject(
         WrappedDataWatcherObject(
@@ -54,7 +54,7 @@ fun WrappedDataWatcher.setChatComponent(index: Int, value: String) {
     )
 }
 
-fun WrappedDataWatcher.setItemStack(index: Int, value: ItemStack) {
+internal fun WrappedDataWatcher.setItemStack(index: Int, value: ItemStack) {
     val obj = WrappedDataWatcherObject(index, ITEM_SERIALIZER)
     this.setObject(obj, value.bukkitGeneric())
 }

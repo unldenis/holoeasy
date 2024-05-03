@@ -9,15 +9,15 @@ import com.google.common.collect.Lists
 import org.bukkit.entity.Player
 import java.util.*
 
-fun PacketContainer.send(player: Player) {
+internal fun PacketContainer.send(player: Player) {
     ProtocolLibrary.getProtocolManager().sendServerPacket(player, this)
 }
 
-operator fun PacketContainer.invoke(player: Player) {
+internal operator fun PacketContainer.invoke(player: Player) {
     send(player)
 }
 
-fun PacketContainer.parse119(watcher: WrappedDataWatcher) {
+internal fun PacketContainer.parse119(watcher: WrappedDataWatcher) {
     if (MinecraftVersion.getCurrentVersion().isAtLeast(MinecraftVersion("1.19.3"))) {
         val wrappedDataValueList: MutableList<WrappedDataValue> = Lists.newArrayList()
         watcher.watchableObjects.stream().filter(Objects::nonNull).forEach { entry ->
