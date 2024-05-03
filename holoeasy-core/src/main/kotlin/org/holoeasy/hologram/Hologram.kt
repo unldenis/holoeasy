@@ -26,6 +26,10 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
     private var showEvent: ShowEvent? = null
     private var hideEvent : HideEvent? = null
 
+    fun <T : ILine<*>> lineAt(index : Int) : T {
+        return hLines[index] as T
+    }
+
     fun onShow(showEvent: ShowEvent) : Hologram {
         this.showEvent = showEvent
         return this
