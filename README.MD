@@ -19,7 +19,7 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 <dependency>
     <groupId>com.github.unldenis.holoeasy</groupId>
     <artifactId>holoeasy-core</artifactId>
-    <version>3.3.0</version>
+    <version>3.4.0</version>
 </dependency>
 
 <!-- For java projects include also the kotlin stdlib -->
@@ -33,7 +33,7 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 #### Gradle
 
 ```kotlin
-implementation("com.github.unldenis.holoeasy:holoeasy-core:3.3.0")
+implementation("com.github.unldenis.holoeasy:holoeasy-core:3.4.0")
 
 // For java projects include also the kotlin stdlib
 implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
@@ -147,7 +147,25 @@ From 3.4.0 version, library added support for:
 
 ### Java
 ```java
-// TODO
+Iterator<ItemStack> blocks = Arrays.asList(
+    new ItemStack(Material.DIRT),
+    new ItemStack(Material.IRON_BLOCK),
+    new ItemStack(Material.GOLD_BLOCK),
+    new ItemStack(Material.DIAMOND_BLOCK)
+).iterator();
+                    
+pool.registerHolograms(() -> {
+
+    Hologram holo = hologram(location, () -> {
+        MutableState<ItemStack> currBlock = mutableStateOf(blocks.next()); // can be any type
+    
+        textline("Hello");
+        clickable("Update me", currBlock).onClick(p -> currBlock.set(blocks.next()));
+        block(currBlock);
+    });
+                
+    holo.lineAt(2).setAnimation(Animations.CIRCLE);
+});
 ```
 
 ### Kotlin
