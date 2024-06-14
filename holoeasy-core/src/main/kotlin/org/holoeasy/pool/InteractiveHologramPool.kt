@@ -6,13 +6,14 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
+import org.holoeasy.action.ClickAction
 import org.holoeasy.hologram.Hologram
 import org.holoeasy.line.ILine
 import org.holoeasy.line.ITextLine
 import org.holoeasy.util.AABB
 import java.util.UUID
 
-class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float) : Listener,
+class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float, val clickAction: ClickAction?) : Listener,
     IHologramPool {
 
     override val plugin: Plugin
@@ -49,9 +50,26 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
     fun handleInteract(e: PlayerInteractEvent) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
             val player = e.player
-            if (e.action != Action.LEFT_CLICK_AIR) {
-                return@Runnable
+
+            if(clickAction == null) {
+                if (e.action != Action.LEFT_CLICK_AIR && e.action != Action.RIGHT_CLICK_AIR) {
+                    return@Runnable
+                }
+            } else {
+                when(clickAction) {
+                    ClickAction.LEFT_CLICK -> {
+                        if (e.action != Action.LEFT_CLICK_AIR) {
+                            return@Runnable
+                        }
+                    }
+                    ClickAction.RIGHT_CLICK -> {
+                        if (e.action != Action.RIGHT_CLICK_AIR) {
+                            return@Runnable
+                        }
+                    }
+                }
             }
+
 
             FST@ for (hologram in pool.holograms.values) {
                 if (!hologram.isShownFor(player)) {

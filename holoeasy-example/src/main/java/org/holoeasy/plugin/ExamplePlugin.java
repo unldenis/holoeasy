@@ -7,9 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
+import org.holoeasy.action.ClickAction;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
-
 
 import static org.holoeasy.builder.HologramBuilder.*;
 
@@ -17,7 +17,7 @@ public class ExamplePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        IHologramPool pool = HoloEasy.startInteractivePool(this, 60);
+        IHologramPool pool = HoloEasy.startInteractivePool(this, 60, /* optional */0.5F, /* optional */ 5F, /* optional */ ClickAction.RIGHT_CLICK);
 
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
@@ -39,7 +39,6 @@ public class ExamplePlugin extends JavaPlugin {
                 // other holograms...
 
             });
-
 
 
             return true;

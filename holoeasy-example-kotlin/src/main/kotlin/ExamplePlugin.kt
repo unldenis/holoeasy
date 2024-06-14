@@ -5,12 +5,19 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.holoeasy.HoloEasy
+import org.holoeasy.action.ClickAction
 import org.holoeasy.builder.HologramBuilder.*
 
 class ExamplePlugin : JavaPlugin() {
 
     override fun onEnable() {
-        val pool = HoloEasy.startInteractivePool(this, 60.0, minHitDistance = 0.5f, maxHitDistance = 5f)
+        val pool = HoloEasy.startInteractivePool(
+            this,
+            60.0,
+            minHitDistance = 0.5f, /* optional */
+            maxHitDistance = 5f, /* optional */
+            clickAction = ClickAction.RIGHT_CLICK /* optional */
+        )
 
 
         getCommand("hologram")?.setExecutor { sender, _, _, _ ->
@@ -20,7 +27,7 @@ class ExamplePlugin : JavaPlugin() {
             pool.registerHolograms {
 
                 hologram(location) {
-                    var clickCount = mutableStateOf(0) // can be any type
+                    val clickCount = mutableStateOf(0) // can be any type
 
                     textline("Hello")
                     textline("Count {}", clickCount)

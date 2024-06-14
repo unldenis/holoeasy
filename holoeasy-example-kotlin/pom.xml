@@ -98,11 +98,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.unldenis.holoeasy</groupId>
+            <groupId>${parent.groupId}</groupId>
             <artifactId>holoeasy-core</artifactId>
-            <version>44ab9f4748</version>
-            <scope>compile</scope>
+            <version>${parent.version}</version>
         </dependency>
+
     </dependencies>
 
 </project>
