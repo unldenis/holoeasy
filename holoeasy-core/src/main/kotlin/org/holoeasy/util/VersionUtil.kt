@@ -27,9 +27,10 @@ object VersionUtil {
     val CLEAN_VERSION: VersionEnum
 
     init {
-        val bpName = Bukkit.getServer().javaClass.getPackage().name
-        VERSION = bpName.substring(bpName.lastIndexOf(".") + 1)
-        val clean = VERSION.substring(0, VERSION.length - 3)
+        val bpName = Bukkit.getServer().bukkitVersion
+        val version = bpName.substringBefore('-').replace('.', '_')
+        VERSION = "v$version"
+        val clean = VERSION.substring(0, VERSION.length - 2)
         CLEAN_VERSION = VersionEnum.valueOf(clean.uppercase(Locale.getDefault()))
     }
 
