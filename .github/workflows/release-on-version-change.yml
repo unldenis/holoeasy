@@ -1,0 +1,62 @@
+name: Release on Version Change
+
+on:
+  push:
+    branches:
+      - master  # Change this to your target branch
+    paths:
+      - 'pom.xml'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: Get project version
+      id: get_version
+      run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+    - name: Check if version has changed
+      id: check_version
+      run: |
+        latest_version=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+        current_version=${{ env.VERSION }}
+        echo "Latest version: $latest_version"
+        echo "Current version: $current_version"
+        if [ "$current_version" != "$latest_version" ]; then
+          echo "::set-output name=version_changed::true"
+        else
+          echo "::set-output name=version_changed::false"
+        fi
+
+    - name: Create GitHub Release
+      if: steps.check_version.outputs.version_changed == 'true'
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.VERSION }}
+        name: Release ${{ env.VERSION }}
+        body: |
+          Release of version ${{ env.VERSION }}.
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Log the output for debugging
+    - name: Log Release Creation Status
+      run: |
+        echo "Release creation status:"
+        echo "${{ steps.create_release.outputs }}"
