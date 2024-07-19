@@ -29,10 +29,17 @@ object VersionUtil {
     init {
         // Bukkit method that was added in 2011
         // Example value: 1.20.4-R0.1-SNAPSHOT
-        val bpName = Bukkit.getServer().bukkitVersion
+        // Example value: 1.14-R0.1-SNAPSHOT
 
+        val bkName = Bukkit.getServer().bukkitVersion
+
+        val bkVersion = bkName.split("-")[0]
+
+        // 1.20.4
+        // 1.14
         // Split with '.' and get first two elements
-        VERSION = bpName.split(".").let { "V${it[0]}_${it[1]}"}
+
+        VERSION = bkVersion.split(".").let { "V${it[0]}_${it[1]}"}
 
         CLEAN_VERSION = VersionEnum.valueOf(VERSION)
     }
