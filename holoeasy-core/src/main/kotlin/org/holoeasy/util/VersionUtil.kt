@@ -27,15 +27,18 @@ object VersionUtil {
     val CLEAN_VERSION: VersionEnum
 
     init {
+        // Bukkit method that was added in 2011
+        // Example value: 1.20.4-R0.1-SNAPSHOT
         val bpName = Bukkit.getServer().bukkitVersion
-        val version = bpName.substringBefore('-').replace('.', '_')
-        VERSION = "v$version"
-        val clean = VERSION.substring(0, VERSION.length - 2)
-        CLEAN_VERSION = VersionEnum.valueOf(clean.uppercase(Locale.getDefault()))
+
+        // Split with '.' and get first two elements
+        VERSION = bpName.split(".").let { "V${it[0]}_${it[1]}"}
+
+        CLEAN_VERSION = VersionEnum.valueOf(VERSION)
     }
 
     fun isCompatible(ve: VersionEnum): Boolean {
-        return VERSION.lowercase(Locale.getDefault()).contains(ve.toString().lowercase(Locale.getDefault()))
+        return CLEAN_VERSION == ve
     }
 
     fun isAbove(ve: VersionEnum): Boolean {
@@ -69,10 +72,11 @@ enum class VersionEnum(armorstandId: Int, droppedItemId : Int) : Comparable<Vers
     V1_18,
     V1_19(2, 55),
     V1_20,
+    V1_21,
 
     // for non breaking in future
-    V1_21,
-    V1_22
+    V1_22,
+    V1_23
     ;
 
     var armorstandId : Int
