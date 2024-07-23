@@ -1,5 +1,5 @@
 > [!NOTE]
-> New update: 3.4.3: [BlockLines & Animations](https://github.com/unldenis/holoeasy?tab=readme-ov-file#blockline--animations). Scroll down for more information.
+> New update: 3.4.0: [BlockLines & Animations](https://github.com/unldenis/holoeasy?tab=readme-ov-file#blockline--animations). Scroll down for more information.
 
 HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Hologram library for 1.8-1.20.4 servers.
 
@@ -139,7 +139,7 @@ plugin.registerHolograms {
 ```
 
 ## BlockLine & Animations
-From 3.4.3 version, library added support for:
+From 3.4.0 version, library added support for:
 - BlockLine: Instead of a dropping item it spawns an hologram with the block as helmet.
 - Animations: You can apply animations to hologram lines.
 <p align="center">
