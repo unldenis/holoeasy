@@ -12,7 +12,7 @@ import java.util.*
 
 object MetadataTextPacketE : IMetadataTextPacket {
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_20..VersionEnum.V1_20)
+        get() = arrayOf(VersionEnum.V1_20..VersionEnum.LATEST)
 
     override fun metadata(entityId: Int, nameTag: String?, invisible : Boolean): PacketContainer {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)

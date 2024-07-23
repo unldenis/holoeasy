@@ -13,7 +13,7 @@ import java.util.*
 object SpawnPacketD : ISpawnPacket {
 
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_19..VersionEnum.V1_20)
+        get() = arrayOf(VersionEnum.V1_19..VersionEnum.LATEST)
 
     override fun spawn(entityId: Int, entityType: EntityType, location: Location, plugin: Plugin?): PacketContainer {
         return packet(PacketType.Play.Server.SPAWN_ENTITY) {
