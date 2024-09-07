@@ -139,7 +139,7 @@ plugin.registerHolograms {
 ```
 
 ## BlockLine & Animations
-From 3.4.4 version, library added support for:
+From 3.4.0 version, library added support for:
 - BlockLine: Instead of a dropping item it spawns an hologram with the block as helmet.
 - Animations: You can apply animations to hologram lines.
 <p align="center">
