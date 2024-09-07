@@ -10,7 +10,7 @@ import org.holoeasy.util.VersionEnum
 object RotatePacketA : IRotatePacket {
 
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_8..VersionEnum.V1_20)
+        get() = arrayOf(VersionEnum.V1_8..VersionEnum.LATEST)
 
     override fun rotate(entityId: Int, yaw: Double) : PacketContainer {
         return packet(PacketType.Play.Server.ENTITY_LOOK) {

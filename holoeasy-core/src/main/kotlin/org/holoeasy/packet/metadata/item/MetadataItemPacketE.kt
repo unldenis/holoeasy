@@ -12,7 +12,7 @@ import org.holoeasy.util.VersionEnum
 
 object MetadataItemPacketE : IMetadataItemPacket {
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_19..VersionEnum.V1_20)
+        get() = arrayOf(VersionEnum.V1_19..VersionEnum.LATEST)
 
     override fun metadata(entityId: Int, item: ItemStack): PacketContainer {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)

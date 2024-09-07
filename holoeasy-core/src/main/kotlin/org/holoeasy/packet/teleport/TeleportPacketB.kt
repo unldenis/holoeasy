@@ -11,7 +11,7 @@ import org.holoeasy.util.VersionEnum
 object TeleportPacketB : ITeleportPacket {
 
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_9..VersionEnum.V1_20)
+        get() = arrayOf(VersionEnum.V1_9..VersionEnum.LATEST)
 
     override fun teleport(entityId: Int, location: Location): PacketContainer {
         val teleportPacket = packet(PacketType.Play.Server.ENTITY_TELEPORT) {

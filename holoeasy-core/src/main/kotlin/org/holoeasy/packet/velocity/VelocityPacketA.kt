@@ -9,7 +9,7 @@ import org.holoeasy.util.VersionEnum
 object VelocityPacketA : IVelocityPacket {
 
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() = arrayOf(VersionEnum.V1_8..VersionEnum.V1_20)
+        get() = arrayOf(VersionEnum.V1_8..VersionEnum.LATEST)
 
     override fun velocity(entityId: Int, x: Int, y: Int, z: Int): PacketContainer {
         return packet(PacketType.Play.Server.ENTITY_VELOCITY) {

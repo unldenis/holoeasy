@@ -12,7 +12,7 @@ import com.comphenix.protocol.wrappers.Pair;
 object EquipmentPacketC : IEquipmentPacket {
 
     override val versionSupport: Array<out ClosedRange<VersionEnum>>
-        get() =  arrayOf(VersionEnum.V1_13..VersionEnum.V1_20)
+        get() =  arrayOf(VersionEnum.V1_13..VersionEnum.LATEST)
 
     override fun equip(entityId: Int, helmet: ItemStack): PacketContainer {
         return packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
