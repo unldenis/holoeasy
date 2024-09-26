@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
 import org.holoeasy.action.ClickAction;
+import org.holoeasy.hologram.Hologram;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
 
@@ -24,6 +25,9 @@ public class ExamplePlugin extends JavaPlugin {
 
             Location location = ((Player) sender).getLocation();
 
+
+            Hologram.create(location)
+                    .buildAndLoad(pool);
 
             pool.registerHolograms(() -> {
 

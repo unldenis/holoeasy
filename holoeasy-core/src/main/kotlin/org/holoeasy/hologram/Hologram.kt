@@ -4,11 +4,48 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.holoeasy.line.ILine
+import org.holoeasy.pool.IHologramPool
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoader) {
+
+    companion object {
+
+        @JvmStatic
+        fun create(location: Location): Builder {
+
+            val builder = Builder(location)
+            return builder
+        }
+    }
+
+    class Builder(val location: Location) {
+
+        val lines = mutableListOf<ILine<*>>()
+
+        @JvmOverloads
+        fun build(plugin: Plugin, loader: IHologramLoader = TextBlockStandardLoader()): Hologram {
+            val hologram = Hologram(plugin, location, loader)
+
+            if(lines.isEmpty()) {
+                throw RuntimeException("its not possible to create an empty hologram")
+            }
+            hologram.load(*lines.toTypedArray<ILine<*>>())
+
+            return hologram
+        }
+
+        @JvmOverloads
+        fun buildAndLoad(pool: IHologramPool, loader: IHologramLoader = TextBlockStandardLoader()): Hologram {
+            val hologram = build(pool.plugin, loader = loader)
+            pool.takeCareOf(hologram)
+            return hologram
+        }
+    }
+
+
 
     val id = UUID.randomUUID()!!
 
@@ -24,18 +61,18 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
     val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
 
     private var showEvent: ShowEvent? = null
-    private var hideEvent : HideEvent? = null
+    private var hideEvent: HideEvent? = null
 
-    fun <T : ILine<*>> lineAt(index : Int) : T {
+    fun <T : ILine<*>> lineAt(index: Int): T {
         return hLines[index] as T
     }
 
-    fun onShow(showEvent: ShowEvent) : Hologram {
+    fun onShow(showEvent: ShowEvent): Hologram {
         this.showEvent = showEvent
         return this
     }
 
-    fun onHide(hideEvent: HideEvent) : Hologram {
+    fun onHide(hideEvent: HideEvent): Hologram {
         this.hideEvent = hideEvent
         return this
     }
