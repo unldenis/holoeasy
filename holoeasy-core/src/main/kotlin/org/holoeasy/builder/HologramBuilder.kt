@@ -1,128 +1,78 @@
-package org.holoeasy.builder;
+package org.holoeasy.builder
 
-import kotlin.Pair;
-import org.bukkit.plugin.Plugin;
-import org.holoeasy.builder.interfaces.HologramConfigGroup;
-import org.holoeasy.builder.interfaces.HologramRegisterGroup;
-import org.holoeasy.builder.interfaces.HologramSetupGroup;
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
-import org.holoeasy.hologram.Hologram;
-import org.holoeasy.line.ILine;
-import org.holoeasy.line.ITextLine;
-import org.holoeasy.pool.IHologramPool;
-import org.holoeasy.reactive.MutableState;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.Location
+import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
+import org.holoeasy.hologram.Hologram
+import org.holoeasy.hologram.IHologramLoader
+import org.holoeasy.hologram.TextBlockStandardLoader
+import org.holoeasy.line.*
+import org.holoeasy.pool.IHologramPool
 
-public class HologramBuilder {
+class HologramBuilder internal constructor(private val plugin: Plugin, private val location: Location) {
 
-    static Service getInstance() {
-        return Service.INSTANCE;
+    private var loader: IHologramLoader = TextBlockStandardLoader()
+    private val lines = mutableListOf<ILine<*>>()
+
+
+
+    fun loader(loader: IHologramLoader): HologramBuilder {
+        this.loader = loader
+        return this
     }
 
-    public static void registerHolograms(@NotNull IHologramPool pool, @NotNull HologramRegisterGroup registerGroup) {
-        getInstance().getStaticPool().set(new Pair<>(Service.RegistrationType.POOL, pool));
-        registerGroup.register();
-        getInstance().getStaticPool().remove();
-    }
-
-    public static void registerHolograms(@NotNull Plugin plugin, @NotNull HologramRegisterGroup registerGroup) {
-        getInstance().getStaticPool().set(new Pair<>(Service.RegistrationType.PLUGIN, plugin));
-        registerGroup.register();
-        getInstance().getStaticPool().remove();
-    }
-
-    public static Hologram hologram( @NotNull Location location, @NotNull HologramSetupGroup setupGroup) {
-
-        Pair<Service.RegistrationType, Object> registrationType = getInstance().getStaticRegistration();
-
-        HologramConfig holoConfig = null;
-        IHologramPool pool = null;
-        switch (registrationType.component1()) {
-            case POOL:
-                pool = ((IHologramPool) registrationType.component2());
-                holoConfig = new HologramConfig(pool.getPlugin(), location);
-                break;
-            case PLUGIN:
-                holoConfig = new HologramConfig(((Plugin) registrationType.component2()), location);
-                break;
-            default:
-                throw new RuntimeException("invalid registration type " + registrationType.component1().name());
+    @JvmOverloads
+    fun blockLine(item: ItemStack, modifiers: BlockLineModifiers = BlockLineModifiers.create()): HologramBuilder {
+        if (modifiers.blockType) {
+            lines.add(BlockLine(plugin, item))
+        } else {
+            lines.add(ItemLine(plugin, item))
         }
+        return this
+    }
 
-        getInstance().getStaticHologram().set(holoConfig);
-        setupGroup.setup();
-        getInstance().getStaticHologram().remove();
+    @JvmOverloads
+    fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers.create()): HologramBuilder {
 
-        Hologram holo = new Hologram(holoConfig.plugin, holoConfig.location, holoConfig.loader);
-        holo.load(holoConfig.lines.toArray(new ILine[0]));
+        if (modifiers.clickable) {
+            if (modifiers.clickableWithoutPool) {
+                val textLine = TextLine(plugin, text, clickable = false, args = modifiers.args)
+                val clickableTextLine =
+                    ClickableTextLine(textLine, modifiers.minHitDistance, modifiers.maxHitDistance)
+                modifiers.clickEvent?.let { clickableTextLine.onClick(it) }
+                lines.add(clickableTextLine)
+            } else {
+                val textLine = TextLine(plugin, text, clickable = true, args = modifiers.args)
+                modifiers.clickEvent?.let { textLine.onClick(it) }
+                lines.add(textLine)
+            }
 
-        if(pool != null) {
-            pool.takeCareOf(holo);
+        } else {
+            val textLine = TextLine(plugin, text, clickable = false, args = modifiers.args)
+            lines.add(textLine)
         }
-        return holo;
+        return this
     }
 
-    public static void config(@NotNull HologramConfigGroup configGroup) {
-        getInstance().config(configGroup);
+    fun customLine(customLine: ILine<*>): HologramBuilder {
+        lines.add(customLine)
+        return this
     }
 
+    fun build(plugin: Plugin): Hologram {
+        val hologram = Hologram(plugin, location, loader)
 
-    public static void textline(@NotNull String text, @NotNull Object... args) {
-        getInstance().textline(
-                text,
-                false,
-                null,
-                null,
-                args.length == 0 ? null : args
-        );
+        if (lines.isEmpty()) {
+            throw RuntimeException("its not possible to create an empty hologram")
+        }
+        hologram.load(*lines.toTypedArray<ILine<*>>())
+
+        return hologram
     }
 
-    public static ITextLine clickable(@NotNull String text, @NotNull Object... args) {
-        return getInstance().textline(
-                text,
-                true,
-                null,
-                null,
-                args.length == 0 ? null : args
-
-        );
-    }
-
-    public static ITextLine clickable(@NotNull String text, float minHitDistance, float maxHitDistance,
-                                 @NotNull Object... args) {
-        return getInstance().textline(
-                text,
-                true,
-                minHitDistance,
-                maxHitDistance,
-                args.length == 0 ? null : args
-        );
-    }
-
-    public static void item(@NotNull ItemStack item) {
-        getInstance().itemline(item);
-    }
-
-    public static void item(@NotNull MutableState<ItemStack> item) {
-        getInstance().itemlineMutable(item);
-    }
-
-
-    public static void block(@NotNull ItemStack block) {
-        getInstance().blockline(block);
-    }
-
-    public static void block(@NotNull MutableState<ItemStack> block) {
-        getInstance().blocklineMutable(block);
-    }
-
-
-    public static void customline(@NotNull ILine<?> customLine) {
-        getInstance().customLine(customLine);
-    }
-
-    public static <T> MutableState<T> mutableStateOf(@NotNull T initialValue) {
-        return new MutableState<>(initialValue);
+    fun buildAndLoad(pool: IHologramPool): Hologram {
+        val hologram = build(plugin)
+        pool.takeCareOf(hologram)
+        return hologram
     }
 }

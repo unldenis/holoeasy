@@ -16,9 +16,6 @@ import java.util.UUID
 class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float, val clickAction: ClickAction?) : Listener,
     IHologramPool {
 
-    override val plugin: Plugin
-        get() = pool.plugin
-
     override fun get(id: UUID): Hologram {
         return pool.get(id)
     }
@@ -42,13 +39,13 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
 
-        Bukkit.getPluginManager().registerEvents(this, plugin)
+        Bukkit.getPluginManager().registerEvents(this, pool.plugin)
     }
 
 
     @EventHandler
     fun handleInteract(e: PlayerInteractEvent) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+        Bukkit.getScheduler().runTaskAsynchronously(pool.plugin, Runnable {
             val player = e.player
 
             if(clickAction == null) {

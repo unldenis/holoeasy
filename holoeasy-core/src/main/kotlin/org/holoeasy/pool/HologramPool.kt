@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
 class KeyAlreadyExistsException(key: UUID) : IllegalStateException("Id '$key' already exists")
 class NoValueForKeyException(key: UUID) : IllegalStateException("No value for id '$key'")
 
-class HologramPool(override val plugin: Plugin, private val spawnDistance: Double) : Listener, IHologramPool {
+class HologramPool(internal val plugin: Plugin, private val spawnDistance: Double) : Listener, IHologramPool {
 
     val holograms: MutableMap<UUID, Hologram> = ConcurrentHashMap()
 

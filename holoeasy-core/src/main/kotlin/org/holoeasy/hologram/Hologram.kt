@@ -3,8 +3,8 @@ package org.holoeasy.hologram
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
-import org.holoeasy.line.ILine
-import org.holoeasy.pool.IHologramPool
+import org.holoeasy.builder.HologramBuilder
+import org.holoeasy.line.*
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
@@ -14,38 +14,11 @@ class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoad
     companion object {
 
         @JvmStatic
-        fun create(location: Location): Builder {
-
-            val builder = Builder(location)
+        fun create(plugin: Plugin, location: Location): HologramBuilder {
+            val builder = HologramBuilder(plugin, location)
             return builder
         }
     }
-
-    class Builder(val location: Location) {
-
-        val lines = mutableListOf<ILine<*>>()
-
-        @JvmOverloads
-        fun build(plugin: Plugin, loader: IHologramLoader = TextBlockStandardLoader()): Hologram {
-            val hologram = Hologram(plugin, location, loader)
-
-            if(lines.isEmpty()) {
-                throw RuntimeException("its not possible to create an empty hologram")
-            }
-            hologram.load(*lines.toTypedArray<ILine<*>>())
-
-            return hologram
-        }
-
-        @JvmOverloads
-        fun buildAndLoad(pool: IHologramPool, loader: IHologramLoader = TextBlockStandardLoader()): Hologram {
-            val hologram = build(pool.plugin, loader = loader)
-            pool.takeCareOf(hologram)
-            return hologram
-        }
-    }
-
-
 
     val id = UUID.randomUUID()!!
 

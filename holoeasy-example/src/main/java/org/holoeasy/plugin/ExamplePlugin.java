@@ -8,11 +8,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
 import org.holoeasy.action.ClickAction;
+import org.holoeasy.builder.TextLineModifiers;
 import org.holoeasy.hologram.Hologram;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
 
-import static org.holoeasy.builder.HologramBuilder.*;
 
 public class ExamplePlugin extends JavaPlugin {
 
@@ -26,23 +26,21 @@ public class ExamplePlugin extends JavaPlugin {
             Location location = ((Player) sender).getLocation();
 
 
-            Hologram.create(location)
+            Hologram.create(this, location);
+
+
+            MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
+            Hologram.create(this, location)
+                    .textLine("Hello")
+                    .textLine("Count {}", TextLineModifiers
+                            .create()
+                            .args(clickCount))
+                    .textLine("Click me", TextLineModifiers
+                            .create()
+                            .clickable()
+                            .onClick(player -> clickCount.update(it -> it + 1)))
+                    .blockLine(new ItemStack(Material.APPLE))
                     .buildAndLoad(pool);
-
-            pool.registerHolograms(() -> {
-
-                hologram(location, () -> {
-                    MutableState<Integer> clickCount = mutableStateOf(0); // can be any type
-
-                    textline("Hello");
-                    textline("Count {}", clickCount);
-                    clickable("Click me").onClick(player -> clickCount.update(it -> it + 1));
-                    item(new ItemStack(Material.APPLE));
-                });
-
-                // other holograms...
-
-            });
 
 
             return true;
