@@ -11,4 +11,6 @@ interface IHologramPool {
 
     fun remove(id : UUID): Hologram?
 
+    fun holograms() : Set<Hologram>
+
 }

@@ -9,7 +9,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hologram(val plugin: Plugin, location: Location, val loader: IHologramLoader) {
+class Hologram internal constructor(val plugin: Plugin, location: Location, val loader: IHologramLoader, val name : String? = null) {
 
     companion object {
 

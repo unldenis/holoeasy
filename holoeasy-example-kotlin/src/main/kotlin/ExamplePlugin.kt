@@ -7,7 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.holoeasy.HoloEasy
 import org.holoeasy.action.ClickAction
 import org.holoeasy.builder.TextLineModifiers
-import org.holoeasy.hologram.Hologram.Companion.create
+import org.holoeasy.hologram.Hologram
 import org.holoeasy.reactive.MutableState
 
 class ExamplePlugin : JavaPlugin() {
@@ -28,7 +28,7 @@ class ExamplePlugin : JavaPlugin() {
 
 
             val clickCount = MutableState(0) // can be any type
-            create(this, location)
+            Hologram.create(this, location)
                 .textLine("Hello")
                 .textLine("Count {}", TextLineModifiers
                     .create()

@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.plugin.Plugin
 import org.holoeasy.hologram.Hologram
+import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
@@ -52,6 +53,11 @@ class HologramPool(internal val plugin: Plugin, private val spawnDistance: Doubl
             return it
         }
         return null
+    }
+
+    override fun holograms(): Set<Hologram> {
+        // should be immutable
+        return holograms.values.toSet()
     }
 
     @EventHandler

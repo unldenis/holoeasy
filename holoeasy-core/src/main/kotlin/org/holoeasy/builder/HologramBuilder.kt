@@ -11,13 +11,19 @@ import org.holoeasy.pool.IHologramPool
 
 class HologramBuilder internal constructor(private val plugin: Plugin, private val location: Location) {
 
-    private var loader: IHologramLoader = TextBlockStandardLoader()
     private val lines = mutableListOf<ILine<*>>()
 
+    private var loader: IHologramLoader = TextBlockStandardLoader()
+    private var name : String? = null
 
 
     fun loader(loader: IHologramLoader): HologramBuilder {
         this.loader = loader
+        return this
+    }
+
+    fun name(name : String) : HologramBuilder {
+        this.name = name
         return this
     }
 

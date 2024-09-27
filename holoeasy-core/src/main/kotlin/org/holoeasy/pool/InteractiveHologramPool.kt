@@ -29,6 +29,10 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
         return pool.remove(id)
     }
 
+    override fun holograms(): Set<Hologram> {
+        return pool.holograms()
+    }
+
 
     val minHitDistance: Float
     val maxHitDistance: Float
