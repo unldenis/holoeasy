@@ -1,5 +1,3 @@
-> [!NOTE]
-> New update: 3.4.4: [BlockLines & Animations](https://github.com/unldenis/holoeasy?tab=readme-ov-file#blockline--animations). Scroll down for more information.
 
 HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Hologram library for 1.8-1.20.4 servers.
 
@@ -20,7 +18,7 @@ Lightweight replacement for Holographic Display. HoloEasy only uses packets inst
 <dependency>
     <groupId>com.github.unldenis.holoeasy</groupId>
     <artifactId>holoeasy-core</artifactId>
-    <version>3.4.4</version>
+    <version>4.0.0</version>
 </dependency>
 
 <!-- For java projects include also the kotlin stdlib -->
@@ -34,7 +32,7 @@ Lightweight replacement for Holographic Display. HoloEasy only uses packets inst
 #### Gradle
 
 ```kotlin
-implementation("com.github.unldenis.holoeasy:holoeasy-core:3.4.4")
+implementation("com.github.unldenis.holoeasy:holoeasy-core:4.0.0")
 
 // For java projects include also the kotlin stdlib
 implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
@@ -98,7 +96,7 @@ fun addHologram(plugin : Plugin, location: Location) {
 ```
 
 ## Reactive Holograms
-From 3.1.0 version, the parameters of text lines and item lines **_can also be reactive_**. This means that you can update the line by simply calling the 'set' method to these.
+The parameters of text lines and item lines **_can also be reactive_**. This means that you can update the line by simply calling the 'set' method to these.
 
 <p align="center">
   <img src="preview/state.gif"  alt="holoeasy state video"/>
@@ -140,7 +138,7 @@ plugin.registerHolograms {
 ```
 
 ## BlockLine & Animations
-From 3.4.0 version, library added support for:
+Library added support for:
 - BlockLine: Instead of a dropping item it spawns an hologram with the block as helmet.
 - Animations: You can apply animations to hologram lines.
 <p align="center">
@@ -194,6 +192,7 @@ pool.registerHolograms {
 ```
 
 ## Ex (Hologram-Lib)
+Are you using a version older than 4.0.0? You can find the documentation <a href="https://github.com/unldenis/holoeasy">here</a>.
 Are you using a version older than 3.0.0? You can find the documentation <a href="https://unldenis.github.io/hologramlib/">here</a>.
 
 ## Stargazers over time

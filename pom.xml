@@ -25,7 +25,7 @@
 
     <groupId>org.holoeasy</groupId>
     <artifactId>holoeasy</artifactId>
-    <version>3.4.4</version>
+    <version>4.0.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>holoeasy-core</module>
@@ -99,7 +99,7 @@
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
 <!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <version>3.4.4</version>-->
+<!--                <version>4.0.0</version>-->
 <!--                <configuration>-->
 <!--                    <outputDirectory>C:\Users\mehil\OneDrive\Desktop\Spigot 1.16.5\plugins</outputDirectory>-->
 <!--                </configuration>-->
