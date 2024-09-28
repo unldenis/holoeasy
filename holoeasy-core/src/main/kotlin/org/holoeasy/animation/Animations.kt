@@ -1,6 +1,7 @@
 package org.holoeasy.animation
 
 import org.bukkit.Bukkit
+import org.bukkit.scheduler.BukkitScheduler
 
 import org.bukkit.scheduler.BukkitTask
 import org.holoeasy.ext.send
@@ -13,10 +14,11 @@ enum class Animations(val task : (ILine<*>) -> BukkitTask) {
         val holo = line.pvt.hologram
         var yaw = 0.0
 
+
         Bukkit.getScheduler().runTaskTimerAsynchronously(line.plugin, java.lang.Runnable {
             val packet = PacketType.ROTATE.rotate(line.entityId, yaw = yaw)
 
-            holo.seeingPlayers.forEach { player ->
+            holo.pvt.seeingPlayers.forEach { player ->
                 packet.send(player)
             }
 
@@ -24,5 +26,8 @@ enum class Animations(val task : (ILine<*>) -> BukkitTask) {
         }, 2, 2)
 
     })
+    ;
+
+
 
 }

@@ -47,7 +47,7 @@ class HologramPool(internal val plugin: Plugin, private val spawnDistance: Doubl
         // if removed
         val removed = holograms.remove(id)
         removed?.let {
-            for (player in it.seeingPlayers) {
+            for (player in it.pvt.seeingPlayers) {
                 it.hide(player)
             }
             return it
@@ -75,7 +75,7 @@ class HologramPool(internal val plugin: Plugin, private val spawnDistance: Doubl
         holograms
             .values
             .filter { it.isShownFor(player) }
-            .forEach { it.seeingPlayers.remove(player) }
+            .forEach { it.pvt.seeingPlayers.remove(player) }
     }
 
     /**

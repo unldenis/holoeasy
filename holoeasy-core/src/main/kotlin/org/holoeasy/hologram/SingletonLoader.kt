@@ -21,6 +21,6 @@ class SingletonLoader : IHologramLoader {
         val line: ILine<*> = hologram.lines[0]
 
         line.setLocation(hologram.location.clone())
-        hologram.seeingPlayers.forEach(line::teleport)
+        hologram.pvt.seeingPlayers.forEach(line::teleport)
     }
 }

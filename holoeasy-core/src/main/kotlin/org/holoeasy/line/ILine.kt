@@ -19,7 +19,7 @@ interface ILine<T> {
 
         override fun observerUpdate() {
             hologram.let {
-                line.update(it.seeingPlayers)
+                line.update(it.pvt.seeingPlayers)
             }
         }
     }

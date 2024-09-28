@@ -5,11 +5,19 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.holoeasy.builder.HologramBuilder
 import org.holoeasy.line.*
+import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hologram internal constructor(val plugin: Plugin, location: Location, val loader: IHologramLoader, val name : String? = null) {
+class Hologram internal constructor(
+    plugin: Plugin,
+    location: Location,
+    loader: IHologramLoader,
+    name: String?,
+    showEvent: ShowEvent?,
+    hideEvent: HideEvent?
+) {
 
     companion object {
 
@@ -20,68 +28,43 @@ class Hologram internal constructor(val plugin: Plugin, location: Location, val 
         }
     }
 
+    @Internal
+    internal val pvt = PrivateConfig(this, plugin, loader, showEvent, hideEvent)
+    val name : String? = name
     val id = UUID.randomUUID()!!
-
     var location: Location = location
         private set
-
-    private val hLines: MutableList<ILine<*>> =
-        CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
-
-    val lines: MutableList<ILine<*>>
-        get() = hLines
-
-    val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
-
-    private var showEvent: ShowEvent? = null
-    private var hideEvent: HideEvent? = null
+    val lines: MutableList<ILine<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
 
     fun <T : ILine<*>> lineAt(index: Int): T {
-        return hLines[index] as T
-    }
-
-    fun onShow(showEvent: ShowEvent): Hologram {
-        this.showEvent = showEvent
-        return this
-    }
-
-    fun onHide(hideEvent: HideEvent): Hologram {
-        this.hideEvent = hideEvent
-        return this
-    }
-
-    fun load(vararg lines: ILine<*>) {
-        hLines.clear()
-
-        lines.forEach { it.pvt.hologram = this }
-        loader.load(this, lines)
+        return lines[index] as T
     }
 
     fun teleport(to: Location) {
         this.location = to.clone()
-        loader.teleport(this)
+        pvt.loader.teleport(this)
     }
 
     fun isShownFor(player: Player): Boolean {
-        return seeingPlayers.contains(player)
+        return pvt.seeingPlayers.contains(player)
     }
 
     fun show(player: Player) {
-        seeingPlayers.add(player)
-        for (line in this.hLines) {
+        pvt.seeingPlayers.add(player)
+        for (line in lines) {
             line.show(player)
         }
 
-        showEvent?.onShow(player)
+        pvt.showEvent?.onShow(player)
     }
 
     fun hide(player: Player) {
-        for (line in this.hLines) {
+        for (line in lines) {
             line.hide(player)
         }
-        seeingPlayers.remove(player)
+        pvt.seeingPlayers.remove(player)
 
-        hideEvent?.onHide(player)
+        pvt.hideEvent?.onHide(player)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -96,6 +79,25 @@ class Hologram internal constructor(val plugin: Plugin, location: Location, val 
     override fun hashCode(): Int {
         return id.hashCode()
     }
+
+
+    data class PrivateConfig(
+        private val hologram: Hologram,
+        val plugin: Plugin,
+        val loader: IHologramLoader,
+        var showEvent: ShowEvent?,
+        var hideEvent: HideEvent?
+    ) {
+        val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
+
+        fun load(vararg lines: ILine<*>) {
+            hologram.lines.clear()
+
+            lines.forEach { it.pvt.hologram = hologram }
+            loader.load(hologram, lines)
+        }
+    }
+
 
 
 }

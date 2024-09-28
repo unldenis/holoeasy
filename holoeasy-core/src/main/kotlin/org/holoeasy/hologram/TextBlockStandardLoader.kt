@@ -91,6 +91,6 @@ class TextBlockStandardLoader : IHologramLoader {
         val dest = hologram.location.clone()
         dest.y = destY
         tempLine.setLocation(dest)
-        hologram.seeingPlayers.forEach(tempLine::teleport)
+        hologram.pvt.seeingPlayers.forEach(tempLine::teleport)
     }
 }

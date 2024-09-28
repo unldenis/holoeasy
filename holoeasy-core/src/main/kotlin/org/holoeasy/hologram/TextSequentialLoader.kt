@@ -29,7 +29,7 @@ class TextSequentialLoader : IHologramLoader {
                     if (add) {
                         hologram.lines.add(0, tL)
                     } else {
-                        hologram.seeingPlayers.forEach { tL.teleport(it) }
+                        hologram.pvt.seeingPlayers.forEach { tL.teleport(it) }
                     }
                     cloned.z += 0.175 * tL.obj.length
                 }

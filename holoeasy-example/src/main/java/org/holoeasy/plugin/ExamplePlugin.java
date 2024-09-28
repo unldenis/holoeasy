@@ -40,6 +40,7 @@ public class ExamplePlugin extends JavaPlugin {
                             .clickable()
                             .onClick(player -> clickCount.update(it -> it + 1)))
                     .blockLine(new ItemStack(Material.APPLE))
+                    .onShow(player -> player.sendMessage("Hi :)"))
                     .buildAndLoad(pool);
 
 

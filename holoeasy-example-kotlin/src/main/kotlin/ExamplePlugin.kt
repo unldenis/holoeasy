@@ -40,6 +40,7 @@ class ExamplePlugin : JavaPlugin() {
                     .onClick { clickCount.update { it + 1 } }
                 )
                 .blockLine(ItemStack(Material.APPLE))
+                .onShow { it.sendMessage("Hi :)") }
                 .buildAndLoad(pool)
 
             true

@@ -3,9 +3,7 @@ package org.holoeasy.builder
 import org.bukkit.Location
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import org.holoeasy.hologram.Hologram
-import org.holoeasy.hologram.IHologramLoader
-import org.holoeasy.hologram.TextBlockStandardLoader
+import org.holoeasy.hologram.*
 import org.holoeasy.line.*
 import org.holoeasy.pool.IHologramPool
 
@@ -14,16 +12,27 @@ class HologramBuilder internal constructor(private val plugin: Plugin, private v
     private val lines = mutableListOf<ILine<*>>()
 
     private var loader: IHologramLoader = TextBlockStandardLoader()
-    private var name : String? = null
-
+    private var name: String? = null
+    private var showEvent: ShowEvent? = null
+    private var hideEvent: HideEvent? = null
 
     fun loader(loader: IHologramLoader): HologramBuilder {
         this.loader = loader
         return this
     }
 
-    fun name(name : String) : HologramBuilder {
+    fun name(name: String): HologramBuilder {
         this.name = name
+        return this
+    }
+
+    fun onShow(showEvent: ShowEvent): HologramBuilder {
+        this.showEvent = showEvent
+        return this
+    }
+
+    fun onHide(hideEvent: HideEvent): HologramBuilder {
+        this.hideEvent = hideEvent
         return this
     }
 
@@ -66,12 +75,12 @@ class HologramBuilder internal constructor(private val plugin: Plugin, private v
     }
 
     fun build(plugin: Plugin): Hologram {
-        val hologram = Hologram(plugin, location, loader)
+        val hologram = Hologram(plugin, location, loader, name, showEvent, hideEvent)
 
         if (lines.isEmpty()) {
             throw RuntimeException("its not possible to create an empty hologram")
         }
-        hologram.load(*lines.toTypedArray<ILine<*>>())
+        hologram.pvt.load(*lines.toTypedArray<ILine<*>>())
 
         return hologram
     }
