@@ -48,26 +48,24 @@ Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 ### Java
 
 ```java
-import static org.holoeasy.builder.HologramBuilder.*;
-
 // you can use a Pool or a org.bukkit.Plugin
 IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
 
-public void addHologram(Location location) {
-    pool.registerHolograms(() -> {
-        
-        hologram(location, () -> {
-            textline("Hello");
-            textline("Score {} - {}", 0, 1);
-            clickable("Click me").onClick(p -> {
-                p.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
-                        20, 20, 20);
-            });
-            item(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE));
-        });
-        // other holograms...
-    });
-
+public void addHologram(Plugin plugin, Location location) {
+    MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
+    Hologram.create(plugin, location)
+            .name("my-holo")
+            .textLine("Hello")
+            .textLine("Count {}", TextLineModifiers
+                    .create()
+                    .args(clickCount))
+            .textLine("Click me", TextLineModifiers
+                    .create()
+                    .clickable()
+                    .onClick(player -> clickCount.update(it -> it + 1)))
+            .blockLine(new ItemStack(Material.APPLE))
+            .onShow(player -> player.sendMessage("Hi :)"))
+            .buildAndLoad(pool);
 }
 ```
 
@@ -78,20 +76,23 @@ import org.holoeasy.builder.HologramBuilder.*
 // you can use a Pool or a org.bukkit.Plugin 
 val pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
 
-fun addHologram(location: Location) {
-    pool.registerHolograms {
-
-        hologram(location) {
-            textline("Hello")
-            textline("Score {} - {}", 0, 1)
-            clickable("Click me").onClick {
-                it.sendTitle(ChatColor.AQUA + "Hi", ChatColor.BOLD + "by HoloEasy",
-                    20, 20, 20)
-            }
-            item(ItemStack(Material.ENCHANTED_GOLDEN_APPLE))
-        }
-        // other holograms...
-    }
+fun addHologram(plugin : Plugin, location: Location) {
+    val clickCount = MutableState(0) // can be any type
+    Hologram.create(plugin, location)
+        .name("my-holo")
+        .textLine("Hello")
+        .textLine("Count {}", TextLineModifiers
+            .create()
+            .args(clickCount)
+        )
+        .textLine("Click me", TextLineModifiers
+            .create()
+            .clickable()
+            .onClick { clickCount.update { it + 1 } }
+        )
+        .blockLine(ItemStack(Material.APPLE))
+        .onShow { it.sendMessage("Hi :)") }
+        .buildAndLoad(pool)
 
 }
 ```

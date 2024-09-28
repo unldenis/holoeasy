@@ -1,10 +1,12 @@
 package org.holoeasy.plugin;
 
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
 import org.holoeasy.action.ClickAction;
@@ -20,7 +22,6 @@ public class ExamplePlugin extends JavaPlugin {
     public void onEnable() {
         IHologramPool pool = HoloEasy.startInteractivePool(this, 60, /* optional */0.5F, /* optional */ 5F, /* optional */ ClickAction.RIGHT_CLICK);
 
-
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
             Location location = ((Player) sender).getLocation();
@@ -31,6 +32,7 @@ public class ExamplePlugin extends JavaPlugin {
 
             MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
             Hologram.create(this, location)
+                    .name("my-holo")
                     .textLine("Hello")
                     .textLine("Count {}", TextLineModifiers
                             .create()
@@ -47,6 +49,5 @@ public class ExamplePlugin extends JavaPlugin {
             return true;
         });
     }
-
 
 }

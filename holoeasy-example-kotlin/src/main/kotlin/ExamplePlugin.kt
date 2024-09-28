@@ -29,6 +29,7 @@ class ExamplePlugin : JavaPlugin() {
 
             val clickCount = MutableState(0) // can be any type
             Hologram.create(this, location)
+                .name("my-holo")
                 .textLine("Hello")
                 .textLine("Count {}", TextLineModifiers
                     .create()
