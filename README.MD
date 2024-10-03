@@ -51,16 +51,13 @@ IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
 
 public void addHologram(Plugin plugin, Location location) {
     MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
-    Hologram.create(plugin, location)
+    new Hologram.Builder(plugin, location)
             .name("my-holo")
             .textLine("Hello")
-            .textLine("Count {}", TextLineModifiers
-                    .create()
+            .textLine("Count {}", new TextLineModifiers()
                     .args(clickCount))
-            .textLine("Click me", TextLineModifiers
-                    .create()
-                    .clickable()
-                    .onClick(player -> clickCount.update(it -> it + 1)))
+            .textLine("Click me", new TextLineModifiers()
+                    .clickable(player -> clickCount.update(it -> it + 1)))
             .blockLine(new ItemStack(Material.APPLE))
             .onShow(player -> player.sendMessage("Hi :)"))
             .buildAndLoad(pool);
@@ -76,22 +73,16 @@ val pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
 
 fun addHologram(plugin : Plugin, location: Location) {
     val clickCount = MutableState(0) // can be any type
-    Hologram.create(plugin, location)
+    Hologram.Builder(plugin, location)
         .name("my-holo")
         .textLine("Hello")
-        .textLine("Count {}", TextLineModifiers
-            .create()
-            .args(clickCount)
-        )
-        .textLine("Click me", TextLineModifiers
-            .create()
-            .clickable()
-            .onClick { clickCount.update { it + 1 } }
+        .textLine("Count {}", TextLineModifiers().args(clickCount))
+        .textLine("Click me", TextLineModifiers()
+            .clickable { clickCount.update { it + 1 } }
         )
         .blockLine(ItemStack(Material.APPLE))
         .onShow { it.sendMessage("Hi :)") }
         .buildAndLoad(pool)
-
 }
 ```
 
