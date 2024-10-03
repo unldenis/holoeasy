@@ -18,7 +18,7 @@ class ExamplePlugin : JavaPlugin() {
             60.0,
             minHitDistance = 0.5f, /* optional */
             maxHitDistance = 5f, /* optional */
-            clickAction = ClickAction.RIGHT_CLICK /* optional */
+            clickAction = ClickAction.LEFT_CLICK /* optional */
         )
 
 
@@ -28,17 +28,12 @@ class ExamplePlugin : JavaPlugin() {
 
 
             val clickCount = MutableState(0) // can be any type
-            Hologram.create(this, location)
+            Hologram.Builder(this, location)
                 .name("my-holo")
                 .textLine("Hello")
-                .textLine("Count {}", TextLineModifiers
-                    .create()
-                    .args(clickCount)
-                )
-                .textLine("Click me", TextLineModifiers
-                    .create()
-                    .clickable()
-                    .onClick { clickCount.update { it + 1 } }
+                .textLine("Count {}", TextLineModifiers().args(clickCount))
+                .textLine("Click me", TextLineModifiers()
+                    .clickable { clickCount.update { it + 1 } }
                 )
                 .blockLine(ItemStack(Material.APPLE))
                 .onShow { it.sendMessage("Hi :)") }

@@ -1,11 +1,6 @@
 package org.holoeasy.builder
 
-class BlockLineModifiers {
-    companion object {
-
-        @JvmStatic
-        fun create() = BlockLineModifiers()
-    }
+class BlockLineModifiers() {
 
     internal var blockType: Boolean = false
 

@@ -2,15 +2,18 @@ package org.holoeasy.hologram
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import org.holoeasy.builder.HologramBuilder
+import org.holoeasy.builder.BlockLineModifiers
+import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.line.*
+import org.holoeasy.pool.IHologramPool
 import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-class Hologram internal constructor(
+class Hologram private constructor(
     plugin: Plugin,
     location: Location,
     loader: IHologramLoader,
@@ -18,15 +21,6 @@ class Hologram internal constructor(
     showEvent: ShowEvent?,
     hideEvent: HideEvent?
 ) {
-
-    companion object {
-
-        @JvmStatic
-        fun create(plugin: Plugin, location: Location): HologramBuilder {
-            val builder = HologramBuilder(plugin, location)
-            return builder
-        }
-    }
 
     @Internal
     internal val pvt = PrivateConfig(this, plugin, loader, showEvent, hideEvent)
@@ -99,5 +93,91 @@ class Hologram internal constructor(
     }
 
 
+
+
+    class Builder(private val plugin: Plugin, private val location: Location) {
+
+        private val lines = mutableListOf<ILine<*>>()
+
+        private var loader: IHologramLoader = TextBlockStandardLoader()
+        private var name: String? = null
+        private var showEvent: ShowEvent? = null
+        private var hideEvent: HideEvent? = null
+
+        fun loader(loader: IHologramLoader): Builder {
+            this.loader = loader
+            return this
+        }
+
+        fun name(name: String): Builder {
+            this.name = name
+            return this
+        }
+
+        fun onShow(showEvent: ShowEvent): Builder {
+            this.showEvent = showEvent
+            return this
+        }
+
+        fun onHide(hideEvent: HideEvent): Builder {
+            this.hideEvent = hideEvent
+            return this
+        }
+
+        @JvmOverloads
+        fun blockLine(item: ItemStack, modifiers: BlockLineModifiers = BlockLineModifiers.create()): Builder {
+            if (modifiers.blockType) {
+                lines.add(BlockLine(plugin, item))
+            } else {
+                lines.add(ItemLine(plugin, item))
+            }
+            return this
+        }
+
+        @JvmOverloads
+        fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers.create()): Builder {
+
+            if (modifiers.clickable) {
+                if (modifiers.clickableWithoutPool) {
+                    val textLine = TextLine(plugin, text, clickable = false, args = modifiers.args)
+                    val clickableTextLine =
+                        ClickableTextLine(textLine, modifiers.minHitDistance, modifiers.maxHitDistance)
+                    modifiers.clickEvent?.let { clickableTextLine.onClick(it) }
+                    lines.add(clickableTextLine)
+                } else {
+                    val textLine = TextLine(plugin, text, clickable = true, args = modifiers.args)
+                    modifiers.clickEvent?.let { textLine.onClick(it) }
+                    lines.add(textLine)
+                }
+
+            } else {
+                val textLine = TextLine(plugin, text, clickable = false, args = modifiers.args)
+                lines.add(textLine)
+            }
+            return this
+        }
+
+        fun customLine(customLine: ILine<*>): Builder {
+            lines.add(customLine)
+            return this
+        }
+
+        fun build(plugin: Plugin): Hologram {
+            val hologram = Hologram(plugin, location, loader, name, showEvent, hideEvent)
+
+            if (lines.isEmpty()) {
+                throw RuntimeException("its not possible to create an empty hologram")
+            }
+            hologram.pvt.load(*lines.toTypedArray<ILine<*>>())
+
+            return hologram
+        }
+
+        fun buildAndLoad(pool: IHologramPool): Hologram {
+            val hologram = build(plugin)
+            pool.takeCareOf(hologram)
+            return hologram
+        }
+    }
 
 }

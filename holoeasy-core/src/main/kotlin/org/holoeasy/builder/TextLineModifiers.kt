@@ -2,12 +2,7 @@ package org.holoeasy.builder
 
 import org.holoeasy.line.ClickEvent
 
-class TextLineModifiers {
-    companion object {
-
-        @JvmStatic
-        fun create() = TextLineModifiers()
-    }
+class TextLineModifiers() {
 
     internal var args: Array<Any> = emptyArray()
     internal var clickable: Boolean = false
@@ -21,8 +16,9 @@ class TextLineModifiers {
         return this
     }
 
-    fun clickable(): TextLineModifiers {
+    fun clickable(clickEvent: ClickEvent): TextLineModifiers {
         this.clickable = true
+        this.clickEvent = clickEvent
         return this
     }
 
@@ -41,11 +37,5 @@ class TextLineModifiers {
         this.maxHitDistance = maxHitDistance
         return this
     }
-
-    fun onClick(clickEvent: ClickEvent) : TextLineModifiers {
-        this.clickEvent = clickEvent
-        return this
-    }
-
 
 }
