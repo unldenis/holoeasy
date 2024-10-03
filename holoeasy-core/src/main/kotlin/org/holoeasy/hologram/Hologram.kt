@@ -125,7 +125,7 @@ class Hologram private constructor(
         }
 
         @JvmOverloads
-        fun blockLine(item: ItemStack, modifiers: BlockLineModifiers = BlockLineModifiers.create()): Builder {
+        fun blockLine(item: ItemStack, modifiers: BlockLineModifiers = BlockLineModifiers()): Builder {
             if (modifiers.blockType) {
                 lines.add(BlockLine(plugin, item))
             } else {
@@ -135,7 +135,7 @@ class Hologram private constructor(
         }
 
         @JvmOverloads
-        fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers.create()): Builder {
+        fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers()): Builder {
 
             if (modifiers.clickable) {
                 if (modifiers.clickableWithoutPool) {
