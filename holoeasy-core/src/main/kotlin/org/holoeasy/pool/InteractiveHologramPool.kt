@@ -6,6 +6,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
+import org.holoeasy.HoloEasy
 import org.holoeasy.action.ClickAction
 import org.holoeasy.hologram.Hologram
 import org.holoeasy.line.ILine
@@ -15,14 +16,6 @@ import java.util.UUID
 
 class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float, val clickAction: ClickAction?) : Listener,
     IHologramPool {
-
-    override var plugin: Plugin?
-        get() = pool.plugin
-        set(value) {
-            value!!
-            pool.plugin = value
-            Bukkit.getPluginManager().registerEvents(this, value)
-        }
 
     override val holograms: Set<Hologram>
         get() = pool.holograms
@@ -35,12 +28,14 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
         require(maxHitDistance < 120) { "maxHitDistance cannot be greater than 120" }
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
+
+        Bukkit.getPluginManager().registerEvents(this, HoloEasy.plugin())
     }
 
 
     @EventHandler
     fun handleInteract(e: PlayerInteractEvent) {
-        Bukkit.getScheduler().runTaskAsynchronously(pool.plugin!!, Runnable {
+        Bukkit.getScheduler().runTaskAsynchronously(HoloEasy.plugin(), Runnable {
             val player = e.player
 
             if(clickAction == null) {

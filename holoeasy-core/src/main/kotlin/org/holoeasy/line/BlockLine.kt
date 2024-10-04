@@ -12,11 +12,11 @@ import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
 
-class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> {
-    constructor(plugin: Plugin, obj: ItemStack) : this(plugin, MutableState(obj))
+class BlockLine(obj: MutableState<ItemStack>) : ILine<ItemStack> {
+    constructor(obj: ItemStack) : this(MutableState(obj))
 
 
-    private val line: Line = Line(plugin, EntityType.ARMOR_STAND)
+    private val line: Line = Line(EntityType.ARMOR_STAND)
     private val _mutableStateOf = obj
     private var firstRender = true
 
@@ -31,9 +31,6 @@ class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack>
 
     @Deprecated("Internal")
     override var pvt = object : ILine.PrivateConfig<ItemStack>() {
-        override val plugin: Plugin
-            get() = line.plugin
-
         override var obj: ItemStack
             get() = _mutableStateOf.get()
             set(value) = _mutableStateOf.set(value)

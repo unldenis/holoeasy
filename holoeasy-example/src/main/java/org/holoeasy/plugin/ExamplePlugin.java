@@ -19,6 +19,8 @@ import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 
 public class ExamplePlugin extends JavaPlugin {
 
@@ -26,13 +28,31 @@ public class ExamplePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        HoloEasy.bind(this);
+
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
-            Location location = ((Player) sender).getLocation();
+            Player player = ((Player) sender);
+
+            Location location = player.getLocation();
 
 
-            HelloWorldHologram hologram = new HelloWorldHologram(this, location);
+            HelloWorldHologram hologram = new HelloWorldHologram(location);
             hologram.show();
+
+            player.sendMessage("Shown");
+
+            hologram.hide();
+
+            player.sendMessage("Hide");
+
+
+            Map<String, Object> serialized = hologram.serialize();
+
+            HelloWorldHologram deserialized = (HelloWorldHologram) Hologram.deserialize(serialized);
+            deserialized.show();
+
+            player.sendMessage("Deserialized");
 
             return true;
         });
@@ -48,8 +68,8 @@ public class ExamplePlugin extends JavaPlugin {
                         .clickable(player -> clickCount.update(it -> it + 1)));
         public ILine<ItemStack> status = blockLine(new ItemStack(Material.RED_DYE));
 
-        public MyHolo(@NotNull Plugin plugin, @NotNull Location location) {
-            super(plugin, location);
+        public MyHolo(@NotNull Location location) {
+            super(location);
         }
 
     }

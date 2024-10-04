@@ -49,12 +49,12 @@ Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 
 ### Kotlin
 ```kotlin
-class HelloWorldHologram(plugin: Plugin, location: Location) : Hologram(plugin, location) {
+class HelloWorldHologram(location: Location) : Hologram(location) {
     var line = textLine("Hello World")
 }
 
 // When you need
-val hologram = HelloWorldHologram(this, location)
+val hologram = HelloWorldHologram(location)
 hologram.show()
 ```
 
@@ -64,14 +64,14 @@ public class HelloWorldHologram extends Hologram  {
 
     ITextLine line = textLine("Hello World");
 
-    public HelloWorldHologram(@NotNull Plugin plugin, @NotNull Location location) {
-        super(plugin, location);
+    public HelloWorldHologram(@NotNull Location location) {
+        super(location);
     }
 
 }
 
 // When you need
-HelloWorldHologram hologram = new HelloWorldHologram(this, location);
+HelloWorldHologram hologram = new HelloWorldHologram(location);
 hologram.show();
 ```
 
@@ -79,7 +79,7 @@ hologram.show();
 
 ### Kotlin
 ```kotlin
-class MyHolo(plugin: Plugin, location: Location) : Hologram(plugin, location) {
+class MyHolo(location: Location) : Hologram(location) {
 
     private val clickCount = MutableState(0) // can be any type
 
@@ -92,10 +92,10 @@ class MyHolo(plugin: Plugin, location: Location) : Hologram(plugin, location) {
 }
 
 // Create new hologram
-val myHolo = MyHolo(this, location)
+val myHolo = MyHolo(location)
 myHolo.show()
 
-Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
+Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, Runnable {
     // access lines
     myHolo.status.update(ItemStack(Material.GREEN_DYE))
 }, 20L * 5)
@@ -112,16 +112,16 @@ class MyHolo extends Hologram {
             .clickable(player -> clickCount.update(it -> it + 1)));
     public ILine<ItemStack> status = blockLine(new ItemStack(Material.RED_DYE));
 
-    public MyHolo(@NotNull Plugin plugin, @NotNull Location location) {
-        super(plugin, location);
+    public MyHolo(@NotNull Location location) {
+        super(location);
     }
 }
 
 // Create new hologram
-MyHolo myHolo = new MyHolo(this, location);
+MyHolo myHolo = new MyHolo(location);
 myHolo.show();
 
-Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
     // access lines
     myHolo.status.update(new ItemStack(Material.GREEN_DYE));
 }, 20L * 5);

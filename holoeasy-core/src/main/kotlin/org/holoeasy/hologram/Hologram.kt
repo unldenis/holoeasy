@@ -3,7 +3,6 @@ package org.holoeasy.hologram
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 import org.holoeasy.HoloEasy
 import org.holoeasy.builder.BlockLineModifiers
 import org.holoeasy.builder.TextLineModifiers
@@ -14,8 +13,8 @@ import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
+
 open class Hologram @JvmOverloads constructor(
-    plugin: Plugin,
     location: Location,
     showEvent: ShowEvent? = null,
     hideEvent: HideEvent? = null
@@ -23,8 +22,7 @@ open class Hologram @JvmOverloads constructor(
 
     @Internal
     @Deprecated("Internal")
-    val pvt = PrivateConfig(this, plugin, showEvent, hideEvent)
-    var loader: IHologramLoader = TextBlockStandardLoader()
+    val pvt = PrivateConfig(this, showEvent, hideEvent)
     val id = UUID.randomUUID()!!
     var location: Location = location
         private set
@@ -33,13 +31,14 @@ open class Hologram @JvmOverloads constructor(
     // if is first loaded
     private var loaded = false
 
+    open fun loader(): HologramLoader = HologramLoader.TEXT_BLOCK_STANDARD
 
     @JvmOverloads
     protected fun blockLine(item: ItemStack, modifiers: BlockLineModifiers = BlockLineModifiers()): ILine<ItemStack> {
         val line = if (modifiers.blockType) {
-            (BlockLine(pvt.plugin, item))
+            BlockLine(item)
         } else {
-            (ItemLine(pvt.plugin, item))
+            ItemLine(item)
         }
         lines.add(line)
         line.pvt.hologram = this
@@ -50,18 +49,18 @@ open class Hologram @JvmOverloads constructor(
     protected fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers()): ITextLine {
         val line = if (modifiers.clickable) {
             if (modifiers.clickableWithoutPool) {
-                val textLine = TextLine(pvt.plugin, text, clickable = false, args = modifiers.args)
+                val textLine = TextLine(text, clickable = false, args = modifiers.args)
                 val clickableTextLine =
                     ClickableTextLine(textLine, modifiers.minHitDistance, modifiers.maxHitDistance)
                 modifiers.clickEvent?.let { clickableTextLine.clickEvent = it }
                 clickableTextLine
             } else {
-                val textLine = TextLine(pvt.plugin, text, clickable = true, args = modifiers.args)
+                val textLine = TextLine(text, clickable = true, args = modifiers.args)
                 modifiers.clickEvent?.let { textLine.clickEvent = it }
                 textLine
             }
         } else {
-            TextLine(pvt.plugin, text, clickable = false, args = modifiers.args)
+            TextLine(text, clickable = false, args = modifiers.args)
         }
         lines.add(line)
         line.pvt.hologram = this
@@ -70,7 +69,7 @@ open class Hologram @JvmOverloads constructor(
 
     fun teleport(to: Location) {
         this.location = to.clone()
-        loader.teleport(this)
+        loader().teleport(this)
     }
 
     fun isShownFor(player: Player): Boolean {
@@ -79,11 +78,6 @@ open class Hologram @JvmOverloads constructor(
 
     @JvmOverloads
     fun show(pool: IHologramPool = HoloEasy.STANDARD_POOL) {
-        // if pool has no plugin
-        if (pool.plugin == null) {
-            pool.plugin = pvt.plugin
-        }
-
         if (pool.holograms.any { it.id == this.id }) {
             throw KeyAlreadyExistsException(this.id)
         }
@@ -136,6 +130,55 @@ open class Hologram @JvmOverloads constructor(
 
     override fun hashCode(): Int {
         return id.hashCode()
+    }
+
+    fun serialize(): MutableMap<String, Any> {
+        val result = LinkedHashMap<String, Any>()
+        result["location"] = location
+        result["type"] = javaClass.name
+        result["lines"] = lines
+            .map { mapOf("type" to it.type.name, "value" to it.pvt.obj) }
+
+        return result
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun deserialize(args: Map<String, Any>): Hologram {
+            val location = args["location"] as Location
+            val type = args["type"] as String
+
+            val lines = args["lines"] as List<Map<String, Any>>
+
+            val hologram = Class
+                .forName(type)
+                .getDeclaredConstructor(Location::class.java)
+                .newInstance(location) as Hologram
+
+            for (i in lines.indices) {
+                val type = ILine.Type.valueOf(lines[i]["type"] as String)
+                val value = lines[i]["value"]
+
+                when(type) {
+                    ILine.Type.EXTERNAL -> {
+                        val hologramLine = hologram.lines[i] as ILine<Any>
+                        hologramLine.pvt.obj = value as Any
+                        throw IllegalStateException("cannot deseriali")
+                    }
+                    ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE  -> {
+                        val hologramLine = hologram.lines[i] as ITextLine
+                        hologramLine.pvt.obj = value as String
+                    }
+                    ILine.Type.ITEM_LINE, ILine.Type.BLOCK_LINE -> {
+                        val hologramLine = hologram.lines[i] as ILine<ItemStack>
+                        hologramLine.pvt.obj = value as ItemStack
+                    }
+                }
+            }
+            return hologram
+        }
+
     }
 
 

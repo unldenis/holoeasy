@@ -12,9 +12,9 @@ import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
 
-class ItemLine(plugin: Plugin, item: MutableState<ItemStack>) : ILine<ItemStack> {
+class ItemLine(item: MutableState<ItemStack>) : ILine<ItemStack> {
 
-    constructor(plugin: Plugin, obj: ItemStack) : this(plugin, MutableState(obj))
+    constructor(obj: ItemStack) : this(MutableState(obj))
 
     init {
         if(VersionUtil.isCompatible(VersionEnum.V1_8)) {
@@ -22,7 +22,7 @@ class ItemLine(plugin: Plugin, item: MutableState<ItemStack>) : ILine<ItemStack>
         }
     }
 
-    private val line: Line = Line(plugin, EntityType.DROPPED_ITEM)
+    private val line: Line = Line(EntityType.DROPPED_ITEM)
     private val resetVelocity = PacketType.VELOCITY.velocity(line.entityID, 0, 0,0)
     private val _mutableStateOf = item
     private var firstRender = true
@@ -38,8 +38,6 @@ class ItemLine(plugin: Plugin, item: MutableState<ItemStack>) : ILine<ItemStack>
 
     @Deprecated("Internal")
     override var pvt = object  : ILine.PrivateConfig<ItemStack>() {
-        override val plugin: Plugin
-            get() = line.plugin
 
         override var obj: ItemStack
             get() = _mutableStateOf.get()

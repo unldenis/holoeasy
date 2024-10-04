@@ -8,6 +8,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.plugin.Plugin
+import org.holoeasy.HoloEasy
 import org.holoeasy.hologram.Hologram
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -16,18 +17,12 @@ class KeyAlreadyExistsException(key: UUID) : IllegalStateException("Id '$key' al
 
 class HologramPool( private val spawnDistance: Double) : Listener, IHologramPool {
 
-    override var plugin: Plugin? = null
-        set(value) {
-            value!!
-
-            Bukkit.getPluginManager().registerEvents(this, value)
-            hologramTick(value)
-
-            field = value
-        }
-
     override val holograms: Set<Hologram> = ConcurrentHashMap.newKeySet()
 
+    init {
+        Bukkit.getPluginManager().registerEvents(this, HoloEasy.plugin())
+        hologramTick()
+    }
 
     @EventHandler
     fun handleRespawn(event: PlayerRespawnEvent) {
@@ -48,8 +43,8 @@ class HologramPool( private val spawnDistance: Double) : Listener, IHologramPool
     /**
      * Starts the hologram tick.
      */
-    private fun hologramTick(plugin: Plugin) {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, Runnable {
+    private fun hologramTick() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously( HoloEasy.plugin(), Runnable {
             for (player in ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
                 for (hologram in this.holograms) {
                     val holoLoc = hologram.location

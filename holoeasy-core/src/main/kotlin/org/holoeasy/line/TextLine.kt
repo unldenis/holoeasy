@@ -9,15 +9,15 @@ import org.holoeasy.packet.IPacket
 import org.holoeasy.packet.PacketType
 import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.AABB
+import java.util.LinkedHashMap
 
 class TextLine(
-    plugin: Plugin,
     obj: String,
     override val args: Array<*>? = null,
     override val clickable: Boolean = false
 ) : ITextLine {
 
-    private val line: Line = Line(plugin, EntityType.ARMOR_STAND)
+    private val line: Line = Line(EntityType.ARMOR_STAND)
     private var firstRender = true
     var hitbox: AABB? = null
         private set
@@ -60,9 +60,6 @@ class TextLine(
 
     @Deprecated("Internal")
     override var pvt = object  : ILine.PrivateConfig<String>() {
-
-        override val plugin: Plugin
-            get() = line.plugin
         override var obj: String = ""
 
         init {
@@ -139,6 +136,5 @@ class TextLine(
         pvt.obj = value
         pvt.observerUpdate()
     }
-
 
 }

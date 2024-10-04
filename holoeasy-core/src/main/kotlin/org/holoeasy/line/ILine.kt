@@ -9,7 +9,7 @@ import org.holoeasy.hologram.Hologram
 import org.holoeasy.reactive.Observer
 import org.jetbrains.annotations.ApiStatus
 
-interface ILine<T> {
+interface ILine<T : Any> {
 
     abstract class PrivateConfig<T> : Observer {
 
@@ -24,9 +24,6 @@ interface ILine<T> {
         }
 
         // abstract internal
-
-        abstract val plugin: Plugin
-
         abstract var obj: T
 
         abstract fun setLocation(value: Location)
@@ -61,6 +58,7 @@ interface ILine<T> {
     }
 
     fun update(value : T)
+
 
     enum class Type {
         EXTERNAL,

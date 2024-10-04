@@ -8,6 +8,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
+import org.holoeasy.HoloEasy
 import org.holoeasy.util.AABB
 import org.holoeasy.util.AABB.Vec3D.Companion.fromLocation
 
@@ -27,7 +28,7 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
 
-        Bukkit.getPluginManager().registerEvents(this, line.pvt.plugin)
+        Bukkit.getPluginManager().registerEvents(this, HoloEasy.plugin())
     }
 
 
@@ -63,9 +64,6 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
                 updateHitBox()
             }
         }
-
-        override val plugin: Plugin
-            get() = line.pvt.plugin
 
         override var obj: String
             get() = line.pvt.obj
