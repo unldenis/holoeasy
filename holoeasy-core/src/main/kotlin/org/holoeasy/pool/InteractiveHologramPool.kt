@@ -16,23 +16,8 @@ import java.util.UUID
 class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float, val clickAction: ClickAction?) : Listener,
     IHologramPool {
 
-    override fun get(id: UUID): Hologram {
-        return pool.get(id)
-    }
-
-
-    override fun takeCareOf(value: Hologram) {
-        pool.takeCareOf(value)
-    }
-
-    override fun remove(id : UUID): Hologram? {
-        return pool.remove(id)
-    }
-
-    override fun holograms(): Set<Hologram> {
-        return pool.holograms()
-    }
-
+    override val holograms: Set<Hologram>
+        get() = pool.holograms
 
     val minHitDistance: Float
     val maxHitDistance: Float
@@ -72,7 +57,7 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
             }
 
 
-            FST@ for (hologram in pool.holograms.values) {
+            FST@ for (hologram in pool.holograms) {
                 if (!hologram.isShownFor(player)) {
                     continue
                 }
@@ -109,4 +94,6 @@ class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Fl
             }
         })
     }
+
+
 }

@@ -42,6 +42,14 @@ public class ExamplePlugin extends JavaPlugin {
                 myHolo.status.update(new ItemStack(Material.GREEN_DYE));
 
             }, 20L * 5);
+
+
+            Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+
+                myHolo.hide(pool);
+
+            }, 20L * 10);
+
             return true;
         });
     }

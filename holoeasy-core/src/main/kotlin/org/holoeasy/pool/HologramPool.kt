@@ -9,16 +9,14 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.plugin.Plugin
 import org.holoeasy.hologram.Hologram
-import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 class KeyAlreadyExistsException(key: UUID) : IllegalStateException("Id '$key' already exists")
-class NoValueForKeyException(key: UUID) : IllegalStateException("No value for id '$key'")
 
 class HologramPool(internal val plugin: Plugin, private val spawnDistance: Double) : Listener, IHologramPool {
 
-    val holograms: MutableMap<UUID, Hologram> = ConcurrentHashMap()
+    override val holograms: Set<Hologram> = ConcurrentHashMap.newKeySet()
 
     init {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -26,45 +24,10 @@ class HologramPool(internal val plugin: Plugin, private val spawnDistance: Doubl
         hologramTick()
     }
 
-    override fun get(id: UUID): Hologram {
-        return holograms[id] ?: throw NoValueForKeyException(id)
-    }
-
-    override fun takeCareOf(value: Hologram) {
-        if (holograms.containsKey(value.id)) {
-            throw KeyAlreadyExistsException(value.id)
-        }
-        holograms[value.id] = value
-    }
-
-    /**
-     * Removes the given hologram by from the handled Holograms of this pool.
-     *
-     * @param hologram the hologram of the pool to remove.
-     * @return true if any elements were removed
-     */
-    override fun remove(id : UUID): Hologram? {
-        // if removed
-        val removed = holograms.remove(id)
-        removed?.let {
-            for (player in it.pvt.seeingPlayers) {
-                it.hide(player)
-            }
-            return it
-        }
-        return null
-    }
-
-    override fun holograms(): Set<Hologram> {
-        // should be immutable
-        return holograms.values.toSet()
-    }
-
     @EventHandler
     fun handleRespawn(event: PlayerRespawnEvent) {
         val player = event.player
         holograms
-            .values
             .filter { it.isShownFor(player) }
             .forEach { it.hide(player) }
     }
@@ -73,7 +36,6 @@ class HologramPool(internal val plugin: Plugin, private val spawnDistance: Doubl
     fun handleQuit(event: PlayerQuitEvent) {
         val player = event.player
         holograms
-            .values
             .filter { it.isShownFor(player) }
             .forEach { it.pvt.seeingPlayers.remove(player) }
     }
@@ -84,7 +46,7 @@ class HologramPool(internal val plugin: Plugin, private val spawnDistance: Doubl
     private fun hologramTick() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, Runnable {
             for (player in ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
-                for (hologram in this.holograms.values) {
+                for (hologram in this.holograms) {
                     val holoLoc = hologram.location
                     val playerLoc: Location = player.location
                     val isShown = hologram.isShownFor(player)

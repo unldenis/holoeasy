@@ -40,6 +40,14 @@ class ExamplePlugin : JavaPlugin() {
                 myHolo.status.update(ItemStack(Material.GREEN_DYE))
 
             }, 20L * 5)
+
+            Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
+
+                myHolo.hide(pool)
+
+            }, 20L * 10)
+
+
             true
         }
     }

@@ -8,6 +8,7 @@ import org.holoeasy.builder.BlockLineModifiers
 import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.line.*
 import org.holoeasy.pool.IHologramPool
+import org.holoeasy.pool.KeyAlreadyExistsException
 import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -78,7 +79,20 @@ open class Hologram @JvmOverloads constructor(
     }
 
     fun show(pool: IHologramPool) {
-        pool.takeCareOf(this)
+       if( pool.holograms.any { it.id == this.id }) {
+           throw KeyAlreadyExistsException(this.id)
+       }
+       (pool.holograms as MutableSet<Hologram>).add(this);
+    }
+
+    fun hide(pool: IHologramPool) {
+        // if removed
+        val removed = (pool.holograms as MutableSet<Hologram>).remove(this)
+        if(removed) {
+            for (player in pvt.seeingPlayers) {
+                hide(player)
+            }
+        }
     }
 
     fun show(player: Player) {
