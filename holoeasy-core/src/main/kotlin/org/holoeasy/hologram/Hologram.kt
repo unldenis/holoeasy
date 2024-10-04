@@ -161,7 +161,6 @@ open class Hologram @JvmOverloads constructor(
                     ILine.Type.EXTERNAL -> {
                         val hologramLine = hologram.lines[i] as ILine<Any>
                         hologramLine.pvt.obj = value as Any
-                        throw IllegalStateException("cannot deseriali")
                     }
 
                     ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
