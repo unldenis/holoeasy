@@ -90,16 +90,6 @@ open class Hologram @JvmOverloads constructor(
         (pool.holograms as MutableSet<Hologram>).add(this);
     }
 
-    fun hide(pool: IHologramPool) {
-        // if removed
-        val removed = (pool.holograms as MutableSet<Hologram>).remove(this)
-        if (removed) {
-            for (player in pvt.seeingPlayers) {
-                hide(player)
-            }
-        }
-    }
-
     fun show(player: Player) {
         if (!loaded) {
             pvt.load()
@@ -122,6 +112,18 @@ open class Hologram @JvmOverloads constructor(
 
         pvt.hideEvent?.onHide(player)
     }
+
+    @JvmOverloads
+    fun hide(pool: IHologramPool = HoloEasy.STANDARD_POOL) {
+        // if removed
+        val removed = (pool.holograms as MutableSet<Hologram>).remove(this)
+        if (removed) {
+            for (player in pvt.seeingPlayers) {
+                hide(player)
+            }
+        }
+    }
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
