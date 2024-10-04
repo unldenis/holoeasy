@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.holoeasy.HoloEasy
 import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.hologram.Hologram
+import org.holoeasy.hologram.Hologram.Companion.deserialize
 import org.holoeasy.reactive.MutableState
 
 class ExamplePlugin : JavaPlugin() {
@@ -25,6 +26,11 @@ class ExamplePlugin : JavaPlugin() {
 
             val hologram = HelloWorldHologram(location)
             hologram.show()
+
+            val serialized: Map<String, Any> = hologram.serialize()
+
+            val deserialized : HelloWorldHologram = Hologram.deserialize(serialized)
+            deserialized.show()
 
             true
         }

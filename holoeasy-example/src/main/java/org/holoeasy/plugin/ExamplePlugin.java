@@ -49,7 +49,7 @@ public class ExamplePlugin extends JavaPlugin {
 
             Map<String, Object> serialized = hologram.serialize();
 
-            HelloWorldHologram deserialized = (HelloWorldHologram) Hologram.deserialize(serialized);
+            HelloWorldHologram deserialized = Hologram.deserialize(serialized, HelloWorldHologram.class);
             deserialized.show();
 
             player.sendMessage("Deserialized");

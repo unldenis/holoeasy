@@ -135,7 +135,6 @@ open class Hologram @JvmOverloads constructor(
     fun serialize(): MutableMap<String, Any> {
         val result = LinkedHashMap<String, Any>()
         result["location"] = location
-        result["type"] = javaClass.name
         result["lines"] = lines
             .map { mapOf("type" to it.type.name, "value" to it.pvt.obj) }
 
@@ -145,31 +144,31 @@ open class Hologram @JvmOverloads constructor(
     companion object {
 
         @JvmStatic
-        fun deserialize(args: Map<String, Any>): Hologram {
+        fun <T : Hologram> deserialize(args: Map<String, Any>, clazz: Class<T>): T {
             val location = args["location"] as Location
-            val type = args["type"] as String
 
             val lines = args["lines"] as List<Map<String, Any>>
 
-            val hologram = Class
-                .forName(type)
+            val hologram = clazz
                 .getDeclaredConstructor(Location::class.java)
-                .newInstance(location) as Hologram
+                .newInstance(location) as T
 
             for (i in lines.indices) {
                 val type = ILine.Type.valueOf(lines[i]["type"] as String)
                 val value = lines[i]["value"]
 
-                when(type) {
+                when (type) {
                     ILine.Type.EXTERNAL -> {
                         val hologramLine = hologram.lines[i] as ILine<Any>
                         hologramLine.pvt.obj = value as Any
                         throw IllegalStateException("cannot deseriali")
                     }
-                    ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE  -> {
+
+                    ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
                         val hologramLine = hologram.lines[i] as ITextLine
                         hologramLine.pvt.obj = value as String
                     }
+
                     ILine.Type.ITEM_LINE, ILine.Type.BLOCK_LINE -> {
                         val hologramLine = hologram.lines[i] as ILine<ItemStack>
                         hologramLine.pvt.obj = value as ItemStack
@@ -179,7 +178,9 @@ open class Hologram @JvmOverloads constructor(
             return hologram
         }
 
+        inline fun <reified T : Hologram> deserialize(args: Map<String, Any>): T {
+            return deserialize(args, T::class.java)
+        }
+
     }
-
-
 }

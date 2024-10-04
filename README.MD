@@ -151,6 +151,25 @@ IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
 hologram.show(pool);
 ```
 
+## Serialization
+
+### Kotlin
+```kotlin
+val serialized: Map<String, Any> = hologram.serialize()
+
+val deserialized : HelloWorldHologram = Hologram.deserialize(serialized)
+deserialized.show()
+```
+
+### Java
+```java
+Map<String, Object> serialized = hologram.serialize();
+
+HelloWorldHologram deserialized = Hologram.deserialize(serialized, HelloWorldHologram.class);
+deserialized.show();;
+```
+
+
 ## History
 Are you using a version older than 4.0.0? You can find the documentation <a href="https://github.com/unldenis/holoeasy/tree/3.4.4">here</a>. 
 
