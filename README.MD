@@ -93,8 +93,31 @@ hologram.show(pool);
 
 ## Deep into holoeasy
 
-### Java
+### Kotlin
+```kotlin
+class MyHolo(plugin: Plugin, location: Location) : Hologram(plugin, location) {
 
+    private val clickCount = MutableState(0) // can be any type
+
+    val counter = textLine("Clicked {} times", TextLineModifiers()
+        .args(clickCount)
+        .clickable { _ -> clickCount.update { it + 1 } })
+
+    var status= blockLine(ItemStack(Material.RED_DYE))
+
+}
+
+// Create new hologram
+val myHolo = MyHolo(this, location)
+myHolo.show(pool)
+
+Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
+    // access lines
+    myHolo.status.update(ItemStack(Material.GREEN_DYE))
+}, 20L * 5)
+```
+
+### Java
 ```java
 class MyHolo extends Hologram {
 
@@ -120,29 +143,7 @@ Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
 }, 20L * 5);
 ```
 
-### Kotlin
-```kotlin
-class MyHolo(plugin: Plugin, location: Location) : Hologram(plugin, location) {
 
-    private val clickCount = MutableState(0) // can be any type
-
-    val counter = textLine("Clicked {} times", TextLineModifiers()
-        .args(clickCount)
-        .clickable { _ -> clickCount.update { it + 1 } })
-
-    var status= blockLine(ItemStack(Material.RED_DYE))
-
-}
-
-// Create new hologram
-val myHolo = MyHolo(this, location)
-myHolo.show(pool)
-
-Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
-    // access lines
-    myHolo.status.update(ItemStack(Material.GREEN_DYE))
-}, 20L * 5)
-```
 
 ## History
 Are you using a version older than 4.0.0? You can find the documentation <a href="https://github.com/unldenis/holoeasy/tree/3.4.4">here</a>. 
