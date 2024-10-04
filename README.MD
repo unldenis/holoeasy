@@ -49,41 +49,61 @@ Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 // you can use a Pool or a org.bukkit.Plugin
 IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
 
-public void addHologram(Plugin plugin, Location location) {
-    MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
-    new Hologram.Builder(plugin, location)
-            .name("my-holo")
-            .textLine("Hello")
-            .textLine("Count {}", new TextLineModifiers()
-                    .args(clickCount))
-            .textLine("Click me", new TextLineModifiers()
-                    .clickable(player -> clickCount.update(it -> it + 1)))
-            .blockLine(new ItemStack(Material.APPLE))
-            .onShow(player -> player.sendMessage("Hi :)"))
-            .buildAndLoad(pool);
+// define a hologram extending Hologram
+class MyHolo extends Hologram {
+
+    private final MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
+
+    public ITextLine counter = textLine("Clicked {} times", new TextLineModifiers()
+            .args(clickCount)
+            .clickable(player -> clickCount.update(it -> it + 1)));
+    public ILine<ItemStack> status = blockLine(new ItemStack(Material.RED_DYE));
+
+    public MyHolo(@NotNull Plugin plugin, @NotNull Location location) {
+        super(plugin, location);
+    }
 }
+
+// Create new hologram
+MyHolo myHolo = new MyHolo(this, location);
+myHolo.show(pool);
+
+Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+    // access lines
+    myHolo.status.update(new ItemStack(Material.GREEN_DYE));
+}, 20L * 5);
 ```
 
 ### Kotlin
 ```kotlin
-import org.holoeasy.builder.HologramBuilder.*
+// you can use a Pool or a org.bukkit.Plugin
+val pool = HoloEasy.startInteractivePool(this, 60.0,
+    minHitDistance = 0.5f, /* optional */
+    maxHitDistance = 5f, /* optional */
+    clickAction = ClickAction.LEFT_CLICK /* optional */
+)
 
-// you can use a Pool or a org.bukkit.Plugin 
-val pool = startInteractivePool(plugin, 60.0, 0.5f, 5f)
+// define a hologram extending Hologram
+class MyHolo(plugin: Plugin, location: Location) : Hologram(plugin, location) {
 
-fun addHologram(plugin : Plugin, location: Location) {
-    val clickCount = MutableState(0) // can be any type
-    Hologram.Builder(plugin, location)
-        .name("my-holo")
-        .textLine("Hello")
-        .textLine("Count {}", TextLineModifiers().args(clickCount))
-        .textLine("Click me", TextLineModifiers()
-            .clickable { clickCount.update { it + 1 } }
-        )
-        .blockLine(ItemStack(Material.APPLE))
-        .onShow { it.sendMessage("Hi :)") }
-        .buildAndLoad(pool)
+    private val clickCount = MutableState(0) // can be any type
+
+    val counter = textLine("Clicked {} times", TextLineModifiers()
+        .args(clickCount)
+        .clickable { _ -> clickCount.update { it + 1 } })
+
+    var status= blockLine(ItemStack(Material.RED_DYE))
+
 }
+
+// Create new hologram
+val myHolo = MyHolo(this, location)
+myHolo.show(pool)
+
+Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
+    // access lines
+    myHolo.status.update(ItemStack(Material.GREEN_DYE))
+}, 20L * 5)
 ```
 
 ## History
