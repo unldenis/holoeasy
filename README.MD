@@ -41,7 +41,37 @@ implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
 
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 
-## Start programming
+## Hello World
+
+### Kotlin
+```kotlin
+class HelloWorldHologram(plugin: Plugin, location: Location) : Hologram(plugin, location) {
+    var line = textLine("Hello World")
+}
+
+// When you need
+val hologram = HelloWorldHologram(this, location)
+hologram.show(pool)
+```
+
+### Java
+```java
+public class HelloWorldHologram extends Hologram  {
+
+    ITextLine line = textLine("Hello World");
+
+    public HelloWorldHologram(@NotNull Plugin plugin, @NotNull Location location) {
+        super(plugin, location);
+    }
+
+}
+
+// When you need
+HelloWorldHologram hologram = new HelloWorldHologram(this, location);
+hologram.show(pool);
+```
+
+## Deep into holoeasy
 
 ### Java
 

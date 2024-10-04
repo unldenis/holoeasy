@@ -33,22 +33,9 @@ public class ExamplePlugin extends JavaPlugin {
             Location location = ((Player) sender).getLocation();
 
 
-            MyHolo myHolo = new MyHolo(this, location);
-            myHolo.show(pool);
 
-            // access lines
-            Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
-
-                myHolo.status.update(new ItemStack(Material.GREEN_DYE));
-
-            }, 20L * 5);
-
-
-            Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
-
-                myHolo.hide(pool);
-
-            }, 20L * 10);
+            HelloWorldHologram hologram = new HelloWorldHologram(this, location);
+            hologram.show(pool);
 
             return true;
         });
@@ -69,6 +56,7 @@ public class ExamplePlugin extends JavaPlugin {
         }
 
     }
+
 
 
 }

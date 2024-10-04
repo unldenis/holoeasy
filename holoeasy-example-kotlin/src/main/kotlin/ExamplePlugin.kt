@@ -1,6 +1,6 @@
 package org.holoeasy.plugin
 
-import org.bukkit.Bukkit
+import HelloWorldHologram
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -30,23 +30,8 @@ class ExamplePlugin : JavaPlugin() {
             val location = (sender as Player).location
 
 
-            val myHolo = MyHolo(this, location)
-            myHolo.show(pool)
-
-            // access lines
-
-            Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
-
-                myHolo.status.update(ItemStack(Material.GREEN_DYE))
-
-            }, 20L * 5)
-
-            Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
-
-                myHolo.hide(pool)
-
-            }, 20L * 10)
-
+            val hologram = HelloWorldHologram(this, location)
+            hologram.show(pool)
 
             true
         }
