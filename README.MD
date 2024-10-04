@@ -41,6 +41,26 @@ implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
 
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 
+
+## First step
+
+### Kotlin
+```kotlin
+// you can use a Pool or a org.bukkit.Plugin
+val pool = HoloEasy.startInteractivePool(this, 60.0,
+    minHitDistance = 0.5f, /* optional */
+    maxHitDistance = 5f, /* optional */
+    clickAction = ClickAction.LEFT_CLICK /* optional */
+)
+```
+
+### Java
+```java
+// you can use a Pool or a org.bukkit.Plugin
+IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
+```
+
+
 ## Hello World
 
 ### Kotlin
@@ -76,10 +96,6 @@ hologram.show(pool);
 ### Java
 
 ```java
-// you can use a Pool or a org.bukkit.Plugin
-IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
-
-// define a hologram extending Hologram
 class MyHolo extends Hologram {
 
     private final MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
@@ -106,14 +122,6 @@ Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
 
 ### Kotlin
 ```kotlin
-// you can use a Pool or a org.bukkit.Plugin
-val pool = HoloEasy.startInteractivePool(this, 60.0,
-    minHitDistance = 0.5f, /* optional */
-    maxHitDistance = 5f, /* optional */
-    clickAction = ClickAction.LEFT_CLICK /* optional */
-)
-
-// define a hologram extending Hologram
 class MyHolo(plugin: Plugin, location: Location) : Hologram(plugin, location) {
 
     private val clickCount = MutableState(0) // can be any type
