@@ -39,7 +39,7 @@ class ExamplePlugin : JavaPlugin() {
 
     class MyHolo(plugin: Plugin, location: Location) : Hologram(location) {
 
-        private val clickCount = MutableState(0) // can be any type
+        private val clickCount = mutableStateOf(0) // can be any type
 
         val counter = textLine("Clicked {} times", TextLineModifiers()
             .args(clickCount)

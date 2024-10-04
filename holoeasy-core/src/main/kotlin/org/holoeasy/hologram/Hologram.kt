@@ -9,6 +9,7 @@ import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.line.*
 import org.holoeasy.pool.IHologramPool
 import org.holoeasy.pool.KeyAlreadyExistsException
+import org.holoeasy.reactive.MutableState
 import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -26,12 +27,19 @@ open class Hologram @JvmOverloads constructor(
     val id = UUID.randomUUID()!!
     var location: Location = location
         private set
+    private val stateVars = mutableListOf<MutableState<*>>()
     val lines: MutableList<ILine<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
 
     // if is first loaded
     private var loaded = false
 
     open fun loader(): HologramLoader = HologramLoader.TEXT_BLOCK_STANDARD
+
+    protected fun <T : Any> mutableStateOf(value: T): MutableState<T> {
+        val state = MutableState(value)
+        stateVars.add(state)
+        return state
+    }
 
     @JvmOverloads
     protected fun blockLine(item: ItemStack, modifiers: BlockLineModifiers = BlockLineModifiers()): ILine<ItemStack> {
@@ -137,7 +145,7 @@ open class Hologram @JvmOverloads constructor(
         result["location"] = location
         result["lines"] = lines
             .map { mapOf("type" to it.type.name, "value" to it.pvt.obj) }
-
+        result["stateVars"] = stateVars.map { it.get() }
         return result
     }
 
@@ -146,8 +154,8 @@ open class Hologram @JvmOverloads constructor(
         @JvmStatic
         fun <T : Hologram> deserialize(args: Map<String, Any>, clazz: Class<T>): T {
             val location = args["location"] as Location
-
             val lines = args["lines"] as List<Map<String, Any>>
+            val stateVars = args["stateVars"] as List<Any>
 
             val hologram = clazz
                 .getDeclaredConstructor(Location::class.java)
@@ -174,6 +182,12 @@ open class Hologram @JvmOverloads constructor(
                     }
                 }
             }
+            for (i in stateVars.indices) {
+                val hologramState = hologram.stateVars[i] as MutableState<Any>
+                hologramState.set(stateVars[i])
+            }
+
+
             return hologram
         }
 

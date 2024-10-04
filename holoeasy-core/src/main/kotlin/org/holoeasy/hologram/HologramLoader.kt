@@ -20,7 +20,6 @@ enum class HologramLoader(
         val line: ILine<*> = hologram.lines[0]
 
         line.pvt.setLocation(cloned)
-        hologram.lines.add(line)
     }, teleport = { hologram ->
         val line = hologram.lines[0]
 
@@ -43,12 +42,10 @@ enum class HologramLoader(
             val line: ILine<*> = hologram.lines[0]
 
             line.pvt.setLocation(hologramLocation)
-            hologram.lines.add(line)
-
         } else {
             // reverse A - B - C to C - B - A
             val lines = hologram.lines.reversed()
-
+            hologram.lines.clear()
 
             hologramLocation.subtract(0.0, LINE_HEIGHT, 0.0)
 
@@ -143,7 +140,7 @@ private fun textSequential(hologram: Hologram, add: Boolean) {
                 tL.pvt.setLocation(cloned.clone())
 
                 if (add) {
-                    hologram.lines.add(0, tL)
+//                    hologram.lines.add(0, tL)
                 } else {
                     hologram.pvt.seeingPlayers.forEach { tL.pvt.teleport(it) }
                 }

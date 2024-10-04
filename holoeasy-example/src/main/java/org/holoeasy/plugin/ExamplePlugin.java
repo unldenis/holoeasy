@@ -37,31 +37,29 @@ public class ExamplePlugin extends JavaPlugin {
             Location location = player.getLocation();
 
 
-            HelloWorldHologram hologram = new HelloWorldHologram(location);
+            MyHolo hologram = new MyHolo(location);
             hologram.show();
 
-            player.sendMessage("Shown");
 
-            hologram.hide();
+            Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+                hologram.hide();
 
-            player.sendMessage("Hide");
+                Map<String, Object> serialized = hologram.serialize();
 
+                System.out.println(serialized.toString());
+                MyHolo deserialized = Hologram.deserialize(serialized, MyHolo.class);
+                deserialized.show();
+            }, 20L * 10);
 
-            Map<String, Object> serialized = hologram.serialize();
-
-            HelloWorldHologram deserialized = Hologram.deserialize(serialized, HelloWorldHologram.class);
-            deserialized.show();
-
-            player.sendMessage("Deserialized");
 
             return true;
         });
     }
 
 
-    static class MyHolo extends Hologram {
+    public static class MyHolo extends Hologram {
 
-        private final MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
+        private final MutableState<Integer> clickCount = mutableStateOf(0); // can be any type
 
         public ITextLine counter = textLine("Clicked {} times", new TextLineModifiers()
                         .args(clickCount)

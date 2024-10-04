@@ -81,7 +81,7 @@ hologram.show();
 ```kotlin
 class MyHolo(location: Location) : Hologram(location) {
 
-    private val clickCount = MutableState(0) // can be any type
+    private val clickCount = mutableStateOf(0) // can be any type
 
     val counter = textLine("Clicked {} times", TextLineModifiers()
         .args(clickCount)
@@ -105,7 +105,7 @@ Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, Runnable {
 ```java
 class MyHolo extends Hologram {
 
-    private final MutableState<Integer> clickCount = new MutableState<>(0); // can be any type
+    private final MutableState<Integer> clickCount = mutableStateOf(0); // can be any type
 
     public ITextLine counter = textLine("Clicked {} times", new TextLineModifiers()
             .args(clickCount)
