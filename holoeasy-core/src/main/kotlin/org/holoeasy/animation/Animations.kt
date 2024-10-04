@@ -15,7 +15,7 @@ enum class Animations(val task : (ILine<*>) -> BukkitTask) {
         var yaw = 0.0
 
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(line.plugin, java.lang.Runnable {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(line.pvt.plugin, java.lang.Runnable {
             val packet = PacketType.ROTATE.rotate(line.entityId, yaw = yaw)
 
             holo.pvt.seeingPlayers.forEach { player ->

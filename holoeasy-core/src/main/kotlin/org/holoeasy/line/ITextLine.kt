@@ -10,8 +10,7 @@ interface ITextLine : ILine<String> {
 
     val args: Array<*>?
 
+    var clickEvent : ClickEvent?
+
     fun parse(player: Player): String
-
-    fun onClick(clickEvent: ClickEvent)
-
 }

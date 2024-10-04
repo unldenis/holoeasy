@@ -11,20 +11,35 @@ import org.jetbrains.annotations.ApiStatus
 
 interface ILine<T> {
 
-    data class PrivateConfig(private val line: ILine<*>) : Observer {
+    abstract class PrivateConfig<T> : Observer {
 
         lateinit var hologram: Hologram
 
-        var animationTask : BukkitTask? = null
+        var animationTask: BukkitTask? = null
 
         override fun observerUpdate() {
-            hologram.let {
-                line.update(it.pvt.seeingPlayers)
+            for (player in hologram.pvt.seeingPlayers) {
+                update(player)
             }
         }
-    }
 
-    val plugin: Plugin
+        // abstract internal
+
+        abstract val plugin: Plugin
+
+        abstract var obj: T
+
+        abstract fun setLocation(value: Location)
+
+        abstract fun show(player: Player)
+
+        abstract fun hide(player: Player)
+
+        abstract fun teleport(player: Player)
+
+        abstract fun update(player: Player)
+
+    }
 
     val type: Type
 
@@ -32,25 +47,8 @@ interface ILine<T> {
 
     val location: Location?
 
-    var obj: T
-
-    var pvt : PrivateConfig
-
-    fun setLocation(value: Location)
-
-    fun hide(player: Player)
-
-    fun teleport(player: Player)
-
-    fun show(player: Player)
-
-    fun update(player: Player)
-
-    fun update(seeingPlayers: Collection<Player>) {
-        for (player in seeingPlayers) {
-            update(player)
-        }
-    }
+    @Deprecated("Internal")
+    var pvt: PrivateConfig<T>
 
     fun setAnimation(animation: Animations) {
         this.cancelAnimation()
@@ -62,13 +60,19 @@ interface ILine<T> {
         pvt.animationTask = null
     }
 
+    fun update(value : T)
+
     enum class Type {
         EXTERNAL,
 
         TEXT_LINE,
-        @ApiStatus.Experimental CLICKABLE_TEXT_LINE,
+
+        @ApiStatus.Experimental
+        CLICKABLE_TEXT_LINE,
 
         ITEM_LINE,
-        @ApiStatus.Experimental BLOCK_LINE
+
+        @ApiStatus.Experimental
+        BLOCK_LINE
     }
 }

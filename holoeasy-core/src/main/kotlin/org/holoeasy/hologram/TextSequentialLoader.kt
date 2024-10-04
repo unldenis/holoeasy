@@ -7,16 +7,16 @@ import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Experimental
 class TextSequentialLoader : IHologramLoader {
-    override fun load(hologram: Hologram, lines: Array<out ILine<*>>) {
+    override fun load(hologram: Hologram, lines: List<ILine<*>>) {
         set(hologram, lines, true)
     }
 
     override fun teleport(hologram: Hologram) {
-        set(hologram, hologram.lines.toTypedArray(), false)
+        set(hologram, hologram.lines, false)
         // TODO: When teleporting, the holograms unexpectedly become distant. Understand why.
     }
 
-    private fun set(hologram: Hologram, lines: Array<out ILine<*>>, add: Boolean) {
+    private fun set(hologram: Hologram, lines: List<ILine<*>>, add: Boolean) {
         val cloned = hologram.location.clone()
         for (line in lines) {
             when (line.type) {
@@ -24,14 +24,14 @@ class TextSequentialLoader : IHologramLoader {
                     val tL = (line as ITextLine).textLine
 
                     // add to lines
-                    tL.setLocation(cloned.clone())
+                    tL.pvt.setLocation(cloned.clone())
 
                     if (add) {
                         hologram.lines.add(0, tL)
                     } else {
-                        hologram.pvt.seeingPlayers.forEach { tL.teleport(it) }
+                        hologram.pvt.seeingPlayers.forEach { tL.pvt.teleport(it) }
                     }
-                    cloned.z += 0.175 * tL.obj.length
+                    cloned.z += 0.175 * tL.pvt.obj.length
                 }
 
                 else -> throw RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.")

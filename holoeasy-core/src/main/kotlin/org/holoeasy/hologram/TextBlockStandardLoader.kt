@@ -7,19 +7,19 @@ class TextBlockStandardLoader : IHologramLoader {
 
     val LINE_HEIGHT = 0.28
 
-    override fun load(hologram: Hologram, lines: Array<out ILine<*>>) {
+    override fun load(hologram: Hologram, lines: List<ILine<*>>) {
         val hologramLocation = hologram.location.clone()
 
         if (lines.size == 1) {
             val line: ILine<*> = lines[0]
 
-            line.setLocation(hologramLocation)
+            line.pvt.setLocation(hologramLocation)
             hologram.lines.add(line)
             return
         }
 
         // reverse A - B - C to C - B - A
-        lines.reverse()
+        val lines = lines.reversed()
 
 
         hologramLocation.subtract(0.0, LINE_HEIGHT, 0.0)
@@ -41,12 +41,12 @@ class TextBlockStandardLoader : IHologramLoader {
 
             when (line.type) {
                 ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE, ILine.Type.BLOCK_LINE -> {
-                    line.setLocation(hologramLocation.add(0.0, up, 0.0).clone())
+                    line.pvt.setLocation(hologramLocation.add(0.0, up, 0.0).clone())
                     hologram.lines.add(0, line)
                 }
 
                 ILine.Type.ITEM_LINE -> {
-                    line.setLocation(hologramLocation.add(0.0, 0.6, 0.0).clone())
+                    line.pvt.setLocation(hologramLocation.add(0.0, 0.6, 0.0).clone())
                     hologram.lines.add(0, line)
                 }
 
@@ -90,7 +90,7 @@ class TextBlockStandardLoader : IHologramLoader {
     private fun teleportLine(hologram: Hologram, destY: Double, tempLine: ILine<*>) {
         val dest = hologram.location.clone()
         dest.y = destY
-        tempLine.setLocation(dest)
-        hologram.pvt.seeingPlayers.forEach(tempLine::teleport)
+        tempLine.pvt.setLocation(dest)
+        hologram.pvt.seeingPlayers.forEach(tempLine.pvt::teleport)
     }
 }

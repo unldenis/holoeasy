@@ -20,10 +20,6 @@ class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack>
     private val _mutableStateOf = obj
     private var firstRender = true
 
-
-    override val plugin: Plugin
-        get() = line.plugin
-
     override val type: ILine.Type
         get() = ILine.Type.BLOCK_LINE
 
@@ -33,39 +29,50 @@ class BlockLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack>
     override val location: Location?
         get() = line.location
 
-    override var obj : ItemStack
-        get() = _mutableStateOf.get()
-        set(value) = _mutableStateOf.set(value)
+    @Deprecated("Internal")
+    override var pvt = object : ILine.PrivateConfig<ItemStack>() {
+        override val plugin: Plugin
+            get() = line.plugin
 
-    override var pvt = ILine.PrivateConfig(this)
+        override var obj: ItemStack
+            get() = _mutableStateOf.get()
+            set(value) = _mutableStateOf.set(value)
 
-    override fun setLocation(value: Location) {
-        line.location = value
-    }
-
-    override fun hide(player: Player) {
-        line.destroy(player)
-    }
-
-    override fun teleport(player: Player) {
-        line.teleport(player)
-    }
-
-    override fun show(player: Player) {
-        line.spawn(player)
-        PacketType.METADATA_TEXT
-            .metadata(entityId, nameTag = null, invisible = true).send(player)
-
-        this.update(player)
-
-        if(firstRender) {
-            firstRender = false
-            _mutableStateOf.addObserver(pvt)
+        override fun setLocation(value: Location) {
+            line.location = value
         }
+
+        override fun show(player: Player) {
+            line.spawn(player)
+            PacketType.METADATA_TEXT
+                .metadata(entityId, nameTag = null, invisible = true).send(player)
+
+            this.update(player)
+
+            if(firstRender) {
+                firstRender = false
+                _mutableStateOf.addObserver(this)
+            }
+        }
+
+        override fun hide(player: Player) {
+            line.destroy(player)
+        }
+
+        override fun teleport(player: Player) {
+            line.teleport(player)
+        }
+
+        override fun update(player: Player) {
+            PacketType.EQUIPMENT
+                .equip(entityId, helmet = _mutableStateOf.get()).send(player)
+        }
+
     }
 
-    override fun update(player: Player) {
-        PacketType.EQUIPMENT
-            .equip(entityId, helmet = _mutableStateOf.get()).send(player)
+    override fun update(value: ItemStack) {
+        pvt.obj = value
+        pvt.observerUpdate()
     }
+
 }

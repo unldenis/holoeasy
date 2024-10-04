@@ -13,11 +13,13 @@ import org.holoeasy.util.AABB.Vec3D.Companion.fromLocation
 
 class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHitDistance: Float) : Listener,
     ITextLine {
+
+
     private val minHitDistance: Float
     private val maxHitDistance: Float
     private var hitbox: AABB? = null
-
     private val playersClickable = mutableSetOf<Int>()
+
 
     init {
         require(!(minHitDistance < 0)) { "minHitDistance must be positive" }
@@ -25,12 +27,9 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
 
-        if (line.location != null) {
-            this.updateHitBox()
-        }
-
-        Bukkit.getPluginManager().registerEvents(this, line.plugin)
+        Bukkit.getPluginManager().registerEvents(this, line.pvt.plugin)
     }
+
 
     override val clickable: Boolean
         get() = false
@@ -41,17 +40,11 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
     override val args: Array<*>?
         get() = textLine.args
 
+    override var clickEvent: ClickEvent? = null
 
     override fun parse(player: Player): String {
         return line.parse(player)
     }
-
-    override fun onClick(clickEvent: ClickEvent) {
-        line.onClick(clickEvent)
-    }
-
-    override val plugin: Plugin
-        get() = line.plugin
 
     override val type: ILine.Type
         get() = ILine.Type.CLICKABLE_TEXT_LINE
@@ -62,38 +55,67 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
     override val location: Location?
         get() = line.location
 
-    override var obj: String
-        get() = line.obj
-        set(value) {
-            line.obj = value
+
+    @Deprecated("Internal")
+    override var pvt = object : ILine.PrivateConfig<String>() {
+        init {
+            if (line.location != null) {
+                updateHitBox()
+            }
         }
 
-    override var pvt = ILine.PrivateConfig(this)
+        override val plugin: Plugin
+            get() = line.pvt.plugin
 
-    override fun setLocation(value: Location) {
-        line.setLocation(value)
-        this.updateHitBox()
+        override var obj: String
+            get() = line.pvt.obj
+            set(value) {
+                line.pvt.obj = value
+            }
+
+        override fun setLocation(value: Location) {
+            line.pvt.setLocation(value)
+            this.updateHitBox()
+        }
+
+        override fun show(player: Player) {
+            line.pvt.show(player)
+
+            playersClickable.add(player.entityId)
+        }
+
+        override fun hide(player: Player) {
+            line.pvt.hide(player)
+
+            playersClickable.remove(player.entityId)
+        }
+
+        override fun teleport(player: Player) {
+            line.pvt.teleport(player)
+        }
+
+        override fun update(player: Player) {
+            line.pvt.update(player)
+        }
+
+        fun updateHitBox() {
+            val chars = obj.length.toDouble()
+            val size = 0.105
+            val dist = size * (chars / 2.0)
+
+            hitbox = AABB(
+                AABB.Vec3D(-dist, -0.040, -dist),
+                AABB.Vec3D(dist, +0.040, dist)
+            )
+            hitbox!!.translate(fromLocation(location!!.clone().add(0.0, 2.35, 0.0)))
+        }
+
     }
 
-    override fun hide(player: Player) {
-        line.hide(player)
-
-        playersClickable.remove(player.entityId)
+    override fun update(value: String) {
+        line.update(value)
     }
 
-    override fun teleport(player: Player) {
-        line.teleport(player)
-    }
-
-    override fun show(player: Player) {
-        line.show(player)
-
-        playersClickable.add(player.entityId)
-    }
-
-    override fun update(player: Player) {
-        line.update(player)
-    }
 
     @EventHandler
     fun handleInteract(e: PlayerInteractEvent) {
@@ -109,19 +131,10 @@ class ClickableTextLine(private val line: TextLine, minHitDistance: Float, maxHi
             return
         }
 
-        val intersects = hitbox!!.intersectsRay(AABB.Ray3D(player.eyeLocation), minHitDistance, maxHitDistance) ?: return
+        val intersects =
+            hitbox!!.intersectsRay(AABB.Ray3D(player.eyeLocation), minHitDistance, maxHitDistance) ?: return
         line.clickEvent?.onClick(player)
     }
 
-    private fun updateHitBox() {
-        val chars = obj.length.toDouble()
-        val size = 0.105
-        val dist = size * (chars / 2.0)
 
-        hitbox = AABB(
-            AABB.Vec3D(-dist, -0.040, -dist),
-            AABB.Vec3D(dist, +0.040, dist)
-        )
-        hitbox!!.translate(fromLocation(location!!.clone().add(0.0, 2.35, 0.0)))
-    }
 }

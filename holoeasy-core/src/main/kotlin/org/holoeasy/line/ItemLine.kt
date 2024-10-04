@@ -12,7 +12,7 @@ import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
 
-class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> {
+class ItemLine(plugin: Plugin, item: MutableState<ItemStack>) : ILine<ItemStack> {
 
     constructor(plugin: Plugin, obj: ItemStack) : this(plugin, MutableState(obj))
 
@@ -24,14 +24,8 @@ class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> 
 
     private val line: Line = Line(plugin, EntityType.DROPPED_ITEM)
     private val resetVelocity = PacketType.VELOCITY.velocity(line.entityID, 0, 0,0)
-
-    private val _mutableStateOf = obj
-
+    private val _mutableStateOf = item
     private var firstRender = true
-
-
-    override val plugin: Plugin
-        get() = line.plugin
 
     override val type: ILine.Type
         get() = ILine.Type.ITEM_LINE
@@ -42,38 +36,49 @@ class ItemLine(plugin: Plugin, obj: MutableState<ItemStack>) : ILine<ItemStack> 
     override val location: Location?
         get() = line.location
 
-    override var obj : ItemStack
-        get() = _mutableStateOf.get()
-        set(value) = _mutableStateOf.set(value)
+    @Deprecated("Internal")
+    override var pvt = object  : ILine.PrivateConfig<ItemStack>() {
+        override val plugin: Plugin
+            get() = line.plugin
 
-    override var pvt = ILine.PrivateConfig(this)
+        override var obj: ItemStack
+            get() = _mutableStateOf.get()
+            set(value) = _mutableStateOf.set(value)
 
-    override fun setLocation(value: Location) {
-        line.location = value
-    }
-
-    override fun hide(player: Player) {
-        line.destroy(player)
-    }
-
-    override fun teleport(player: Player) {
-        line.teleport(player)
-    }
-
-    override fun show(player: Player) {
-        line.spawn(player)
-        this.update(player)
-
-        resetVelocity.send(player)
-
-        if(firstRender) {
-            firstRender = false
-            _mutableStateOf.addObserver(pvt)
+        override fun setLocation(value: Location) {
+            line.location = value
         }
+
+        override fun show(player: Player) {
+            line.spawn(player)
+            this.update(player)
+
+            resetVelocity.send(player)
+
+            if(firstRender) {
+                firstRender = false
+                _mutableStateOf.addObserver(this)
+            }
+        }
+
+        override fun hide(player: Player) {
+            line.destroy(player)
+        }
+
+        override fun teleport(player: Player) {
+            line.teleport(player)
+        }
+
+        override fun update(player: Player) {
+            PacketType.METADATA_ITEM
+                .metadata(entityId, obj).send(player)
+        }
+
     }
 
-    override fun update(player: Player) {
-        PacketType.METADATA_ITEM
-            .metadata(entityId, obj).send(player)
+    override fun update(value: ItemStack) {
+        pvt.obj = value
+        pvt.observerUpdate()
     }
+
 }

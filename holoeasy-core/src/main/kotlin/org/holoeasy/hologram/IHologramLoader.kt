@@ -4,7 +4,7 @@ import org.holoeasy.line.ILine
 
 
 interface IHologramLoader {
-    fun load(hologram: Hologram, lines: Array<out ILine<*>>)
+    fun load(hologram: Hologram, lines: List<ILine<*>>)
 
     fun teleport(hologram: Hologram)
 }
