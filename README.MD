@@ -42,23 +42,7 @@ implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")
 Make sure you include the <a href="https://jitpack.io/">repository</a> as well.
 
 
-## First step
 
-### Kotlin
-```kotlin
-// you can use a Pool or a org.bukkit.Plugin
-val pool = HoloEasy.startInteractivePool(this, 60.0,
-    minHitDistance = 0.5f, /* optional */
-    maxHitDistance = 5f, /* optional */
-    clickAction = ClickAction.LEFT_CLICK /* optional */
-)
-```
-
-### Java
-```java
-// you can use a Pool or a org.bukkit.Plugin
-IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
-```
 
 
 ## Hello World
@@ -71,7 +55,7 @@ class HelloWorldHologram(plugin: Plugin, location: Location) : Hologram(plugin, 
 
 // When you need
 val hologram = HelloWorldHologram(this, location)
-hologram.show(pool)
+hologram.show()
 ```
 
 ### Java
@@ -88,7 +72,7 @@ public class HelloWorldHologram extends Hologram  {
 
 // When you need
 HelloWorldHologram hologram = new HelloWorldHologram(this, location);
-hologram.show(pool);
+hologram.show();
 ```
 
 ## Deep into holoeasy
@@ -109,7 +93,7 @@ class MyHolo(plugin: Plugin, location: Location) : Hologram(plugin, location) {
 
 // Create new hologram
 val myHolo = MyHolo(this, location)
-myHolo.show(pool)
+myHolo.show()
 
 Bukkit.getScheduler().runTaskLaterAsynchronously(this, Runnable {
     // access lines
@@ -135,7 +119,7 @@ class MyHolo extends Hologram {
 
 // Create new hologram
 MyHolo myHolo = new MyHolo(this, location);
-myHolo.show(pool);
+myHolo.show();
 
 Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
     // access lines
@@ -143,7 +127,29 @@ Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
 }, 20L * 5);
 ```
 
+## Custom pool
 
+### Kotlin
+```kotlin
+// you can use a Pool or a org.bukkit.Plugin
+val pool = HoloEasy.startInteractivePool(this, 60.0,
+    minHitDistance = 0.5f, /* optional */
+    maxHitDistance = 5f, /* optional */
+    clickAction = ClickAction.LEFT_CLICK /* optional */
+)
+
+// show on the right pool
+hologram.show(pool)
+```
+
+### Java
+```java
+// you can use a Pool or a org.bukkit.Plugin
+IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
+
+// show on the right pool
+hologram.show(pool);
+```
 
 ## History
 Are you using a version older than 4.0.0? You can find the documentation <a href="https://github.com/unldenis/holoeasy/tree/3.4.4">here</a>. 

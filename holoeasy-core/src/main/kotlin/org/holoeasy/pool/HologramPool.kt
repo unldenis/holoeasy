@@ -14,15 +14,20 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KeyAlreadyExistsException(key: UUID) : IllegalStateException("Id '$key' already exists")
 
-class HologramPool(internal val plugin: Plugin, private val spawnDistance: Double) : Listener, IHologramPool {
+class HologramPool( private val spawnDistance: Double) : Listener, IHologramPool {
+
+    override var plugin: Plugin? = null
+        set(value) {
+            value!!
+
+            Bukkit.getPluginManager().registerEvents(this, value)
+            hologramTick(value)
+
+            field = value
+        }
 
     override val holograms: Set<Hologram> = ConcurrentHashMap.newKeySet()
 
-    init {
-        Bukkit.getPluginManager().registerEvents(this, plugin)
-
-        hologramTick()
-    }
 
     @EventHandler
     fun handleRespawn(event: PlayerRespawnEvent) {
@@ -43,8 +48,8 @@ class HologramPool(internal val plugin: Plugin, private val spawnDistance: Doubl
     /**
      * Starts the hologram tick.
      */
-    private fun hologramTick() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, Runnable {
+    private fun hologramTick(plugin: Plugin) {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, Runnable {
             for (player in ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
                 for (hologram in this.holograms) {
                     val holoLoc = hologram.location

@@ -4,6 +4,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import org.holoeasy.HoloEasy
 import org.holoeasy.builder.BlockLineModifiers
 import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.line.*
@@ -11,9 +12,7 @@ import org.holoeasy.pool.IHologramPool
 import org.holoeasy.pool.KeyAlreadyExistsException
 import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.math.min
 
 open class Hologram @JvmOverloads constructor(
     plugin: Plugin,
@@ -25,7 +24,7 @@ open class Hologram @JvmOverloads constructor(
     @Internal
     @Deprecated("Internal")
     val pvt = PrivateConfig(this, plugin, showEvent, hideEvent)
-    var loader : IHologramLoader = TextBlockStandardLoader()
+    var loader: IHologramLoader = TextBlockStandardLoader()
     val id = UUID.randomUUID()!!
     var location: Location = location
         private set
@@ -78,17 +77,23 @@ open class Hologram @JvmOverloads constructor(
         return pvt.seeingPlayers.contains(player)
     }
 
-    fun show(pool: IHologramPool) {
-       if( pool.holograms.any { it.id == this.id }) {
-           throw KeyAlreadyExistsException(this.id)
-       }
-       (pool.holograms as MutableSet<Hologram>).add(this);
+    @JvmOverloads
+    fun show(pool: IHologramPool = HoloEasy.STANDARD_POOL) {
+        // if pool has no plugin
+        if (pool.plugin == null) {
+            pool.plugin = pvt.plugin
+        }
+
+        if (pool.holograms.any { it.id == this.id }) {
+            throw KeyAlreadyExistsException(this.id)
+        }
+        (pool.holograms as MutableSet<Hologram>).add(this);
     }
 
     fun hide(pool: IHologramPool) {
         // if removed
         val removed = (pool.holograms as MutableSet<Hologram>).remove(this)
-        if(removed) {
+        if (removed) {
             for (player in pvt.seeingPlayers) {
                 hide(player)
             }
@@ -96,7 +101,7 @@ open class Hologram @JvmOverloads constructor(
     }
 
     fun show(player: Player) {
-        if(!loaded) {
+        if (!loaded) {
             pvt.load()
             loaded = true
         }
@@ -130,7 +135,6 @@ open class Hologram @JvmOverloads constructor(
     override fun hashCode(): Int {
         return id.hashCode()
     }
-
 
 
 }

@@ -22,20 +22,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExamplePlugin extends JavaPlugin {
 
-    private IHologramPool pool;
 
     @Override
     public void onEnable() {
-        pool = HoloEasy.startInteractivePool(this, 60, /* optional */0.5F, /* optional */ 5F, /* optional */ ClickAction.LEFT_CLICK);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
             Location location = ((Player) sender).getLocation();
 
 
-
             HelloWorldHologram hologram = new HelloWorldHologram(this, location);
-            hologram.show(pool);
+            hologram.show();
 
             return true;
         });

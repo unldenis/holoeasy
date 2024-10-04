@@ -1,7 +1,6 @@
 package org.holoeasy
 
 
-import org.bukkit.plugin.Plugin
 import org.holoeasy.action.ClickAction
 import org.holoeasy.pool.HologramPool
 import org.holoeasy.pool.IHologramPool
@@ -10,24 +9,26 @@ import org.holoeasy.pool.InteractiveHologramPool
 object HoloEasy {
 
     @JvmField
+    val STANDARD_POOL = startInteractivePool(60.0)
+
+    @JvmField
     var useLastSupportedVersion: Boolean = false
 
     @JvmStatic
-    fun startPool(plugin: Plugin, spawnDistance: Double): IHologramPool {
-        val simplepool = HologramPool(plugin, spawnDistance)
+    fun startPool(spawnDistance: Double): IHologramPool {
+        val simplepool = HologramPool(spawnDistance)
         return simplepool
     }
 
     @JvmStatic
     @JvmOverloads
     fun startInteractivePool(
-        plugin: Plugin,
         spawnDistance: Double,
         minHitDistance: Float = 0.5f,
         maxHitDistance: Float = 5f,
         clickAction: ClickAction? = null
     ): IHologramPool {
-        val simplepool = HologramPool(plugin, spawnDistance)
+        val simplepool = HologramPool(spawnDistance)
         val interactivepool = InteractiveHologramPool(
             pool = simplepool,
             minHitDistance = minHitDistance,
