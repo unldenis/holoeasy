@@ -145,7 +145,7 @@ hologram.show(pool)
 ### Java
 ```java
 // you can use a Pool or a org.bukkit.Plugin
-IHologramPool pool = HoloEasy.startInteractivePool(plugin, 60, 0.5f, 5f);
+IHologramPool pool = HoloEasy.startInteractivePool(60, 0.5f, 5f);
 
 // show on the right pool
 hologram.show(pool);
