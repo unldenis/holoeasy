@@ -60,19 +60,26 @@
     <div class="uk-width-1-5">
 
 <!--        THEME SWITCHER -->
-        <div class="uk-inline uk-margin-top uk-margin-small-bottom">
-            <button
-                    class="uk-icon-button uk-icon-button-small uk-icon-button-outline"
-            >
-                <uk-icon icon="palette" uk-cloak></uk-icon>
-            </button>
-            <div
-                    class="uk-card uk-card-body uk-card-default uk-drop uk-width-large"
-                    uk-drop="mode: click; offset: 8; pos: bottom-center"
-            >
-                <div class="uk-card-title uk-margin-medium-bottom">Customize</div>
-                <uk-theme-switcher></uk-theme-switcher>
+        <div class="uk-inline uk-margin-top uk-margin-small-bottom uk-margin-small-left">
+            <a class="uk-button uk-button-default uk-button-small" href="#theme-switcher-modal" uk-toggle>
+                Theme
+            </a>
+
+            <div class="uk-modal" id="theme-switcher-modal" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                    <div class="uk-modal-header">
+                        <div class="uk-modal-title">Customize</div>
+                    </div>
+                    <div class="uk-modal-body">
+                        <uk-theme-switcher></uk-theme-switcher>
+                    </div>
+                </div>
             </div>
+
+            <a class="uk-button uk-button-primary uk-button-small" href="https://github.com/unldenis/holoeasy">
+                Github
+            </a>
         </div>
 <!--        END THEME SWITCHER-->
         <div class="">
