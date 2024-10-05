@@ -14,10 +14,10 @@ import org.holoeasy.line.ITextLine
 import org.holoeasy.util.AABB
 import java.util.UUID
 
-class InteractiveHologramPool(private val pool: HologramPool, minHitDistance: Float, maxHitDistance: Float, val clickAction: ClickAction?) : Listener,
-    IHologramPool {
+class InteractiveHologramPool<T : Hologram>(private val pool: HologramPool<T>, minHitDistance: Float, maxHitDistance: Float, val clickAction: ClickAction?) : Listener,
+    IHologramPool<T> {
 
-    override val holograms: Set<Hologram>
+    override val holograms: Set<T>
         get() = pool.holograms
 
     val minHitDistance: Float

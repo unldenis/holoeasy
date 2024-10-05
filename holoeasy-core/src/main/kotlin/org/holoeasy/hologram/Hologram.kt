@@ -85,7 +85,7 @@ open class Hologram @JvmOverloads constructor(
     }
 
     @JvmOverloads
-    fun show(pool: IHologramPool = HoloEasy.STANDARD_POOL) {
+    fun show(pool: IHologramPool<*> = HoloEasy.standardPool) {
         if (pool.holograms.any { it.id == this.id }) {
             throw KeyAlreadyExistsException(this.id)
         }
@@ -116,7 +116,7 @@ open class Hologram @JvmOverloads constructor(
     }
 
     @JvmOverloads
-    fun hide(pool: IHologramPool = HoloEasy.STANDARD_POOL) {
+    fun hide(pool: IHologramPool<*> = HoloEasy.standardPool) {
         // if removed
         val removed = (pool.holograms as MutableSet<Hologram>).remove(this)
         if (removed) {

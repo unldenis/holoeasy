@@ -2,8 +2,8 @@ package org.holoeasy.pool
 
 import org.holoeasy.hologram.Hologram
 
-interface IHologramPool {
+interface IHologramPool<T : Hologram> {
 
-    val holograms: Set<Hologram>
+    val holograms: Set<T>
 
 }

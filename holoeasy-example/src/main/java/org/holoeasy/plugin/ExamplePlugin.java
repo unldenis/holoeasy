@@ -30,6 +30,9 @@ public class ExamplePlugin extends JavaPlugin {
 
         HoloEasy.bind(this);
 
+
+        IHologramPool<HelloWorldHologram> pool = HoloEasy.startPool(60);
+
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
             Player player = ((Player) sender);

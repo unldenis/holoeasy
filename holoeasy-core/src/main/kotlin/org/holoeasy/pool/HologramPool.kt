@@ -15,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KeyAlreadyExistsException(key: UUID) : IllegalStateException("Id '$key' already exists")
 
-class HologramPool( private val spawnDistance: Double) : Listener, IHologramPool {
+class HologramPool<T : Hologram>( private val spawnDistance: Double) : Listener, IHologramPool<T> {
 
-    override val holograms: Set<Hologram> = ConcurrentHashMap.newKeySet()
+    override val holograms: Set<T> = ConcurrentHashMap.newKeySet()
 
     init {
         Bukkit.getPluginManager().registerEvents(this, HoloEasy.plugin())
