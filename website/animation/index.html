@@ -58,7 +58,9 @@
 
     <!-- PrismJS JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-groovy.min.js"></script>
+
 
     <style>
         /* Imposta una dimensione del font più piccola per il codice evidenziato */
@@ -97,21 +99,21 @@
                         <li><a href="#">Changelog</a></li>
                     </ul>
                 </li>
-                <li class="uk-parent uk-open">
+                <li class="uk-parent">
                     <a href="#">Getting Started <span uk-nav-parent-icon></span></a>
                     <ul class="uk-nav-sub">
                         <li><a href="../installation">Installation</a></li>
-                        <li class="uk-active"><a href="">Hello World</a></li>
+                        <li><a href="../hello-world">Hello World</a></li>
                     </ul>
                 </li>
-                <li class="uk-parent">
+                <li class="uk-parent uk-open">
                     <a href="#">Concepts <span uk-nav-parent-icon></span></a>
                     <ul class="uk-nav-sub">
-                        <li><a href="../base-concepts">Base Concepts</a></li>
+                        <li ><a href="../base-concepts">Base Concepts</a></li>
                         <li ><a href="../textline">TextLine</a></li>
                         <li ><a href="../blockline">BlockLine</a></li>
                         <li ><a href="../state">State</a></li>
-                        <li ><a href="../animation">Animation</a></li>
+                        <li class="uk-active" ><a href="">Animation</a></li>
                         <li ><a href="../pool">Pool</a></li>
                         <li ><a href="../serialization">Serialization</a></li>
                     </ul>
@@ -123,54 +125,16 @@
 
         <div class="uk-section">
             <div class="uk-container">
-                <h1 class="uk-h1">Hello World</h1>
-                <p class="uk-text-lead uk-paragraph">
-                    Your first hologram.
-                </p>
 
+                <h2 class="uk-h2">Animation</h2>
 
-                <h2 class="uk-h2 uk-margin-medium">Start programming</h2>
+                <div class="uk-paragraph uk-alert uk-alert-danger" uk-alert>
+                    <a href class="uk-alert-close" uk-close></a>
+                    <div class="uk-alert-description">
+                        This documentation is a work in progress.
 
-
-                <p class="uk-paragraph">
-                    <strong>1.</strong> Register HoloEasy api.
-                </p>
-
-                <div class="uk-paragraph">
-                <pre><code class="language-java">HoloEasy.bind(org.bukkit.plugin.Plugin);</code></pre>
+                    </div>
                 </div>
-
-                <p class="uk-paragraph">
-                    <strong>2.</strong> Define your first Hologram class.
-                </p>
-
-                <div class="uk-paragraph">
-                <pre><code class="language-java">public class HelloWorldHologram extends Hologram  {
-
-    ITextLine line = textLine("Hello World");
-
-    public HelloWorldHologram(@NotNull Location location) {
-        super(location);
-    }
-
-}</code></pre>
-                </div>
-
-
-                <p class="uk-paragraph">
-                    <strong>3.</strong> Now spawn a hologram.
-                </p>
-
-                <div class="uk-paragraph">
-                <pre><code class="language-java">HelloWorldHologram hologram = new HelloWorldHologram(location);
-hologram.show();</code></pre>
-                </div>
-
-                <p class="uk-paragraph">
-                    <strong>4.</strong> Congratulations! You have created your first Hologram.
-                </p>
-
-
             </div>
         </div>
 
