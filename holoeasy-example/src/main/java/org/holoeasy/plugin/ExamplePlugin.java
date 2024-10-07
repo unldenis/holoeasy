@@ -32,7 +32,7 @@ public class ExamplePlugin extends JavaPlugin {
         HoloEasy.bind(this);
 
         // ** Create a MyHolo Pool, why not?
-        IHologramPool<MyHolo> myPool = HoloEasy.startPool(60);
+        IHologramPool<MyHolo> myPool = HoloEasy.startInteractivePool(60);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
