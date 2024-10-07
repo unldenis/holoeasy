@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
     <title>HoloEasy</title>
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preconnect" href="https://rsms.me/"/>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css"/>
 
     <style>
         :root {
@@ -53,15 +53,6 @@
             src="https://unpkg.com/franken-ui/dist/js/icon.iife.js"
     ></script>
 
-    <!-- Includi il tema Funky di PrismJS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
-
-    <!-- PrismJS JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-groovy.min.js"></script>
-
-
     <style>
         /* Imposta una dimensione del font più piccola per il codice evidenziato */
         pre[class*="language-"], code[class*="language-"] {
@@ -99,11 +90,11 @@
         <!--        END THEME SWITCHER-->
         <div class="">
             <ul class="uk-nav-default" uk-nav>
-                <li class="uk-parent">
+                <li class="uk-parent  uk-open">
                     <a href="#">Prologue <span uk-nav-parent-icon></span></a>
                     <ul class="uk-nav-sub">
                         <li><a href="../">Introduction</a></li>
-                        <li><a href="../changelog">Changelog</a></li>
+                        <li class="uk-active"><a href="">Changelog</a></li>
                     </ul>
                 </li>
                 <li class="uk-parent">
@@ -113,16 +104,16 @@
                         <li><a href="../hello-world">Hello World</a></li>
                     </ul>
                 </li>
-                <li class="uk-parent uk-open">
+                <li class="uk-parent">
                     <a href="#">Concepts <span uk-nav-parent-icon></span></a>
                     <ul class="uk-nav-sub">
                         <li><a href="../base-concepts">Base Concepts</a></li>
-                        <li ><a href="../textline">TextLine</a></li>
-                        <li class="uk-active"><a href="">BlockLine</a></li>
-                        <li ><a href="../state">State</a></li>
-                        <li ><a href="../animation">Animation</a></li>
-                        <li ><a href="../pool">Pool</a></li>
-                        <li ><a href="../serialization">Serialization</a></li>
+                        <li><a href="../textline">TextLine</a></li>
+                        <li><a href="../blockline">BlockLine</a></li>
+                        <li><a href="../state">State</a></li>
+                        <li><a href="../animation">Animation</a></li>
+                        <li><a href="../pool">Pool</a></li>
+                        <li><a href="../serialization">Serialization</a></li>
                     </ul>
                 </li>
             </ul>
@@ -133,15 +124,34 @@
         <div class="uk-section">
             <div class="uk-container">
 
-                <h2 class="uk-h2">BlockLine</h2>
+                    <h1 class="uk-h1"> Changelog </h1>
 
-                <div class="uk-paragraph uk-alert uk-alert-danger" uk-alert>
-                    <a href class="uk-alert-close" uk-close></a>
-                    <div class="uk-alert-description">
-                        This documentation is a work in progress.
 
-                    </div>
-                </div>
+                    <h2 class="uk-h2 uk-margin-medium" id="410">v4.1.0</h2>
+                    <p class="uk-paragraph"><strong>October 6, 2024</strong></p>
+                    <p class="uk-paragraph"><strong>Minor changes:</strong></p>
+                    <ul class="uk-margin uk-list uk-list-bullet">
+                        <li>Pool now support generics holograms.</li>
+                    </ul>
+<!--                    <p class="uk-paragraph"><strong>Bug fixes:</strong></p>-->
+<!--                    <ul class="uk-margin uk-list uk-list-bullet">-->
+<!--                    </ul>-->
+
+                    <hr class="uk-divider-icon" />
+
+                    <h2 class="uk-h2 uk-margin-medium" id="v400">v4.0.0</h2>
+                    <p class="uk-paragraph"><strong>October 5, 2024</strong></p>
+                    <p class="uk-paragraph">This update introduces lots of breaking changes.</p>
+                    <p class="uk-paragraph"><strong>Major breaking changes:</strong></p>
+                    <ul class="uk-margin uk-list uk-list-bullet">
+                        <li>Functional approach is dropped in favor of <a href="../hello-world" class="uk-link">typesafe</a> Hologram classes.</li>
+                    </ul>
+                    <p class="uk-paragraph"><strong>Minor breaking changes:</strong></p>
+                    <ul class="uk-margin uk-list uk-list-bullet">
+                        <li> <code class="uk-codespan">TextLineModifiers</code> and  <code class="uk-codespan">BlockLineModifiers</code> for line customization.</li>
+                        <li>Plugin is now set once.</li>
+                    </ul>
+
             </div>
         </div>
 
