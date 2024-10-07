@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
     <title>HoloEasy</title>
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preconnect" href="https://rsms.me/"/>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css"/>
 
     <style>
         :root {
@@ -54,18 +54,17 @@
     ></script>
 
     <!-- Includi il tema Funky di PrismJS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet"/>
 
     <!-- PrismJS JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-groovy.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 
 
     <style>
         /* Imposta una dimensione del font più piccola per il codice evidenziato */
         pre[class*="language-"], code[class*="language-"] {
-          font-size: 12px; /* Cambia 12px con la dimensione che preferisci */
+          font-size: 14px; /* Cambia 12px con la dimensione che preferisci */
         }
     </style>
 </head>
@@ -117,12 +116,12 @@
                     <a href="#">Concepts <span uk-nav-parent-icon></span></a>
                     <ul class="uk-nav-sub">
                         <li class="uk-active"><a href="">Base Concepts</a></li>
-                        <li ><a href="../textline">TextLine</a></li>
-                        <li ><a href="../blockline">BlockLine</a></li>
-                        <li ><a href="../state">State</a></li>
-                        <li ><a href="../animation">Animation</a></li>
-                        <li ><a href="../pool">Pool</a></li>
-                        <li ><a href="../serialization">Serialization</a></li>
+                        <li><a href="../textline">TextLine</a></li>
+                        <li><a href="../blockline">BlockLine</a></li>
+                        <li><a href="../state">State</a></li>
+                        <li><a href="../animation">Animation</a></li>
+                        <li><a href="../pool">Pool</a></li>
+                        <li><a href="../serialization">Serialization</a></li>
                     </ul>
                 </li>
             </ul>
@@ -133,15 +132,82 @@
         <div class="uk-section">
             <div class="uk-container">
 
-                <h2 class="uk-h2">Base Concepts</h2>
+                <h1 class="uk-h1">Base Concepts</h1>
+                <p class="uk-text-lead uk-paragraph">
+                    Learn how to use HoloEasy in your projects.
+                </p>
 
-                <div class="uk-paragraph uk-alert uk-alert-danger" uk-alert>
-                    <a href class="uk-alert-close" uk-close></a>
-                    <div class="uk-alert-description">
-                        This documentation is a work in progress.
 
-                    </div>
-                </div>
+
+                <h2 class="uk-h2  uk-margin-medium">Hologram</h2>
+
+                <p class="uk-paragraph">
+                    The main class is <code class="uk-codespan">Hologram</code>. This is an abstract class, so to define your holograms you <strong>must</strong> extend this class.
+                </p>
+
+                <p class="uk-paragraph">
+                    A hologram is composed of lines, defined by the <code class="uk-codespan">ILine<*></code> interface. The lines can be either text or an item/block.
+                    As you saw in the <a class="uk-link" href="../hello-world">Hello World</a> example, the Hologram class provides these two methods, <code class="uk-codespan">textLine</code> and <code class="uk-codespan">blockLine</code>, which should preferably be assigned to a class field; however, you can also call them in the constructor. The order of the fields will correspond to the order of the lines in the hologram.
+                </p>
+
+                <blockquote class="uk-blockquote">
+                    Having them as fields or accessible through a getter allows you to retrieve information or perform actions on a specific line.
+                </blockquote>
+
+                <div class="uk-margin-medium">
+                <pre><code class="language-java">public class MyHolo extends Hologram {
+
+    public ITextLine counter = textLine("Hello World");
+    public ILine&lt;ItemStack&gt; status = blockLine(new ItemStack(Material.RED_DYE));
+
+    public MyHolo(@NotNull Location location) {
+        super(location);
+    }
+}</code></pre> </div>
+
+                <p class="uk-paragraph">
+                    In this example, the hologram will display the text "Hello World" with a RED_DYE dropped below it.
+                    For more complex lines, take a look at <a class="uk-link" href="../textline">TextLine</a> and <a class="uk-link" href="../blockline">BlockLine</a>.
+                    Once we've created our hologram class, we can instantiate it. This <strong>does not</strong> mean the hologram is visible yet.
+                </p>
+
+                <h2 class="uk-h2  uk-margin-medium">Pool</h2>
+
+                <p class="uk-paragraph">
+                    The structure of the hologram has been defined. But before proceeding, you need to understand what you require.
+                    Do you need a hologram visible to all players within a certain radius? Or do you need a hologram to be shown to one or more specific players?
+                </p>
+
+                <p class="uk-paragraph">
+                    In the first case, you may want to use a <code class="uk-codespan">Pool</code>.
+                    A Pool is a container for holograms and manages showing them asynchronously to players within a certain radius of the holograms, while hiding them from players who are too far away or leave the server.
+                    A Pool can be interactive, allowing you to click on lines (if defined that way in the class), or not.
+                    If you don't have any specific needs, you can show the hologram with the <code class="uk-codespan">show</code> method.
+                </p>
+
+                <div class="uk-margin-medium">
+                <pre><code class="language-java">MyHolo hologram = new MyHolo(location);
+hologram.show();</code></pre> </div>
+
+                <p class="uk-paragraph">
+                    In this case, the hologram is added and displayed using the Standard Pool.
+                    This pool is accessible from the <code class="uk-codespan">HoloEasy</code> class, from which you can obtain all the holograms in this pool.
+                </p>
+
+                <p class="uk-paragraph">
+                    It is always possible to create one or more Pools for greater flexibility and customization. <a class="uk-link" href="../pool">Here</a> you can read the documentation on pools.
+                </p>
+
+                <h2 class="uk-h2  uk-margin-medium">Custom Logic</h2>
+                <p class="uk-paragraph">
+                    As mentioned earlier, if you're not using a Pool, it is your responsibility to manage the hologram's visibility.
+                    In this case, the <code class="uk-codespan">Hologram</code> class provides two methods: <code class="uk-codespan">show(Player)</code> and <code class="uk-codespan">hide(Player)</code>.
+                </p>
+
+
+
+
+
             </div>
         </div>
 
