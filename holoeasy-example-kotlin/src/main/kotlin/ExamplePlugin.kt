@@ -17,19 +17,28 @@ class ExamplePlugin : JavaPlugin() {
 
     override fun onEnable() {
 
+        // ** Bind the library
         HoloEasy.bind(this)
 
         getCommand("hologram")?.setExecutor { sender, _, _, _ ->
 
             val location = (sender as Player).location
 
-
+            // ** Create a basic hologram and add on the Standard Pool
             val hologram = HelloWorldHologram(location)
             hologram.show()
 
+
+            //  ** Serialize
             val serialized: Map<String, Any> = hologram.serialize()
 
+            // ** Now you can remove it from the Standard Pool
+            hologram.hide()
+
+            // ** Deserialize the previous hologram
             val deserialized : HelloWorldHologram = Hologram.deserialize(serialized)
+
+            // ** Show it
             deserialized.show()
 
             true

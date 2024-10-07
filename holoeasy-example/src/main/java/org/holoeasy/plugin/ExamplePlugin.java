@@ -28,35 +28,37 @@ public class ExamplePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        // ** Bind the library
         HoloEasy.bind(this);
 
-
-        IHologramPool<HelloWorldHologram> pool = HoloEasy.startPool(60);
+        // ** Create a MyHolo Pool, why not?
+        IHologramPool<MyHolo> myPool = HoloEasy.startPool(60);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
             Player player = ((Player) sender);
-
             Location location = player.getLocation();
 
 
+            // ** Add holo to myPool
             MyHolo hologram = new MyHolo(location);
-            hologram.show();
-
-
-            Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
-                hologram.hide();
-
-                Map<String, Object> serialized = hologram.serialize();
-
-                System.out.println(serialized.toString());
-                MyHolo deserialized = Hologram.deserialize(serialized, MyHolo.class);
-                deserialized.show();
-            }, 20L * 10);
-
+            hologram.show(myPool);
 
             return true;
         });
+
+
+        // ** Why not update all holograms 'status' item after 30 seconds?
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+
+
+            for (MyHolo hologram : myPool.getHolograms()) {
+
+                // ** Updates the line
+                hologram.status.update(new ItemStack(Material.GREEN_DYE));
+            }
+
+        }, 20L * 30);
     }
 
 
