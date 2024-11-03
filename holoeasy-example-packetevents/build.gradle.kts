@@ -20,12 +20,15 @@
 
 plugins {
     id("buildlogic.java-conventions")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 dependencies {
     implementation(libs.org.jetbrains.kotlin.kotlin.stdlib)
-    implementation(project(":holoeasy-core"))
+    implementation(project(":holoeasy-core")) {
+        // Set the transitive dependency to false to avoid shading HoloEasy dependencies
+        isTransitive = false
+    }
     implementation(libs.com.github.retrooper.packetevents.spigot)
     compileOnly(libs.org.spigotmc.spigot.api)
 }
@@ -34,7 +37,15 @@ description = "holoeasy-example-packetevents"
 
 tasks {
     shadowJar {
+        archiveClassifier.set("shadow")
+        archiveVersion.set("${project.version}")
 
+        // It is important to relocate org.holoeasy and io.github.retrooper.packetevents
+        // to avoid conflicts with other plugins
+        //relocate("org.holoeasy", "<your package name>.holoeasy")
+        relocate("io.github.retrooper.packetevents", "org.holoeasy.plugin.packetevents")
+        relocate("com.github.retrooper.packetevents", "org.holoeasy.plugin.packetevents")
+        relocate("net.kyori", "org.holoeasy.plugin.kyori")
     }
 }
 
