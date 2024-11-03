@@ -29,8 +29,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>holoeasy-core</module>
-        <module>holoeasy-example</module>
-        <module>holoeasy-example-kotlin</module>
+        <module>holoeasy-example-packetevents</module>
+        <module>holoeasy-example-protocollib</module>
     </modules>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

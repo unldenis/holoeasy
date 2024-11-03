@@ -3,13 +3,9 @@ package org.holoeasy.line
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
-import org.holoeasy.ext.send
-import org.holoeasy.packet.IPacket
-import org.holoeasy.packet.PacketType
+import org.holoeasy.HoloEasy
 import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.AABB
-import java.util.LinkedHashMap
 
 class TextLine(
     obj: String,
@@ -90,8 +86,9 @@ class TextLine(
             isEmpty = obj.isEmpty()
             if (!isEmpty) {
                 line.spawn(player)
-                val packet = PacketType.METADATA_TEXT.metadata(entityId, parse(player))
-                packet.send(player)
+
+                HoloEasy.packetImpl()
+                    .metadataText(player, entityId, nameTag =  parse(player))
             }
         }
 
@@ -119,14 +116,14 @@ class TextLine(
                 0x01 -> {
                     line.spawn(player)
                     isEmpty = false
-                    PacketType.METADATA_TEXT
-                        .metadata(entityId, parse(player)).send(player)
+
+                    HoloEasy.packetImpl()
+                        .metadataText(player, entityId, nameTag = parse(player))
                 }
 
                 0x00 ->
-                    PacketType.METADATA_TEXT
-                        .metadata(entityId, parse(player), invisible = false)
-                        .send(player)
+                    HoloEasy.packetImpl()
+                        .metadataText(player, entityId, nameTag = parse(player), invisible = false)
             }
         }
 

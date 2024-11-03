@@ -5,12 +5,8 @@ import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
-import org.holoeasy.ext.send
-import org.holoeasy.packet.PacketType
+import org.holoeasy.HoloEasy
 import org.holoeasy.reactive.MutableState
-import org.holoeasy.util.VersionEnum
-import org.holoeasy.util.VersionUtil
 
 class BlockLine(obj: MutableState<ItemStack>) : ILine<ItemStack> {
     constructor(obj: ItemStack) : this(MutableState(obj))
@@ -41,8 +37,9 @@ class BlockLine(obj: MutableState<ItemStack>) : ILine<ItemStack> {
 
         override fun show(player: Player) {
             line.spawn(player)
-            PacketType.METADATA_TEXT
-                .metadata(entityId, nameTag = null, invisible = true).send(player)
+
+            HoloEasy.packetImpl()
+                .metadataText(player, entityId, nameTag = null, invisible = true)
 
             this.update(player)
 
@@ -61,8 +58,8 @@ class BlockLine(obj: MutableState<ItemStack>) : ILine<ItemStack> {
         }
 
         override fun update(player: Player) {
-            PacketType.EQUIPMENT
-                .equip(entityId, helmet = _mutableStateOf.get()).send(player)
+            HoloEasy.packetImpl()
+                .metadataItem(player, entityId, item = _mutableStateOf.get())
         }
 
     }

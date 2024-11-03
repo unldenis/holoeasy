@@ -2,6 +2,11 @@ package org.holoeasy.util
 
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 
+
+fun test() {
+
+}
+
 internal val BYTE_SERIALIZER : WrappedDataWatcher.Serializer
     get() = WrappedDataWatcher.Registry.get(java.lang.Byte::class.java)
 

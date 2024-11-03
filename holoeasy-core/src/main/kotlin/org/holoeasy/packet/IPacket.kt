@@ -1,101 +1,27 @@
 package org.holoeasy.packet
 
 
-import org.holoeasy.HoloEasy
-import org.holoeasy.packet.delete.DeletePacketA
-import org.holoeasy.packet.delete.DeletePacketB
-import org.holoeasy.packet.equipment.EquipmentPacketA
-import org.holoeasy.packet.equipment.EquipmentPacketB
-import org.holoeasy.packet.equipment.EquipmentPacketC
-import org.holoeasy.packet.equipment.IEquipmentPacket
-import org.holoeasy.packet.metadata.item.*
-import org.holoeasy.packet.metadata.text.*
-import org.holoeasy.packet.rotate.IRotatePacket
-import org.holoeasy.packet.rotate.RotatePacketA
-import org.holoeasy.packet.spawn.*
-import org.holoeasy.packet.teleport.TeleportPacketA
-import org.holoeasy.packet.teleport.TeleportPacketB
-import org.holoeasy.packet.velocity.IVelocityPacket
-import org.holoeasy.packet.velocity.VelocityPacketA
-import org.holoeasy.util.VersionEnum
-import org.holoeasy.util.VersionUtil
+import org.bukkit.Location
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 interface IPacket {
 
-    val versionSupport: Array<out ClosedRange<VersionEnum>>
+    fun deletePacket(player: Player, entityId: Int)
 
-    fun isCurrentVersion(): Boolean {
-        for (range in versionSupport) {
-            if (VersionUtil.CLEAN_VERSION in range) {
-                return true
-            }
-        }
-        return false
-    }
+    fun equip(player: Player, entityId : Int, helmet : ItemStack)
 
-}
+    fun metadataItem(player: Player,entityId: Int, item: ItemStack)
 
+    fun metadataText(player: Player, entityId: Int, nameTag: String?, invisible : Boolean = true)
 
-object PacketType {
-    private fun <T : IPacket> getCurrImpl(vararg impls: T): T {
-        val rightImpl = impls.firstOrNull(IPacket::isCurrentVersion)
-        if (rightImpl != null) {
-            return rightImpl as T
-        }
+    fun rotate(player: Player, entityId : Int, yaw : Double)
 
-        if (HoloEasy.useLastSupportedVersion) {
-            return impls.last() as T
-        }
+    fun spawn(player: Player, entityId: Int, entityType: EntityType, location: Location)
 
-        throw RuntimeException(
-            """
-            No version support for this packet
-            Set HoloEasy.useLastSupportedVersion to true or
-            open an issue at https://github.com/unldenis/holoeasy
-            """.trimIndent()
-        )
-    }
+    fun teleport(player: Player, entityId: Int, location: Location)
 
-    val DELETE by lazy { getCurrImpl(DeletePacketA, DeletePacketB) }
-
-    val METADATA_TEXT by lazy {
-        getCurrImpl(
-            MetadataTextPacketA,
-            MetadataTextPacketB,
-            MetadataTextPacketC,
-            MetadataTextPacketD,
-            MetadataTextPacketE
-        )
-    }
-
-    val METADATA_ITEM by lazy {
-        getCurrImpl(
-            MetadataItemPacketA,
-            MetadataItemPacketB,
-            MetadataItemPacketC,
-            MetadataItemPacketD,
-            MetadataItemPacketE
-        )
-    }
-
-    val SPAWN by lazy {
-        getCurrImpl(SpawnPacketA, SpawnPacketB, SpawnPacketC, SpawnPacketD)
-    }
-
-    val TELEPORT by lazy {
-        getCurrImpl(TeleportPacketA, TeleportPacketB)
-    }
-
-    val VELOCITY by lazy { getCurrImpl<IVelocityPacket>(VelocityPacketA) }
-
-    val ROTATE by lazy { getCurrImpl<IRotatePacket>(RotatePacketA) }
-
-    val EQUIPMENT by lazy {
-        getCurrImpl(
-            EquipmentPacketA,
-            EquipmentPacketB,
-            EquipmentPacketC
-        )
-    }
+    fun velocity(player: Player, entityId: Int, x: Double, y : Double, z : Double)
 
 }
