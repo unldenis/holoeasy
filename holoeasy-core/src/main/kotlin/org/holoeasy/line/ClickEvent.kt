@@ -1,11 +1,9 @@
-package org.holoeasy.line;
+package org.holoeasy.line
 
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.entity.Player
 
-@FunctionalInterface
-public interface ClickEvent {
+fun interface ClickEvent {
 
-    void onClick(@NotNull Player player);
+    fun onClick(player: Player)
 
 }

@@ -1,6 +1,6 @@
-package org.holoeasy.action;
+package org.holoeasy.action
 
-public enum ClickAction {
+enum class ClickAction {
     LEFT_CLICK,
-    RIGHT_CLICK,
+    RIGHT_CLICK
 }

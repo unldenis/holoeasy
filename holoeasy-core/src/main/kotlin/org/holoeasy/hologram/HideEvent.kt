@@ -1,11 +1,10 @@
-package org.holoeasy.hologram;
+package org.holoeasy.hologram
 
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.entity.Player
+import org.jetbrains.annotations.NotNull
 
-@FunctionalInterface
-public interface HideEvent {
+fun interface HideEvent {
 
-    void onHide(@NotNull Player player);
+    fun onHide(@NotNull player: Player)
 
 }
