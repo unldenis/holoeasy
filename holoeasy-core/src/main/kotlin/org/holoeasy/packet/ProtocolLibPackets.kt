@@ -43,32 +43,36 @@ class ProtocolLibPackets : IPacket {
 
     override fun equip(player: Player, entityId: Int, helmet: ItemStack) {
 
-        val packet = if(VersionUtil.isCompatible(VersionEnum.V1_8)) {
-            packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
-                integers[0] = entityId
+        val packet = when {
+            VersionUtil.isCompatible(VersionEnum.V1_8) -> {
+                packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
+                    integers[0] = entityId
 
-                // Use legacy form to update the head slot.
-                integers[1] = 4
+                    // Use legacy form to update the head slot.
+                    integers[1] = 4
 
-                itemModifier[0] = helmet
+                    itemModifier[0] = helmet
+                }
             }
-        } else if(VersionUtil.isBetween(VersionEnum.V1_9, VersionEnum.V1_12)) {
-            packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
-                integers[0] = entityId
+            VersionUtil.CLEAN_VERSION in VersionEnum.V1_9..VersionEnum.V1_12 -> {
+                packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
+                    integers[0] = entityId
 
-                itemSlots[0] = EnumWrappers.ItemSlot.HEAD
+                    itemSlots[0] = EnumWrappers.ItemSlot.HEAD
 
-                itemModifier[0] = helmet
+                    itemModifier[0] = helmet
+                }
             }
-        } else {
-            // 1_13 >
-            packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
-                integers[0] = entityId
+            else -> {
+                // 1_13 >
+                packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
+                    integers[0] = entityId
 
-                val pairList = ArrayList<Pair<ItemSlot, ItemStack>>()
-                pairList.add(Pair(ItemSlot.HEAD, helmet))
+                    val pairList = ArrayList<Pair<ItemSlot, ItemStack>>()
+                    pairList.add(Pair(ItemSlot.HEAD, helmet))
 
-                slotStackPairLists[0] = pairList
+                    slotStackPairLists[0] = pairList
+                }
             }
         }
         packet.send(player)
@@ -76,182 +80,194 @@ class ProtocolLibPackets : IPacket {
 
     override fun metadataItem(player: Player, entityId: Int, item: ItemStack) {
 
-        val packet = if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_8..VersionEnum.V1_8) {
-            val watcher = WrappedDataWatcher()
+        val packet = when (VersionUtil.CLEAN_VERSION) {
+            in VersionEnum.V1_8..VersionEnum.V1_8 -> {
+                val watcher = WrappedDataWatcher()
 
-            watcher.setObject(10, item.bukkitGeneric())
+                watcher.setObject(10, item.bukkitGeneric())
 
-            packet(PacketType.Play.Server.ENTITY_METADATA) {
-                integers[0] = entityId
-                watchableCollectionModifier[0] = watcher.watchableObjects
+                packet(PacketType.Play.Server.ENTITY_METADATA) {
+                    integers[0] = entityId
+                    watchableCollectionModifier[0] = watcher.watchableObjects
+                }
             }
-        } else if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_9..VersionEnum.V1_12) {
-            val watcher = WrappedDataWatcher()
+            in VersionEnum.V1_9..VersionEnum.V1_12 -> {
+                val watcher = WrappedDataWatcher()
 
-            watcher.setBool(5, true)
-            watcher.setItemStack(6, item)
+                watcher.setBool(5, true)
+                watcher.setItemStack(6, item)
 
-            packet(PacketType.Play.Server.ENTITY_METADATA) {
-                integers[0] = entityId
-                watchableCollectionModifier[0] = watcher.watchableObjects
+                packet(PacketType.Play.Server.ENTITY_METADATA) {
+                    integers[0] = entityId
+                    watchableCollectionModifier[0] = watcher.watchableObjects
+                }
             }
-        } else if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_13..VersionEnum.V1_18) {
-            val watcher = WrappedDataWatcher()
+            in VersionEnum.V1_13..VersionEnum.V1_18 -> {
+                val watcher = WrappedDataWatcher()
 
-            watcher.setBool(5, true)
-            watcher.setItemStack(7, item)
+                watcher.setBool(5, true)
+                watcher.setItemStack(7, item)
 
-            packet(PacketType.Play.Server.ENTITY_METADATA) {
-                integers[0] = entityId
-                watchableCollectionModifier[0] = watcher.watchableObjects
+                packet(PacketType.Play.Server.ENTITY_METADATA) {
+                    integers[0] = entityId
+                    watchableCollectionModifier[0] = watcher.watchableObjects
+                }
             }
-        } else if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_19..VersionEnum.V1_19) {
-            val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-            packet.integers.write(0, entityId)
+            in VersionEnum.V1_19..VersionEnum.V1_19 -> {
+                val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+                packet.integers.write(0, entityId)
 
-            val watcher = WrappedDataWatcher()
+                val watcher = WrappedDataWatcher()
 
-            val gravity = WrappedDataWatcherObject(
-                5, BOOL_SERIALIZER
-            )
-            watcher.setObject(gravity,true)
-
-            val itemSer = WrappedDataWatcherObject(
-                8, ITEM_SERIALIZER
-            )
-            watcher.setObject(itemSer, item.bukkitGeneric())
-
-            // https://www.spigotmc.org/threads/unable-to-modify-entity-metadata-packet-using-protocollib-1-19-3.582442/#post-4517187
-            packet.parse119(watcher)
-
-            packet
-        } else {
-            // 1.20 >
-            val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-
-            packet.integers.write(0, entityId)
-
-            packet.dataValueCollectionModifier
-                .write(
-                    0, listOf(
-                        WrappedDataValue(5, BOOL_SERIALIZER, true),
-
-                        WrappedDataValue(8, ITEM_SERIALIZER, item.bukkitGeneric())
-                    )
+                val gravity = WrappedDataWatcherObject(
+                    5, BOOL_SERIALIZER
                 )
+                watcher.setObject(gravity,true)
+
+                val itemSer = WrappedDataWatcherObject(
+                    8, ITEM_SERIALIZER
+                )
+                watcher.setObject(itemSer, item.bukkitGeneric())
+
+                // https://www.spigotmc.org/threads/unable-to-modify-entity-metadata-packet-using-protocollib-1-19-3.582442/#post-4517187
+                packet.parse119(watcher)
+
+                packet
+            }
+            else -> {
+                // 1.20 >
+                val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+
+                packet.integers.write(0, entityId)
+
+                packet.dataValueCollectionModifier
+                    .write(
+                        0, listOf(
+                            WrappedDataValue(5, BOOL_SERIALIZER, true),
+
+                            WrappedDataValue(8, ITEM_SERIALIZER, item.bukkitGeneric())
+                        )
+                    )
 
 
-            packet
+                packet
+            }
         }
         packet.send(player)
     }
 
     override fun metadataText(player: Player, entityId: Int, nameTag: String?, invisible: Boolean) {
-        val packet = if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_8..VersionEnum.V1_8) {
-            val watcher = WrappedDataWatcher()
+        val packet = when (VersionUtil.CLEAN_VERSION) {
+            in VersionEnum.V1_8..VersionEnum.V1_8 -> {
+                val watcher = WrappedDataWatcher()
 
-            if (invisible)
-                watcher.setObject(0, 0x20.toByte())
+                if (invisible)
+                    watcher.setObject(0, 0x20.toByte())
 
-            if(nameTag != null) {
-                watcher.setObject(2, nameTag)
-                watcher.setObject(3, 1.toByte())
+                if(nameTag != null) {
+                    watcher.setObject(2, nameTag)
+                    watcher.setObject(3, 1.toByte())
+                }
+
+                packet(PacketType.Play.Server.ENTITY_METADATA) {
+                    integers[0] = entityId
+                    watchableCollectionModifier[0] = watcher.watchableObjects
+                }
             }
+            in VersionEnum.V1_9..VersionEnum.V1_12 -> {
+                val watcher = WrappedDataWatcher()
 
-            packet(PacketType.Play.Server.ENTITY_METADATA) {
-                integers[0] = entityId
-                watchableCollectionModifier[0] = watcher.watchableObjects
+                if(invisible)
+                    watcher.setByte(0, 0x20.toByte())
+
+                if(nameTag != null) {
+                    watcher.setString(2, nameTag)
+                    watcher.setBool(3, true)
+                }
+
+                packet(PacketType.Play.Server.ENTITY_METADATA) {
+                    modifier.writeDefaults()
+                    integers[0] = entityId
+                    watchableCollectionModifier[0] = watcher.watchableObjects
+                }
             }
-        } else if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_9..VersionEnum.V1_12) {
-            val watcher = WrappedDataWatcher()
+            in VersionEnum.V1_13..VersionEnum.V1_18 -> {
+                val watcher = WrappedDataWatcher()
 
-            if(invisible)
-                watcher.setByte(0, 0x20.toByte())
+                if(invisible)
+                    watcher.setByte(0, 0x20.toByte())
 
-            if(nameTag != null) {
-                watcher.setString(2, nameTag)
-                watcher.setBool(3, true)
+                if(nameTag != null) {
+                    watcher.setChatComponent(2, nameTag)
+                    watcher.setBool(3, true)
+                }
+                packet(PacketType.Play.Server.ENTITY_METADATA) {
+                    integers[0] = entityId
+                    watchableCollectionModifier[0] = watcher.watchableObjects
+                }
             }
+            in VersionEnum.V1_19..VersionEnum.V1_19 -> {
+                val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+                packet.integers.write(0, entityId)
 
-            packet(PacketType.Play.Server.ENTITY_METADATA) {
-                modifier.writeDefaults()
-                integers[0] = entityId
-                watchableCollectionModifier[0] = watcher.watchableObjects
+                val watcher = WrappedDataWatcher()
+
+                if(invisible)
+                    watcher.setByte(0, 0x20.toByte())
+
+                if(nameTag != null) {
+                    watcher.setChatComponent(2, nameTag)
+                    watcher.setBool(3, true)
+                }
+
+                // https://www.spigotmc.org/threads/unable-to-modify-entity-metadata-packet-using-protocollib-1-19-3.582442/#post-4517187
+                packet.parse119(watcher)
+
+                packet
             }
-        } else if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_13..VersionEnum.V1_18) {
-            val watcher = WrappedDataWatcher()
+            else -> {
+                // 1.20 >
+                val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+                packet.integers.write(0, entityId)
 
-            if(invisible)
-                watcher.setByte(0, 0x20.toByte())
+                val watcher = WrappedDataWatcher()
 
-            if(nameTag != null) {
-                watcher.setChatComponent(2, nameTag)
-                watcher.setBool(3, true)
-            }
-            packet(PacketType.Play.Server.ENTITY_METADATA) {
-                integers[0] = entityId
-                watchableCollectionModifier[0] = watcher.watchableObjects
-            }
-        } else if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_19..VersionEnum.V1_19) {
-            val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-            packet.integers.write(0, entityId)
-
-            val watcher = WrappedDataWatcher()
-
-            if(invisible)
-                watcher.setByte(0, 0x20.toByte())
-
-            if(nameTag != null) {
-                watcher.setChatComponent(2, nameTag)
-                watcher.setBool(3, true)
-            }
-
-            // https://www.spigotmc.org/threads/unable-to-modify-entity-metadata-packet-using-protocollib-1-19-3.582442/#post-4517187
-            packet.parse119(watcher)
-
-            packet
-        } else {
-            // 1.20 >
-            val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-            packet.integers.write(0, entityId)
-
-            val watcher = WrappedDataWatcher()
-
-            packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
-            val wrappedDataValueList: MutableList<WrappedDataValue> = java.util.ArrayList()
+                packet.watchableCollectionModifier.write(0, watcher.watchableObjects)
+                val wrappedDataValueList: MutableList<WrappedDataValue> = java.util.ArrayList()
 
 
 
-            if(invisible) {
-                wrappedDataValueList.add(
-                    WrappedDataValue(0, BYTE_SERIALIZER, 0x20.toByte())
-                )
-            }
-
-
-            nameTag?.let {
-                val opt: Optional<*> = Optional.of(
-                    WrappedChatComponent.fromChatMessage(
-                        it
-                    )[0].handle
-                )
-
-                wrappedDataValueList.add(
-                    WrappedDataValue(
-                        2, WrappedDataWatcher.Registry.getChatComponentSerializer(true),
-                        opt
+                if(invisible) {
+                    wrappedDataValueList.add(
+                        WrappedDataValue(0, BYTE_SERIALIZER, 0x20.toByte())
                     )
-                )
+                }
 
-                wrappedDataValueList.add(
-                    WrappedDataValue(3, BOOL_SERIALIZER, true)
-                )
+
+                nameTag?.let {
+                    val opt: Optional<*> = Optional.of(
+                        WrappedChatComponent.fromChatMessage(
+                            it
+                        )[0].handle
+                    )
+
+                    wrappedDataValueList.add(
+                        WrappedDataValue(
+                            2, WrappedDataWatcher.Registry.getChatComponentSerializer(true),
+                            opt
+                        )
+                    )
+
+                    wrappedDataValueList.add(
+                        WrappedDataValue(3, BOOL_SERIALIZER, true)
+                    )
+                }
+
+
+                packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
+
+                packet
             }
-
-
-            packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
-
-            packet
         }
         packet.send(player)
     }
@@ -264,48 +280,33 @@ class ProtocolLibPackets : IPacket {
     }
 
     override fun spawn(player: Player, entityId: Int, entityType: EntityType, location: Location) {
-        val packet = if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_8..VersionEnum.V1_8) {
-            packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
-                integers[0] = entityId
+        val packet = when (VersionUtil.CLEAN_VERSION) {
+            in VersionEnum.V1_8..VersionEnum.V1_8 -> {
+                packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
+                    integers[0] = entityId
 
-                integers[1] = VersionUtil.CLEAN_VERSION.armorstandId
+                    integers[1] = VersionUtil.CLEAN_VERSION.armorstandId
 
-                integers[2] = (location.x * 32).toInt()
-                integers[3] = (location.y * 32).toInt()
-                integers[4] = (location.z * 32).toInt()
+                    integers[2] = (location.x * 32).toInt()
+                    integers[3] = (location.y * 32).toInt()
+                    integers[4] = (location.z * 32).toInt()
 
-                if (defaultDataWatcher == null) {
-                    loadDefaultWatcher(HoloEasy.plugin()).join()
+                    if (defaultDataWatcher == null) {
+                        loadDefaultWatcher(HoloEasy.plugin()).join()
+                    }
+
+                    dataWatcherModifier[0] = defaultDataWatcher
                 }
-
-                dataWatcherModifier[0] = defaultDataWatcher
             }
-        }  else if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_9..VersionEnum.V1_15) {
-            val extraData = 1
+            in VersionEnum.V1_9..VersionEnum.V1_15 -> {
+                val extraData = 1
 
-             packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
-                modifier.writeDefaults()
-
-                integers[0] = entityId
-                integers[1] = if(entityType == EntityType.ARMOR_STAND)
-                    VersionUtil.CLEAN_VERSION.armorstandId else VersionUtil.CLEAN_VERSION.droppedItemId
-                integers[2] = extraData
-
-                uuiDs[0] = UUID.randomUUID()
-
-                doubles[0] = location.x
-                doubles[1] = location.y
-                doubles[2] = location.z
-            }
-        } else if(VersionUtil.CLEAN_VERSION in  VersionEnum.V1_16..VersionEnum.V1_18) {
-            val extraData = 1
-
-            if(entityType == EntityType.ARMOR_STAND) {
                 packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
                     modifier.writeDefaults()
 
                     integers[0] = entityId
-                    integers[1] = VersionUtil.CLEAN_VERSION.armorstandId
+                    integers[1] = if(entityType == EntityType.ARMOR_STAND)
+                        VersionUtil.CLEAN_VERSION.armorstandId else VersionUtil.CLEAN_VERSION.droppedItemId
                     integers[2] = extraData
 
                     uuiDs[0] = UUID.randomUUID()
@@ -314,13 +315,50 @@ class ProtocolLibPackets : IPacket {
                     doubles[1] = location.y
                     doubles[2] = location.z
                 }
-            } else {
-                packet(PacketType.Play.Server.SPAWN_ENTITY) {
-                    modifier.writeDefaults()
+            }
+            in VersionEnum.V1_16..VersionEnum.V1_18 -> {
+                val extraData = 1
 
+                if(entityType == EntityType.ARMOR_STAND) {
+                    packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
+                        modifier.writeDefaults()
+
+                        integers[0] = entityId
+                        integers[1] = VersionUtil.CLEAN_VERSION.armorstandId
+                        integers[2] = extraData
+
+                        uuiDs[0] = UUID.randomUUID()
+
+                        doubles[0] = location.x
+                        doubles[1] = location.y
+                        doubles[2] = location.z
+                    }
+                } else {
+                    packet(PacketType.Play.Server.SPAWN_ENTITY) {
+                        modifier.writeDefaults()
+
+                        integers[0] = entityId
+
+                        entityTypeModifier[0] = EntityType.DROPPED_ITEM
+
+                        uuiDs[0] = UUID.randomUUID()
+
+                        doubles[0] = location.x
+                        doubles[1] = location.y
+                        doubles[2] = location.z
+
+                        integers[2] = convertVelocity(0.0)
+                        integers[3] = convertVelocity(0.0)
+                        integers[4] = convertVelocity(0.0)
+                    }
+                }
+            }
+            else -> {
+                // 1.19 >
+                packet(PacketType.Play.Server.SPAWN_ENTITY) {
                     integers[0] = entityId
 
-                    entityTypeModifier[0] = EntityType.DROPPED_ITEM
+                    entityTypeModifier[0] = entityType
 
                     uuiDs[0] = UUID.randomUUID()
 
@@ -328,53 +366,39 @@ class ProtocolLibPackets : IPacket {
                     doubles[1] = location.y
                     doubles[2] = location.z
 
-                    integers[2] = convertVelocity(0.0)
-                    integers[3] = convertVelocity(0.0)
-                    integers[4] = convertVelocity(0.0)
                 }
-            }
-        } else {
-            // 1.19 >
-            packet(PacketType.Play.Server.SPAWN_ENTITY) {
-                integers[0] = entityId
-
-                entityTypeModifier[0] = entityType
-
-                uuiDs[0] = UUID.randomUUID()
-
-                doubles[0] = location.x
-                doubles[1] = location.y
-                doubles[2] = location.z
-
             }
         }
         packet.send(player)
     }
 
     override fun teleport(player: Player, entityId: Int, location: Location) {
-        val packet = if(VersionUtil.CLEAN_VERSION in VersionEnum.V1_8..VersionEnum.V1_8) {
-            packet(PacketType.Play.Server.ENTITY_TELEPORT) {
-                integers[0] = entityId
-                integers[1] = location.x.fixCoordinate
-                integers[2] = location.y.fixCoordinate
-                integers[3] = location.z.fixCoordinate
-                bytes[0] = location.yaw.toDouble().compressAngle
-                bytes[1] = location.pitch.toDouble().compressAngle
-                booleans[0] = false
+        val packet = when (VersionUtil.CLEAN_VERSION) {
+            in VersionEnum.V1_8..VersionEnum.V1_8 -> {
+                packet(PacketType.Play.Server.ENTITY_TELEPORT) {
+                    integers[0] = entityId
+                    integers[1] = location.x.fixCoordinate
+                    integers[2] = location.y.fixCoordinate
+                    integers[3] = location.z.fixCoordinate
+                    bytes[0] = location.yaw.toDouble().compressAngle
+                    bytes[1] = location.pitch.toDouble().compressAngle
+                    booleans[0] = false
+                }
             }
-        } else {
-            // 1.19 >
-            packet(PacketType.Play.Server.ENTITY_TELEPORT) {
-                integers[0] = entityId
+            else -> {
+                // 1.19 >
+                packet(PacketType.Play.Server.ENTITY_TELEPORT) {
+                    integers[0] = entityId
 
-                doubles[0] = location.x
-                doubles[1] = location.y
-                doubles[2] = location.z
+                    doubles[0] = location.x
+                    doubles[1] = location.y
+                    doubles[2] = location.z
 
-                bytes[0] = location.yaw.toDouble().compressAngle
-                bytes[1] = location.pitch.toDouble().compressAngle
+                    bytes[0] = location.yaw.toDouble().compressAngle
+                    bytes[1] = location.pitch.toDouble().compressAngle
 
-                booleans[0] = false
+                    booleans[0] = false
+                }
             }
         }
 
