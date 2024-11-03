@@ -20,13 +20,21 @@
 
 plugins {
     id("buildlogic.java-conventions")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 dependencies {
-    api(libs.org.jetbrains.kotlin.kotlin.stdlib)
-    api(project(":holoeasy-core"))
-    api(libs.com.github.retrooper.packetevents.spigot)
+    implementation(libs.org.jetbrains.kotlin.kotlin.stdlib)
+    implementation(project(":holoeasy-core"))
+    implementation(libs.com.github.retrooper.packetevents.spigot)
     compileOnly(libs.org.spigotmc.spigot.api)
 }
 
 description = "holoeasy-example-packetevents"
+
+tasks {
+    shadowJar {
+
+    }
+}
+

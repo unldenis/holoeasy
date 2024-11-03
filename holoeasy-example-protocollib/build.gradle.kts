@@ -23,8 +23,8 @@ plugins {
 }
 
 dependencies {
-    api(libs.org.jetbrains.kotlin.kotlin.stdlib)
-    api(project(":holoeasy-core"))
+    implementation(libs.org.jetbrains.kotlin.kotlin.stdlib)
+    implementation(project(":holoeasy-core"))
     compileOnly(libs.org.spigotmc.spigot.api)
 }
 

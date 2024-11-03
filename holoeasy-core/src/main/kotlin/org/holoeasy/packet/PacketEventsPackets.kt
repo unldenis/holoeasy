@@ -7,6 +7,7 @@ import com.github.retrooper.packetevents.protocol.player.EquipmentSlot
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
 import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentSerializer
+import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
@@ -155,7 +156,7 @@ class PacketEventsPackets : IPacket {
                     EntityData(
                         2,
                         EntityDataTypes.OPTIONAL_ADV_COMPONENT,
-                        Optional.of(Component.text(nameTag))
+                        Optional.of(LegacyComponentSerializer.legacyAmpersand().deserialize(nameTag))
                     )
                 )
 
