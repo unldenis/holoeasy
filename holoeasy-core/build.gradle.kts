@@ -36,4 +36,12 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
+
+tasks.register("printVersion") {
+    doLast {
+        println(project.version)
+    }
+}
+
+
 description = "holoeasy-core"

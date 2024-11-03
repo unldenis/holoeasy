@@ -20,12 +20,34 @@
 
 plugins {
     id("buildlogic.java-conventions")
+    `kotlin-dsl`
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 dependencies {
     implementation(libs.org.jetbrains.kotlin.kotlin.stdlib)
-    implementation(project(":holoeasy-core"))
+    implementation(project(":holoeasy-core")) {
+        // Set the transitive dependency to false to avoid shading HoloEasy dependencies
+        isTransitive = false
+    }
     compileOnly(libs.org.spigotmc.spigot.api)
 }
 
 description = "holoeasy-example-protocollib"
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+tasks {
+    shadowJar {
+        archiveClassifier.set("shadow")
+        archiveVersion.set("${project.version}")
+
+        // It is important to relocate org.holoeasy to avoid conflicts with other plugins
+        //relocate("org.holoeasy", "<your package name>.holoeasy")
+        relocate("net.kyori", "org.holoeasy.plugin.kyori")
+    }
+}
