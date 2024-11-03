@@ -63,9 +63,3 @@ publishing {
         from(components["java"])
     }
 }
-
-tasks.register("printVersion") {
-    doLast {
-        println(project.version)
-    }
-}
