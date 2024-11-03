@@ -4,6 +4,7 @@ package org.holoeasy.plugin;
 import com.github.retrooper.packetevents.PacketEvents;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,7 +19,6 @@ import org.holoeasy.packet.PacketImpl;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
 import org.jetbrains.annotations.NotNull;
-
 
 
 public class ExamplePlugin extends JavaPlugin {
@@ -79,9 +79,9 @@ public class ExamplePlugin extends JavaPlugin {
 
         private final MutableState<Integer> clickCount = mutableStateOf(0); // can be any type
 
-        public ITextLine counter = textLine("Clicked {} times", new TextLineModifiers()
-                        .args(clickCount)
-                        .clickable(player -> clickCount.update(it -> it + 1)));
+        public ITextLine counter = textLine(ChatColor.translateAlternateColorCodes('&', "&7Clicked {} times"), new TextLineModifiers()
+                .args(clickCount)
+                .clickable(player -> clickCount.update(it -> it + 1)));
         public ILine<ItemStack> status = blockLine(new ItemStack(Material.RED_DYE));
 
         public MyHolo(@NotNull Location location) {
@@ -89,7 +89,6 @@ public class ExamplePlugin extends JavaPlugin {
         }
 
     }
-
 
 
 }
