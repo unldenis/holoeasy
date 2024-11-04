@@ -1,6 +1,10 @@
 package org.holoeasy
 
 
+import org.bukkit.Chunk
+import org.bukkit.Location
+import org.bukkit.World
+import org.bukkit.entity.Entity
 import org.bukkit.plugin.Plugin
 import org.holoeasy.action.ClickAction
 import org.holoeasy.hologram.Hologram
@@ -9,13 +13,16 @@ import org.holoeasy.packet.PacketImpl
 import org.holoeasy.pool.HologramPool
 import org.holoeasy.pool.IHologramPool
 import org.holoeasy.pool.InteractiveHologramPool
+import org.holoeasy.util.scheduler.MinecraftScheduler
 
 
 object HoloEasy {
 
     private var PLUGIN: Plugin? = null
 
-    private var PACKET_IMPL : IPacket? = null
+    private var PACKET_IMPL: IPacket? = null
+
+    private var SCHEDULER: MinecraftScheduler<Plugin, Location, World, Chunk, Entity>? = null
 
     fun plugin(): Plugin {
         if (PLUGIN == null) {
@@ -24,18 +31,30 @@ object HoloEasy {
         return PLUGIN!!
     }
 
-    fun packetImpl() : IPacket {
+    fun packetImpl(): IPacket {
         if (PACKET_IMPL == null) {
             throw IllegalStateException("HoloEasy PacketImpl is not set")
         }
         return PACKET_IMPL!!
     }
 
+    fun scheduler(): MinecraftScheduler<Plugin, Location, World, Chunk, Entity> {
+        if (SCHEDULER == null) {
+            throw IllegalStateException("HoloEasy Scheduler is not set")
+        }
+        return SCHEDULER!!
+    }
+
     @JvmStatic
     @JvmOverloads
-    fun bind(plugin: Plugin, packetImpl : PacketImpl = PacketImpl.ProtocolLib) {
+    fun bind(
+        plugin: Plugin,
+        packetImpl: PacketImpl = PacketImpl.ProtocolLib,
+        scheduler: MinecraftScheduler<Plugin, Location, World, Chunk, Entity>
+    ) {
         this.PLUGIN = plugin
         this.PACKET_IMPL = packetImpl.impl
+        this.SCHEDULER = scheduler
     }
 
     @JvmStatic

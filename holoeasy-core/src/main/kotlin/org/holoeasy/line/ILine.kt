@@ -2,11 +2,10 @@ package org.holoeasy.line
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
-import org.bukkit.scheduler.BukkitTask
 import org.holoeasy.animation.Animations
 import org.holoeasy.hologram.Hologram
 import org.holoeasy.reactive.Observer
+import org.holoeasy.util.scheduler.SchedulerTask
 import org.jetbrains.annotations.ApiStatus
 
 interface ILine<T : Any> {
@@ -15,7 +14,7 @@ interface ILine<T : Any> {
 
         lateinit var hologram: Hologram
 
-        var animationTask: BukkitTask? = null
+        var animationTask: SchedulerTask? = null
 
         override fun observerUpdate() {
             for (player in hologram.pvt.seeingPlayers) {
@@ -57,7 +56,7 @@ interface ILine<T : Any> {
         pvt.animationTask = null
     }
 
-    fun update(value : T)
+    fun update(value: T)
 
 
     enum class Type {
