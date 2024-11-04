@@ -70,12 +70,9 @@ class MinecraftFoliaScheduler : MinecraftScheduler<Plugin, Location, World, Chun
      * @param delay  The delay before the task is executed.
      */
     override fun createAsyncDelayedTask(plugin: Plugin, task: Runnable, delay: Long): SchedulerTask {
+        val delayNanos = delay * 50_000_000L
         return FoliaSchedulerTask(
-            Bukkit.getAsyncScheduler().runDelayed(
-                plugin, { task.run() },
-                delay / 20,
-                TimeUnit.SECONDS
-            )
+            Bukkit.getAsyncScheduler().runDelayed(plugin, { task.run() }, delayNanos, TimeUnit.NANOSECONDS)
         )
     }
 
@@ -90,13 +87,12 @@ class MinecraftFoliaScheduler : MinecraftScheduler<Plugin, Location, World, Chun
      * @param period The time between successive executions.
      */
     override fun createAsyncRepeatingTask(plugin: Plugin, task: Runnable, delay: Long, period: Long): SchedulerTask {
+        // Convert delay and period from ticks to nanoseconds
+        val delayNanos = delay * 50_000_000L
+        val periodNanos = period * 50_000_000L
         return FoliaSchedulerTask(
-            Bukkit.getAsyncScheduler().runAtFixedRate(
-                plugin, { task.run() },
-                delay / 20,
-                period / 20,
-                TimeUnit.SECONDS
-            )
+            Bukkit.getAsyncScheduler()
+                .runAtFixedRate(plugin, { task.run() }, delayNanos, periodNanos, TimeUnit.NANOSECONDS)
         )
     }
 
