@@ -22,4 +22,4 @@ rootProject.name = "holoeasy"
 include(":holoeasy-core")
 include(":holoeasy-example-packetevents")
 include(":holoeasy-example-protocollib")
-include("holoeasy-folia")
+include(":holoeasy-folia")
