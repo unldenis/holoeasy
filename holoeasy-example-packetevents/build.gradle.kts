@@ -29,9 +29,17 @@ dependencies {
         // Set the transitive dependency to false to avoid shading HoloEasy dependencies
         isTransitive = false
     }
+    implementation(project(":holoeasy-folia")) {
+        // Set the transitive dependency to false to avoid shading HoloEasy dependencies
+        isTransitive = false
+    }
     implementation(libs.com.github.retrooper.packetevents.spigot)
     compileOnly(libs.org.spigotmc.spigot.api)
 }
+
+// Folia requires Java 17
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
 description = "holoeasy-example-packetevents"
 

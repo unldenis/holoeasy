@@ -3,11 +3,11 @@ package org.holoeasy.plugin;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
 import org.holoeasy.builder.TextLineModifiers;
@@ -18,6 +18,8 @@ import org.holoeasy.packet.PacketImpl;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
 import org.holoeasy.util.scheduler.MinecraftBukkitScheduler;
+import org.holoeasy.util.scheduler.MinecraftFoliaScheduler;
+import org.holoeasy.util.scheduler.MinecraftScheduler;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -43,7 +45,13 @@ public class ExamplePlugin extends JavaPlugin {
         PacketEvents.getAPI().init();
 
         // ** Bind the library
-        HoloEasy.bind(this, PacketImpl.PacketEvents, new MinecraftBukkitScheduler());
+        MinecraftScheduler<Plugin, Location, World, Chunk, Entity> scheduler;
+        if (isFolia()) {
+            scheduler = new MinecraftFoliaScheduler();
+        } else {
+            scheduler = new MinecraftBukkitScheduler();
+        }
+        HoloEasy.bind(this, PacketImpl.PacketEvents, scheduler);
         // For Folia use new MinecraftFoliaScheduler()
 
         // ** Create a MyHolo Pool, why not?
@@ -74,6 +82,15 @@ public class ExamplePlugin extends JavaPlugin {
             }
 
         }, 20L * 30);
+    }
+
+    public boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
 
