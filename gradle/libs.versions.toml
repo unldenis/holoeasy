@@ -1,6 +1,6 @@
 [versions]
 com-comphenix-protocol-protocollib = "5.3.0"
-com-github-retrooper-packetevents-spigot = "2.5.0"
+com-github-retrooper-packetevents-spigot = "2.6.0"
 org-jetbrains-kotlin-kotlin-stdlib = "1.9.21"
 org-spigotmc-spigot-api = "1.16.5-R0.1-SNAPSHOT"
 dev-folia-folia-api = "1.19.4-R0.1-SNAPSHOT"
