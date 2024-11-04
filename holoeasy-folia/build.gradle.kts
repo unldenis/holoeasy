@@ -18,8 +18,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "holoeasy"
-include(":holoeasy-core")
-include(":holoeasy-example-packetevents")
-include(":holoeasy-example-protocollib")
-include("holoeasy-folia")
+plugins {
+    `kotlin-dsl`
+    id("buildlogic.java-conventions")
+}
+
+dependencies {
+    compileOnly(project(":holoeasy-core"))
+    compileOnly(libs.org.jetbrains.kotlin.kotlin.stdlib)
+    compileOnly(libs.dev.folia.folia.api)
+}
+
+kotlin.jvmToolchain(17)
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+description = "holoeasy-folia"
