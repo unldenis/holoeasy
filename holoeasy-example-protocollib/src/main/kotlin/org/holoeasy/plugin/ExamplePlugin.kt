@@ -10,13 +10,14 @@ import org.holoeasy.HoloEasy
 import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.hologram.Hologram
 import org.holoeasy.packet.PacketImpl
+import org.holoeasy.util.scheduler.MinecraftBukkitScheduler
 
 class ExamplePlugin : JavaPlugin() {
 
     override fun onEnable() {
 
         // ** Bind the library
-        HoloEasy.bind(this, PacketImpl.ProtocolLib)
+        HoloEasy.bind(this, PacketImpl.ProtocolLib, MinecraftBukkitScheduler())
 
         getCommand("hologram")?.setExecutor { sender, _, _, _ ->
 
@@ -34,7 +35,7 @@ class ExamplePlugin : JavaPlugin() {
             hologram.hide()
 
             // ** Deserialize the previous hologram
-            val deserialized : HelloWorldHologram = Hologram.deserialize(serialized)
+            val deserialized: HelloWorldHologram = Hologram.deserialize(serialized)
 
             // ** Show it
             deserialized.show()
@@ -52,7 +53,7 @@ class ExamplePlugin : JavaPlugin() {
             .args(clickCount)
             .clickable { _ -> clickCount.update { it + 1 } })
 
-        var status= blockLine(ItemStack(Material.RED_DYE))
+        var status = blockLine(ItemStack(Material.RED_DYE))
 
     }
 
