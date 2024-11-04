@@ -3,7 +3,6 @@ package org.holoeasy.plugin;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,6 +17,7 @@ import org.holoeasy.line.ITextLine;
 import org.holoeasy.packet.PacketImpl;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
+import org.holoeasy.util.scheduler.MinecraftBukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -34,6 +34,7 @@ public class ExamplePlugin extends JavaPlugin {
     public void onDisable() {
         //Terminate the instance (clean up process)
         PacketEvents.getAPI().terminate();
+        HoloEasy.INSTANCE.scheduler().cancelTasks(this);
     }
 
     @Override
@@ -42,7 +43,8 @@ public class ExamplePlugin extends JavaPlugin {
         PacketEvents.getAPI().init();
 
         // ** Bind the library
-        HoloEasy.bind(this, PacketImpl.PacketEvents);
+        HoloEasy.bind(this, PacketImpl.PacketEvents, new MinecraftBukkitScheduler());
+        // For Folia use new MinecraftFoliaScheduler()
 
         // ** Create a MyHolo Pool, why not?
         IHologramPool<MyHolo> myPool = HoloEasy.startInteractivePool(60);
@@ -62,7 +64,7 @@ public class ExamplePlugin extends JavaPlugin {
 
 
         // ** Why not update all holograms 'status' item after 30 seconds?
-        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+        HoloEasy.INSTANCE.scheduler().createAsyncDelayedTask(this, () -> {
 
 
             for (MyHolo hologram : myPool.getHolograms()) {
