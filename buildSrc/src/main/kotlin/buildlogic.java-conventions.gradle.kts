@@ -55,7 +55,7 @@ dependencies {
 }
 
 group = "org.holoeasy"
-version = "4.3.0"
+version = "4.3.1"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {
