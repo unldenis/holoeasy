@@ -1,5 +1,5 @@
 [versions]
-com-comphenix-protocol-protocollib = "5.3.0"
+com-comphenix-protocol-protocollib = "5.2.0-SNAPSHOT"
 com-github-retrooper-packetevents-spigot = "2.5.0"
 org-jetbrains-kotlin-kotlin-stdlib = "1.9.21"
 org-spigotmc-spigot-api = "1.16.5-R0.1-SNAPSHOT"
