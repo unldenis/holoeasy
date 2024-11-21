@@ -3,9 +3,9 @@ package org.holoeasy.reactive
 import java.util.function.Function
 
 
-data class MutableState<T>(private var value : T) {
+data class MutableState<T>(private var value: T) {
 
-    private val observers= mutableListOf<Observer>()
+    private val observers = mutableListOf<Observer>()
 
     // TODO: mutable states like jetpack compose
 //    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
@@ -16,16 +16,16 @@ data class MutableState<T>(private var value : T) {
 //        this.set(value)
 //    }
 
-    fun get() : T {
+    fun get(): T {
         return value
     }
 
-    fun set(newValue : T) {
+    fun set(newValue: T) {
         value = newValue
         this.notifyObservers()
     }
 
-    fun update(newFun : Function<T, T>) {
+    fun update(newFun: Function<T, T>) {
         set(newFun.apply(get()))
     }
 

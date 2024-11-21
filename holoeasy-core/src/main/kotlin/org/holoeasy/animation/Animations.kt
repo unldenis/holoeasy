@@ -1,34 +1,27 @@
 package org.holoeasy.animation
 
-import org.bukkit.Bukkit
-
 import org.bukkit.scheduler.BukkitTask
 import org.holoeasy.HoloEasy
-import org.holoeasy.line.ILine
+import org.holoeasy.line.LineImpl
+import org.holoeasy.util.BukkitFuture
 
-enum class Animations(val task : (ILine<*>) -> BukkitTask) {
+enum class Animations(val task: (LineImpl<*>) -> BukkitTask) {
 
     CIRCLE({ line ->
-        val holo = line.pvt.hologram
+        val holo = line.hologram
         var yaw = 0.0
 
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(HoloEasy.plugin(), java.lang.Runnable {
-
-
+        BukkitFuture.runTaskTimerAsynchronously(2, 2) {
             holo.pvt.seeingPlayers.forEach { player ->
-
                 HoloEasy.packetImpl()
-                    .rotate(player, line.entityId, yaw = yaw)
-
+                    .rotate(player, line.entityID, yaw = yaw)
             }
 
             yaw += 10
-        }, 2, 2)
+        }
 
     })
     ;
-
 
 
 }

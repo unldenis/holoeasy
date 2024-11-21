@@ -109,6 +109,7 @@
                     <ul class="uk-nav-sub">
                         <li><a href="../base-concepts">Base Concepts</a></li>
                         <li><a href="../textline">TextLine</a></li>
+                        <li><a href="../itemline">ItemLine</a></li>
                         <li><a href="../blockline">BlockLine</a></li>
                         <li><a href="../state">State</a></li>
                         <li><a href="../animation">Animation</a></li>
@@ -125,6 +126,20 @@
             <div class="uk-container">
 
                 <h1 class="uk-h1"> Changelog </h1>
+
+                <h2 class="uk-h2 uk-margin-medium" id="v430">v4.3.0</h2>
+                <p class="uk-paragraph"><strong>November 21, 2024</strong></p>
+                <p class="uk-paragraph"><strong>Major non-breaking changes:</strong></p>
+                <ul class="uk-margin uk-list uk-list-bullet">
+                    <li>Now when creating a hologram use the <code class="uk-codespan">blockLine</code> method for the blocks, and the <code class="uk-codespan">itemLine</code> method for the dropped items.</li>
+                </ul>
+                <p class="uk-paragraph"><strong>Minor non-breaking changes:</strong></p>
+                <ul class="uk-margin uk-list uk-list-bullet">
+                    <li>ILine interface renamed to <code class="uk-codespan">Line</code></li>
+                    <li><code class="uk-codespan">Line</code> interface now exposes only usable methods, not internal ones.</li>
+                </ul>
+
+                <hr class="uk-divider-icon" />
 
                 <h2 class="uk-h2 uk-margin-medium" id="v421">v4.2.1</h2>
                 <p class="uk-paragraph"><strong>November 4, 2024</strong></p>

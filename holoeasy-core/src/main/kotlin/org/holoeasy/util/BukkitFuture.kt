@@ -20,11 +20,20 @@ package org.holoeasy.util
 
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitTask
+import org.holoeasy.HoloEasy
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 import java.util.function.Supplier
 
 object BukkitFuture {
+
+    fun runTaskTimerAsynchronously(l: Long, l1: Long, task: () -> Unit): BukkitTask {
+        return Bukkit.getScheduler().runTaskTimerAsynchronously(HoloEasy.plugin(), java.lang.Runnable {
+            task.invoke()
+        }, l, l1)
+    }
+
     /**
      * Returns a new CompletableFuture that is asynchronously completed by Bukkit schedule with the
      * value obtained by calling the given Supplier.

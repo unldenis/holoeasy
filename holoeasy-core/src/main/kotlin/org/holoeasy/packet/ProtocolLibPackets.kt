@@ -13,23 +13,16 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.holoeasy.HoloEasy
 import org.holoeasy.ext.*
-import org.holoeasy.ext.bukkitGeneric
-import org.holoeasy.ext.send
-import org.holoeasy.ext.setBool
 import org.holoeasy.util.*
-import org.holoeasy.util.BOOL_SERIALIZER
-import org.holoeasy.util.BYTE_SERIALIZER
-import org.holoeasy.util.ITEM_SERIALIZER
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.min
 
 class ProtocolLibPackets : IPacket {
     override fun deletePacket(player: Player, entityId: Int) {
 
-        val packet = if(VersionUtil.isBelow(VersionEnum.V1_16)) {
+        val packet = if (VersionUtil.isBelow(VersionEnum.V1_16)) {
             packet(PacketType.Play.Server.ENTITY_DESTROY) {
                 integerArrays[0] = intArrayOf(entityId)
             }
@@ -54,6 +47,7 @@ class ProtocolLibPackets : IPacket {
                     itemModifier[0] = helmet
                 }
             }
+
             VersionUtil.CLEAN_VERSION in VersionEnum.V1_9..VersionEnum.V1_12 -> {
                 packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
                     integers[0] = entityId
@@ -63,6 +57,7 @@ class ProtocolLibPackets : IPacket {
                     itemModifier[0] = helmet
                 }
             }
+
             else -> {
                 // 1_13 >
                 packet(PacketType.Play.Server.ENTITY_EQUIPMENT) {
@@ -91,6 +86,7 @@ class ProtocolLibPackets : IPacket {
                     watchableCollectionModifier[0] = watcher.watchableObjects
                 }
             }
+
             in VersionEnum.V1_9..VersionEnum.V1_12 -> {
                 val watcher = WrappedDataWatcher()
 
@@ -102,6 +98,7 @@ class ProtocolLibPackets : IPacket {
                     watchableCollectionModifier[0] = watcher.watchableObjects
                 }
             }
+
             in VersionEnum.V1_13..VersionEnum.V1_18 -> {
                 val watcher = WrappedDataWatcher()
 
@@ -113,6 +110,7 @@ class ProtocolLibPackets : IPacket {
                     watchableCollectionModifier[0] = watcher.watchableObjects
                 }
             }
+
             in VersionEnum.V1_19..VersionEnum.V1_19 -> {
                 val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
                 packet.integers.write(0, entityId)
@@ -122,7 +120,7 @@ class ProtocolLibPackets : IPacket {
                 val gravity = WrappedDataWatcherObject(
                     5, BOOL_SERIALIZER
                 )
-                watcher.setObject(gravity,true)
+                watcher.setObject(gravity, true)
 
                 val itemSer = WrappedDataWatcherObject(
                     8, ITEM_SERIALIZER
@@ -134,6 +132,7 @@ class ProtocolLibPackets : IPacket {
 
                 packet
             }
+
             else -> {
                 // 1.20 >
                 val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
@@ -164,7 +163,7 @@ class ProtocolLibPackets : IPacket {
                 if (invisible)
                     watcher.setObject(0, 0x20.toByte())
 
-                if(nameTag != null) {
+                if (nameTag != null) {
                     watcher.setObject(2, nameTag)
                     watcher.setObject(3, 1.toByte())
                 }
@@ -174,13 +173,14 @@ class ProtocolLibPackets : IPacket {
                     watchableCollectionModifier[0] = watcher.watchableObjects
                 }
             }
+
             in VersionEnum.V1_9..VersionEnum.V1_12 -> {
                 val watcher = WrappedDataWatcher()
 
-                if(invisible)
+                if (invisible)
                     watcher.setByte(0, 0x20.toByte())
 
-                if(nameTag != null) {
+                if (nameTag != null) {
                     watcher.setString(2, nameTag)
                     watcher.setBool(3, true)
                 }
@@ -191,13 +191,14 @@ class ProtocolLibPackets : IPacket {
                     watchableCollectionModifier[0] = watcher.watchableObjects
                 }
             }
+
             in VersionEnum.V1_13..VersionEnum.V1_18 -> {
                 val watcher = WrappedDataWatcher()
 
-                if(invisible)
+                if (invisible)
                     watcher.setByte(0, 0x20.toByte())
 
-                if(nameTag != null) {
+                if (nameTag != null) {
                     watcher.setChatComponent(2, nameTag)
                     watcher.setBool(3, true)
                 }
@@ -206,16 +207,17 @@ class ProtocolLibPackets : IPacket {
                     watchableCollectionModifier[0] = watcher.watchableObjects
                 }
             }
+
             in VersionEnum.V1_19..VersionEnum.V1_19 -> {
                 val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
                 packet.integers.write(0, entityId)
 
                 val watcher = WrappedDataWatcher()
 
-                if(invisible)
+                if (invisible)
                     watcher.setByte(0, 0x20.toByte())
 
-                if(nameTag != null) {
+                if (nameTag != null) {
                     watcher.setChatComponent(2, nameTag)
                     watcher.setBool(3, true)
                 }
@@ -225,6 +227,7 @@ class ProtocolLibPackets : IPacket {
 
                 packet
             }
+
             else -> {
                 // 1.20 >
                 val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
@@ -237,7 +240,7 @@ class ProtocolLibPackets : IPacket {
 
 
 
-                if(invisible) {
+                if (invisible) {
                     wrappedDataValueList.add(
                         WrappedDataValue(0, BYTE_SERIALIZER, 0x20.toByte())
                     )
@@ -298,6 +301,7 @@ class ProtocolLibPackets : IPacket {
                     dataWatcherModifier[0] = defaultDataWatcher
                 }
             }
+
             in VersionEnum.V1_9..VersionEnum.V1_15 -> {
                 val extraData = 1
 
@@ -305,7 +309,7 @@ class ProtocolLibPackets : IPacket {
                     modifier.writeDefaults()
 
                     integers[0] = entityId
-                    integers[1] = if(entityType == EntityType.ARMOR_STAND)
+                    integers[1] = if (entityType == EntityType.ARMOR_STAND)
                         VersionUtil.CLEAN_VERSION.armorstandId else VersionUtil.CLEAN_VERSION.droppedItemId
                     integers[2] = extraData
 
@@ -316,10 +320,11 @@ class ProtocolLibPackets : IPacket {
                     doubles[2] = location.z
                 }
             }
+
             in VersionEnum.V1_16..VersionEnum.V1_18 -> {
                 val extraData = 1
 
-                if(entityType == EntityType.ARMOR_STAND) {
+                if (entityType == EntityType.ARMOR_STAND) {
                     packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
                         modifier.writeDefaults()
 
@@ -353,6 +358,7 @@ class ProtocolLibPackets : IPacket {
                     }
                 }
             }
+
             else -> {
                 // 1.19 >
                 packet(PacketType.Play.Server.SPAWN_ENTITY) {
@@ -385,6 +391,7 @@ class ProtocolLibPackets : IPacket {
                     booleans[0] = false
                 }
             }
+
             else -> {
                 // 1.19 >
                 packet(PacketType.Play.Server.ENTITY_TELEPORT) {
@@ -435,6 +442,7 @@ class ProtocolLibPackets : IPacket {
         */
         return (clamp(velocity, -3.9, 3.9) * 8000).toInt()
     }
+
     private fun clamp(targetNum: Double, min: Double, max: Double): Double {
         // Makes sure a number is within a range
         return max(min, min(targetNum, max))

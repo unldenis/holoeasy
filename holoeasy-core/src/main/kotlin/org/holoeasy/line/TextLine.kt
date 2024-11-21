@@ -4,134 +4,130 @@ import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.holoeasy.HoloEasy
+import org.holoeasy.hologram.Hologram
 import org.holoeasy.reactive.MutableState
 import org.holoeasy.util.AABB
 
-class TextLine(
-    obj: String,
-    override val args: Array<*>? = null,
-    override val clickable: Boolean = false
-) : ITextLine {
+open class TextLine(
+    hologram: Hologram,
+    text: String,
+    args: Array<*>? = null,
+    val clickable: Boolean
+) : LineImpl<String>(hologram, EntityType.ARMOR_STAND) {
 
-    private val line: Line = Line(EntityType.ARMOR_STAND)
+    override var value: String = ""
+
+    private val args: Array<*>?
     private var firstRender = true
-    var hitbox: AABB? = null
-        private set
     private var isEmpty = false
+    var hitbox: AABB? = null
+        protected set
+    var clickEvent: ClickEvent? = null
 
-    override var clickEvent : ClickEvent? = null
+    init {
+        this.value = text
 
-    override val textLine: TextLine
-        get() = this
+        this.args = args
 
-    override fun parse(player: Player): String {
         if (args == null) {
-            return pvt.obj
+            this.value = text
+        } else {
+            this.value = text.replace("{}", "%s")
+        }
+    }
+
+
+
+    fun parse(player: Player): String {
+        if (args == null) {
+            return value
         }
         val res = arrayOfNulls<Any>(args.size)
         for (i in args.indices) {
             val tmp = args[i]
-            if(tmp is MutableState<*>) {
+            if (tmp is MutableState<*>) {
                 res[i] = tmp.get()
-                if(firstRender) {
+                if (firstRender) {
                     firstRender = false
-                    tmp.addObserver(pvt)
+                    tmp.addObserver(this)
                 }
             } else {
                 res[i] = tmp
             }
         }
 
-        return String.format(pvt.obj, args = res)
+        return String.format(value, args = res)
     }
 
 
-    override val type: ILine.Type
-        get() = ILine.Type.TEXT_LINE
-    override val entityId: Int
-        get() = line.entityID
-    override val location: Location?
-        get() = line.location
+    override val type: Type = Type.TEXT_LINE
 
 
-    @Deprecated("Internal")
-    override var pvt = object  : ILine.PrivateConfig<String>() {
-        override var obj: String = ""
+    override fun setCurrentLocation(value: Location) {
+        super.setCurrentLocation(value)
 
-        init {
-            if (args == null) {
-                this.obj = obj
-            } else {
-                this.obj = obj.replace("{}", "%s")
+        if (clickable) {
+            val chars = this.value.length.toDouble()
+            val size = 0.105
+            val dist = size * (chars / 2.0)
+
+            hitbox = AABB(
+                AABB.Vec3D(-dist, -0.040, -dist),
+                AABB.Vec3D(dist, +0.040, dist)
+            ).also {
+                it.translate(AABB.Vec3D.fromLocation(value.clone().add(0.0, 2.35, 0.0)))
             }
         }
+    }
 
-        override fun setLocation(value: Location) {
-            line.location = value
-            if (clickable) {
-                val chars = obj.length.toDouble()
-                val size = 0.105
-                val dist = size * (chars / 2.0)
 
-                hitbox = AABB(
-                    AABB.Vec3D(-dist, -0.040, -dist),
-                    AABB.Vec3D(dist, +0.040, dist)
-                ).also {
-                    it.translate(AABB.Vec3D.fromLocation(value.clone().add(0.0, 2.35, 0.0)))
-                }
-            }
+    override fun show(player: Player) {
+        isEmpty = value.isEmpty()
+        if (!isEmpty) {
+            spawn(player)
+
+            HoloEasy.packetImpl()
+                .metadataText(player, entityID, nameTag = parse(player))
         }
+    }
 
-        override fun show(player: Player) {
-            isEmpty = obj.isEmpty()
-            if (!isEmpty) {
-                line.spawn(player)
+
+    override fun hide(player: Player) {
+        destroy(player)
+    }
+
+
+
+    override fun update(player: Player) {
+        val spawnBefore = ((if (isEmpty) 1 else 0) or ((if (value.isEmpty()) 1 else 0) shl 1))
+        /*  0x00  = is already showed
+            0x01  = is hided but now has changed
+            0x02  = is already showed but is empty
+            0x03  = is hided and isn't changed      */
+        when (spawnBefore) {
+            0x03 -> {}
+            0x02 -> {
+                destroy(player)
+                isEmpty = true
+            }
+
+            0x01 -> {
+                spawn(player)
+                isEmpty = false
 
                 HoloEasy.packetImpl()
-                    .metadataText(player, entityId, nameTag =  parse(player))
+                    .metadataText(player, entityID, nameTag = parse(player))
             }
+
+            0x00 ->
+                HoloEasy.packetImpl()
+                    .metadataText(player, entityID, nameTag = parse(player), invisible = false)
         }
-
-        override fun hide(player: Player) {
-            line.destroy(player)
-        }
-
-        override fun teleport(player: Player) {
-            line.teleport(player)
-        }
-
-        override fun update(player: Player) {
-            val spawnBefore = ((if (isEmpty) 1 else 0) or ((if (obj.isEmpty()) 1 else 0) shl 1))
-            /*  0x00  = is already showed
-                0x01  = is hided but now has changed
-                0x02  = is already showed but is empty
-                0x03  = is hided and isn't changed      */
-            when (spawnBefore) {
-                0x03 -> {}
-                0x02 -> {
-                    line.destroy(player)
-                    isEmpty = true
-                }
-
-                0x01 -> {
-                    line.spawn(player)
-                    isEmpty = false
-
-                    HoloEasy.packetImpl()
-                        .metadataText(player, entityId, nameTag = parse(player))
-                }
-
-                0x00 ->
-                    HoloEasy.packetImpl()
-                        .metadataText(player, entityId, nameTag = parse(player), invisible = false)
-            }
-        }
-
     }
 
     override fun update(value: String) {
-        pvt.obj = value
-        pvt.observerUpdate()
+        this.value = value
+        observerUpdate()
     }
 
 }

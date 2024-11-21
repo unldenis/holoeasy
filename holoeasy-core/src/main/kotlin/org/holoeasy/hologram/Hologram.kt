@@ -4,7 +4,6 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.holoeasy.HoloEasy
-import org.holoeasy.builder.BlockLineModifiers
 import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.line.*
 import org.holoeasy.pool.IHologramPool
@@ -22,13 +21,12 @@ open class Hologram @JvmOverloads constructor(
 ) {
 
     @Internal
-    @Deprecated("Internal")
     val pvt = PrivateConfig(this, showEvent, hideEvent)
     val id = UUID.randomUUID()!!
     var location: Location = location
         private set
     private val stateVars = mutableListOf<MutableState<*>>()
-    val lines: MutableList<ILine<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
+    val lines: MutableList<Line<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
 
     // if is first loaded
     private var loaded = false
@@ -41,37 +39,42 @@ open class Hologram @JvmOverloads constructor(
         return state
     }
 
-    @JvmOverloads
-    protected fun blockLine(item: ItemStack, modifiers: BlockLineModifiers = BlockLineModifiers()): ILine<ItemStack> {
-        val line = if (modifiers.blockType) {
-            BlockLine(item)
-        } else {
-            ItemLine(item)
-        }
+    protected fun blockLine(item: ItemStack): Line<ItemStack> {
+        val line = BlockLine(hologram = this, obj = item)
         lines.add(line)
-        line.pvt.hologram = this
+        return line
+    }
+
+    protected fun itemLine(item: ItemStack): Line<ItemStack> {
+        val line = ItemLine(hologram = this, obj = item)
+        lines.add(line)
         return line
     }
 
     @JvmOverloads
-    protected fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers()): ITextLine {
+    protected fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers()): Line<String> {
         val line = if (modifiers.clickable) {
             if (modifiers.clickableWithoutPool) {
-                val textLine = TextLine(text, clickable = false, args = modifiers.args)
                 val clickableTextLine =
-                    ClickableTextLine(textLine, modifiers.minHitDistance, modifiers.maxHitDistance)
+                    ClickableTextLine(
+                        hologram = this,
+                        text = text,
+                        args = modifiers.args,
+                        clickable = false,
+                        minHitDistance = modifiers.minHitDistance,
+                        maxHitDistance = modifiers.maxHitDistance,
+                    )
                 modifiers.clickEvent?.let { clickableTextLine.clickEvent = it }
                 clickableTextLine
             } else {
-                val textLine = TextLine(text, clickable = true, args = modifiers.args)
+                val textLine = TextLine(hologram = this, text = text, clickable = true, args = modifiers.args)
                 modifiers.clickEvent?.let { textLine.clickEvent = it }
                 textLine
             }
         } else {
-            TextLine(text, clickable = false, args = modifiers.args)
+            TextLine(hologram = this, text = text, clickable = false, args = modifiers.args)
         }
         lines.add(line)
-        line.pvt.hologram = this
         return line
     }
 
@@ -100,7 +103,7 @@ open class Hologram @JvmOverloads constructor(
 
         pvt.seeingPlayers.add(player)
         for (line in lines) {
-            line.pvt.show(player)
+            (line as LineImpl).show(player)
         }
 
         pvt.showEvent?.onShow(player)
@@ -108,7 +111,7 @@ open class Hologram @JvmOverloads constructor(
 
     fun hide(player: Player) {
         for (line in lines) {
-            line.pvt.hide(player)
+            (line as LineImpl).hide(player)
         }
         pvt.seeingPlayers.remove(player)
 
@@ -144,7 +147,7 @@ open class Hologram @JvmOverloads constructor(
         val result = LinkedHashMap<String, Any>()
         result["location"] = location
         result["lines"] = lines
-            .map { mapOf("type" to it.type.name, "value" to it.pvt.obj) }
+            .map { mapOf("type" to it.type.name, "value" to it.value) }
         result["stateVars"] = stateVars.map { it.get() }
         return result
     }
@@ -162,23 +165,23 @@ open class Hologram @JvmOverloads constructor(
                 .newInstance(location) as T
 
             for (i in lines.indices) {
-                val type = ILine.Type.valueOf(lines[i]["type"] as String)
+                val type = LineImpl.Type.valueOf(lines[i]["type"] as String)
                 val value = lines[i]["value"]
 
                 when (type) {
-                    ILine.Type.EXTERNAL -> {
-                        val hologramLine = hologram.lines[i] as ILine<Any>
-                        hologramLine.pvt.obj = value as Any
+                    LineImpl.Type.EXTERNAL -> {
+                        val hologramLine = hologram.lines[i] as LineImpl<Any>
+                        hologramLine.value = value as Any
                     }
 
-                    ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
-                        val hologramLine = hologram.lines[i] as ITextLine
-                        hologramLine.pvt.obj = value as String
+                    LineImpl.Type.TEXT_LINE, LineImpl.Type.CLICKABLE_TEXT_LINE -> {
+                        val hologramLine = hologram.lines[i] as TextLine
+                        hologramLine.value = value as String
                     }
 
-                    ILine.Type.ITEM_LINE, ILine.Type.BLOCK_LINE -> {
-                        val hologramLine = hologram.lines[i] as ILine<ItemStack>
-                        hologramLine.pvt.obj = value as ItemStack
+                    LineImpl.Type.ITEM_LINE, LineImpl.Type.BLOCK_LINE -> {
+                        val hologramLine = hologram.lines[i] as LineImpl<ItemStack>
+                        hologramLine.value = value as ItemStack
                     }
                 }
             }

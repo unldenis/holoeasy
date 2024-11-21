@@ -13,27 +13,9 @@ import org.holoeasy.pool.InteractiveHologramPool
 
 object HoloEasy {
 
-    private var PLUGIN: Plugin? = null
-
-    private var PACKET_IMPL : IPacket? = null
-
-    fun plugin(): Plugin {
-        if (PLUGIN == null) {
-            throw IllegalStateException("HoloEasy Plugin is not set")
-        }
-        return PLUGIN!!
-    }
-
-    fun packetImpl() : IPacket {
-        if (PACKET_IMPL == null) {
-            throw IllegalStateException("HoloEasy PacketImpl is not set")
-        }
-        return PACKET_IMPL!!
-    }
-
     @JvmStatic
     @JvmOverloads
-    fun bind(plugin: Plugin, packetImpl : PacketImpl = PacketImpl.ProtocolLib) {
+    fun bind(plugin: Plugin, packetImpl: PacketImpl = PacketImpl.ProtocolLib) {
         this.PLUGIN = plugin
         this.PACKET_IMPL = packetImpl.impl
     }
@@ -68,6 +50,28 @@ object HoloEasy {
             clickAction = clickAction
         )
         return interactivepool
+    }
+
+
+    // Internal
+
+    private var PLUGIN: Plugin? = null
+
+    private var PACKET_IMPL: IPacket? = null
+
+    fun plugin(): Plugin {
+        if (PLUGIN == null) {
+            throw IllegalStateException("HoloEasy Plugin is not set")
+        }
+        return PLUGIN!!
+    }
+
+
+    fun packetImpl(): IPacket {
+        if (PACKET_IMPL == null) {
+            throw IllegalStateException("HoloEasy PacketImpl is not set")
+        }
+        return PACKET_IMPL!!
     }
 
 

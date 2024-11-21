@@ -116,6 +116,7 @@
                     <ul class="uk-nav-sub">
                         <li><a href="../base-concepts">Base Concepts</a></li>
                         <li ><a href="../textline">TextLine</a></li>
+                        <li><a href="../itemline">ItemLine</a></li>
                         <li ><a href="../blockline">BlockLine</a></li>
                         <li ><a href="../state">State</a></li>
                         <li ><a href="../animation">Animation</a></li>
@@ -154,7 +155,7 @@
                 <div class="uk-paragraph">
                 <pre><code class="language-java">public class HelloWorldHologram extends Hologram  {
 
-    ITextLine line = textLine("Hello World");
+    Line&lt;String&gt; line = textLine("Hello World");
 
     public HelloWorldHologram(@NotNull Location location) {
         super(location);

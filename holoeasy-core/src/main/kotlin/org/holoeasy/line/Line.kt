@@ -1,34 +1,24 @@
 package org.holoeasy.line
 
 import org.bukkit.Location
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
-import org.holoeasy.HoloEasy
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
+import org.holoeasy.animation.Animations
 
-class Line( private val entityType: EntityType, var location: Location? = null) {
+interface Line<T> {
 
-    companion object {
-        val IDs_COUNTER = AtomicInteger(Random().nextInt())
-    }
-    val entityID: Int = IDs_COUNTER.getAndIncrement()
+    val type : LineImpl.Type
 
-    fun destroy(player: Player) {
-        HoloEasy.packetImpl()
-            .deletePacket(player, entityID)
-    }
+    val entityID : Int
 
-    fun spawn(player: Player) {
-        HoloEasy.packetImpl()
-            .spawn(player, entityID, entityType,location ?: throw RuntimeException("Forgot the location?") )
-    }
+    val value: T
 
-    fun teleport(player: Player) {
-        HoloEasy.packetImpl()
-            .teleport(player, entityID, location ?: throw RuntimeException("Forgot the location?"))
+    fun currentLocation() : Location?
 
-    }
+    fun update(newValue : T)
+
+    fun setAnimation(animation : Animations)
+
+    fun cancelAnimation()
+
 
 
 }

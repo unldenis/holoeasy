@@ -13,8 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
 import org.holoeasy.builder.TextLineModifiers;
 import org.holoeasy.hologram.Hologram;
-import org.holoeasy.line.ILine;
-import org.holoeasy.line.ITextLine;
+
+import org.holoeasy.line.Line;
 import org.holoeasy.packet.PacketImpl;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.reactive.MutableState;
@@ -79,10 +79,10 @@ public class ExamplePlugin extends JavaPlugin {
 
         private final MutableState<Integer> clickCount = mutableStateOf(0); // can be any type
 
-        public ITextLine counter = textLine(ChatColor.translateAlternateColorCodes('&', "&7Clicked {} times"), new TextLineModifiers()
+        public Line<String> counter = textLine(ChatColor.translateAlternateColorCodes('&', "&7Clicked {} times"), new TextLineModifiers()
                 .args(clickCount)
                 .clickable(player -> clickCount.update(it -> it + 1)));
-        public ILine<ItemStack> status = blockLine(new ItemStack(Material.RED_DYE));
+        public Line<ItemStack> status = itemLine(new ItemStack(Material.RED_DYE));
 
         public MyHolo(@NotNull Location location) {
             super(location);

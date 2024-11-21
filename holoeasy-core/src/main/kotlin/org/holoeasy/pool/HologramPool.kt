@@ -7,15 +7,14 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
-import org.bukkit.plugin.Plugin
 import org.holoeasy.HoloEasy
 import org.holoeasy.hologram.Hologram
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class KeyAlreadyExistsException(key: UUID) : IllegalStateException("Id '$key' already exists")
 
-class HologramPool<T : Hologram>( private val spawnDistance: Double) : Listener, IHologramPool<T> {
+class HologramPool<T : Hologram>(private val spawnDistance: Double) : Listener, IHologramPool<T> {
 
     override val holograms: Set<T> = ConcurrentHashMap.newKeySet()
 
@@ -44,7 +43,7 @@ class HologramPool<T : Hologram>( private val spawnDistance: Double) : Listener,
      * Starts the hologram tick.
      */
     private fun hologramTick() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously( HoloEasy.plugin(), Runnable {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(HoloEasy.plugin(), Runnable {
             for (player in ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
                 for (hologram in this.holograms) {
                     val holoLoc = hologram.location
@@ -57,8 +56,8 @@ class HologramPool<T : Hologram>( private val spawnDistance: Double) : Listener,
                         }
                         continue
                     } else if (!holoLoc.world
-                                // todo: log
-                            !!.isChunkLoaded(holoLoc.blockX shr 4, holoLoc.blockZ shr 4) && isShown
+                        // todo: log
+                        !!.isChunkLoaded(holoLoc.blockX shr 4, holoLoc.blockZ shr 4) && isShown
                     ) {
                         hologram.hide(player)
                         continue

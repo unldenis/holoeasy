@@ -117,6 +117,7 @@
                     <ul class="uk-nav-sub">
                         <li class="uk-active"><a href="">Base Concepts</a></li>
                         <li><a href="../textline">TextLine</a></li>
+                        <li><a href="../itemline">ItemLine</a></li>
                         <li><a href="../blockline">BlockLine</a></li>
                         <li><a href="../state">State</a></li>
                         <li><a href="../animation">Animation</a></li>
@@ -146,8 +147,8 @@
                 </p>
 
                 <p class="uk-paragraph">
-                    A hologram is composed of lines, defined by the <code class="uk-codespan">ILine<*></code> interface. The lines can be either text or an item/block.
-                    As you saw in the <a class="uk-link" href="../hello-world">Hello World</a> example, the Hologram class provides these two methods, <code class="uk-codespan">textLine</code> and <code class="uk-codespan">blockLine</code>, which should preferably be assigned to a class field; however, you can also call them in the constructor. The order of the fields will correspond to the order of the lines in the hologram.
+                    A hologram is composed of lines, defined by the <code class="uk-codespan">Line<*></code> interface. The lines can be either text or an item/block/dropped item.
+                    As you saw in the <a class="uk-link" href="../hello-world">Hello World</a> example, the Hologram class provides these three methods, <code class="uk-codespan">textLine</code>, <code class="uk-codespan">itemLine</code> and <code class="uk-codespan">blockLine</code>, which should preferably be assigned to a class field; however, you can also call them in the constructor. The order of the fields will correspond to the order of the lines in the hologram.
                 </p>
 
                 <blockquote class="uk-blockquote">
@@ -157,8 +158,8 @@
                 <div class="uk-margin-medium">
                 <pre><code class="language-java">public class MyHolo extends Hologram {
 
-    public ITextLine counter = textLine("Hello World");
-    public ILine&lt;ItemStack&gt; status = blockLine(new ItemStack(Material.RED_DYE));
+    public Line&lt;String&gt; counter = textLine("Hello World");
+    public Line&lt;ItemStack&gt; status = itemLine(new ItemStack(Material.RED_DYE));
 
     public MyHolo(@NotNull Location location) {
         super(location);
@@ -167,7 +168,7 @@
 
                 <p class="uk-paragraph">
                     In this example, the hologram will display the text "Hello World" with a RED_DYE dropped below it.
-                    For more complex lines, take a look at <a class="uk-link" href="../textline">TextLine</a> and <a class="uk-link" href="../blockline">BlockLine</a>.
+                    For more complex lines, take a look at <a class="uk-link" href="../textline">TextLine</a>, <a class="uk-link" href="../itemline">ItemLine</a> or <a class="uk-link" href="../blockline">BlockLine</a>.
                     Once we've created our hologram class, we can instantiate it. This <strong>does not</strong> mean the hologram is visible yet.
                 </p>
 
