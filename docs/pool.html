@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - HoloEasy Documentation</title>
+        <title>Pool - HoloEasy Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -152,31 +152,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p><em>Get familiar with HoloEasy.</em></p>
-<h2 id="what-is-holoeasy"><a class="header" href="#what-is-holoeasy">What is HoloEasy</a></h2>
-<p>HoloEasy is an open-source library for creating holograms in Minecraft that uses <a href="https://github.com/dmulloy2/ProtocolLib">ProtocolLib</a> (or <a href="https://github.com/retrooper/packetevents">PacketEvents</a>) to handle packets.
-This allows for greater performance as the server does not have to manage these entities.</p>
-<h2 id="frequently-asked-questions"><a class="header" href="#frequently-asked-questions">Frequently Asked Questions</a></h2>
-<h4 id="why"><a class="header" href="#why">Why?</a></h4>
-<ul>
-<li>HoloEasy only uses packets instead of registering the entity in the actual Minecraft server.</li>
-</ul>
-<h4 id="do-i-need-kotlin-with-holoeasy"><a class="header" href="#do-i-need-kotlin-with-holoeasy">Do I need Kotlin with HoloEasy?</a></h4>
-<ul>
-<li><strong>No</strong>, the API wasn't created for only Kotlin users, but rather to provide a clean, fluent API that works well in both Java and Kotlin environments.</li>
-</ul>
-<h4 id="who-is-holoeasy-designed-for"><a class="header" href="#who-is-holoeasy-designed-for">Who is HoloEasy designed for?</a></h4>
-<ul>
-<li>For library and plugin devs.</li>
-</ul>
+                        <h1 id="pool"><a class="header" href="#pool">Pool</a></h1>
+<p>The structure of the hologram has been defined. But before proceeding, you need to understand what are your requirements.</p>
+<p>Do you need a hologram visible to all players within a certain radius? Or do you need a hologram to be shown to one or more specific players?</p>
+<p>In the first case, you may want to use a <code>Pool</code>. A Pool is a container for holograms and manages showing them asynchronously
+to players within a certain radius of the holograms, while hiding them from players who are too far away or leave the server.</p>
+<p>A Pool can be <strong>interactive</strong>, allowing you to click on lines (if defined that way in the class), or not.
+If you don't have any specific needs, you can show the hologram with the show method.</p>
+<pre><code class="language-java">public void create() {
+    MyHolo hologram = new MyHolo(location);
+    hologram.show(/* pool */);
+}
+</code></pre>
+<p>In this case, the hologram is added and displayed using the <code>Standard Pool</code>. This pool is accessible from the HoloEasy class, from which you can obtain all the holograms in this pool.</p>
+<p>It is always possible to create one or more Pools for greater flexibility and customization with <code>HoloEasy.startPool</code> and <code>HoloEasy.startInteractivePool</code>.</p>
+<h2 id="custom-logic"><a class="header" href="#custom-logic">Custom Logic</a></h2>
+<p>As mentioned earlier, if you're not using a Pool, it is <strong>your</strong> responsibility to manage the hologram's visibility. In this case, the Hologram class provides two methods: <code>show(Player)</code> and <code>hide(Player)</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="hologram.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="next.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -186,8 +187,11 @@ This allows for greater performance as the server does not have to manage these 
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="hologram.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="next.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

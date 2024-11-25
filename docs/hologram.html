@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - HoloEasy Documentation</title>
+        <title>Hologram - HoloEasy Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -152,31 +152,37 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p><em>Get familiar with HoloEasy.</em></p>
-<h2 id="what-is-holoeasy"><a class="header" href="#what-is-holoeasy">What is HoloEasy</a></h2>
-<p>HoloEasy is an open-source library for creating holograms in Minecraft that uses <a href="https://github.com/dmulloy2/ProtocolLib">ProtocolLib</a> (or <a href="https://github.com/retrooper/packetevents">PacketEvents</a>) to handle packets.
-This allows for greater performance as the server does not have to manage these entities.</p>
-<h2 id="frequently-asked-questions"><a class="header" href="#frequently-asked-questions">Frequently Asked Questions</a></h2>
-<h4 id="why"><a class="header" href="#why">Why?</a></h4>
-<ul>
-<li>HoloEasy only uses packets instead of registering the entity in the actual Minecraft server.</li>
-</ul>
-<h4 id="do-i-need-kotlin-with-holoeasy"><a class="header" href="#do-i-need-kotlin-with-holoeasy">Do I need Kotlin with HoloEasy?</a></h4>
-<ul>
-<li><strong>No</strong>, the API wasn't created for only Kotlin users, but rather to provide a clean, fluent API that works well in both Java and Kotlin environments.</li>
-</ul>
-<h4 id="who-is-holoeasy-designed-for"><a class="header" href="#who-is-holoeasy-designed-for">Who is HoloEasy designed for?</a></h4>
-<ul>
-<li>For library and plugin devs.</li>
-</ul>
+                        <h1 id="hologram"><a class="header" href="#hologram">Hologram</a></h1>
+<p>The main class is <code>Hologram</code>. This is an abstract class, so to define your holograms you must extend this class.</p>
+<p>A hologram is composed of lines, defined by the <code>Line&lt;*&gt;</code> interface. The lines can be either text or an item/block/dropped item.</p>
+<p>As you saw in the Hello World example, the Hologram class provides these three methods, <code>textLine</code>, <code>itemLine</code> and <code>blockLine</code>,
+which should preferably be assigned to a class field; however, you can also call them in the constructor.</p>
+<blockquote>
+<p>The order of the fields will correspond to the order of the lines in the hologram.</p>
+</blockquote>
+<p>Having them as fields or accessible through a getter allows you to retrieve information or perform actions on a specific line.</p>
+<pre><code class="language-java">public class MyHolo extends Hologram {
+
+    public Line&lt;String&gt; counter = textLine("Hello World");
+    public Line&lt;ItemStack&gt; status = itemLine(new ItemStack(Material.RED_DYE));
+
+    public MyHolo(@NotNull Location location) {
+        super(location);
+    }
+}
+</code></pre>
+<p>In this example, the hologram will display the text "Hello World" with a RED_DYE dropped below it.</p>
+<p>For more complex lines, take a look at TextLine, ItemLine or BlockLine. Once we've created our hologram class, we can instantiate it. This <strong>does not</strong> mean the hologram is visible yet.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="concepts.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="pool.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -186,8 +192,11 @@ This allows for greater performance as the server does not have to manage these 
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="concepts.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="pool.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

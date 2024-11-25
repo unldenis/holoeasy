@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - HoloEasy Documentation</title>
+        <title>Installation - HoloEasy Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -152,31 +152,75 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p><em>Get familiar with HoloEasy.</em></p>
-<h2 id="what-is-holoeasy"><a class="header" href="#what-is-holoeasy">What is HoloEasy</a></h2>
-<p>HoloEasy is an open-source library for creating holograms in Minecraft that uses <a href="https://github.com/dmulloy2/ProtocolLib">ProtocolLib</a> (or <a href="https://github.com/retrooper/packetevents">PacketEvents</a>) to handle packets.
-This allows for greater performance as the server does not have to manage these entities.</p>
-<h2 id="frequently-asked-questions"><a class="header" href="#frequently-asked-questions">Frequently Asked Questions</a></h2>
-<h4 id="why"><a class="header" href="#why">Why?</a></h4>
+                        <h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
+<p>The prerequisites:</p>
 <ul>
-<li>HoloEasy only uses packets instead of registering the entity in the actual Minecraft server.</li>
+<li>Java 8</li>
+<li>ProtocolLib / experimental PacketEvents</li>
 </ul>
-<h4 id="do-i-need-kotlin-with-holoeasy"><a class="header" href="#do-i-need-kotlin-with-holoeasy">Do I need Kotlin with HoloEasy?</a></h4>
-<ul>
-<li><strong>No</strong>, the API wasn't created for only Kotlin users, but rather to provide a clean, fluent API that works well in both Java and Kotlin environments.</li>
-</ul>
-<h4 id="who-is-holoeasy-designed-for"><a class="header" href="#who-is-holoeasy-designed-for">Who is HoloEasy designed for?</a></h4>
-<ul>
-<li>For library and plugin devs.</li>
-</ul>
+<blockquote>
+<p>If you opt for PacketEvents, the dependency is not included by HoloEasy and neither is the instance registration.
+More information in the <a href="https://github.com/unldenis/holoeasy/tree/master/holoeasy-example-packetevents">example</a>.</p>
+</blockquote>
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p><em>Learn how to install and integrate HoloEasy in your projects.</em></p>
+<h3 id="maven"><a class="header" href="#maven">Maven</a></h3>
+<p><strong>1.</strong> Add the JitPack repository to your build file.</p>
+<pre><code class="language-xml">&lt;repositories&gt;
+    &lt;repository&gt;
+        &lt;id&gt;jitpack.io&lt;/id&gt;
+        &lt;url&gt;https://jitpack.io&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+</code></pre>
+<br />
+<p><strong>2.</strong> Add the core dependency.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.github.unldenis.holoeasy&lt;/groupId&gt;
+    &lt;artifactId&gt;holoeasy-core&lt;/artifactId&gt;
+    &lt;version&gt;4.3.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<br />
+<p><strong>3.</strong> For  <strong>java</strong> plugins include also the kotlin stdlib.</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.jetbrains.kotlin&lt;/groupId&gt;
+    &lt;artifactId&gt;kotlin-stdlib&lt;/artifactId&gt;
+    &lt;version&gt;1.9.21&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<br />
+<p><strong>4.</strong> Once you’re done, you may now proceed creating your first hologram.</p>
+<h3 id="gradle"><a class="header" href="#gradle">Gradle</a></h3>
+<p><strong>1.</strong> Add the JitPack repository to your build file.</p>
+<pre><code class="language-groovy">dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+</code></pre>
+<br />
+<p><strong>2.</strong> Add the core dependency.</p>
+<pre><code class="language-groovy">implementation 'com.github.unldenis.holoeasy:holoeasy-core:4.3.2'
+</code></pre>
+<br />
+<p><strong>3.</strong> For <strong>java</strong> plugins include also the kotlin stdlib.</p>
+<pre><code class="language-groovy">implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.21'
+</code></pre>
+<br />
+<p><strong>4.</strong> Once you’re done, you may now proceed creating your first hologram.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="hello-world.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -186,8 +230,11 @@ This allows for greater performance as the server does not have to manage these 
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="hello-world.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

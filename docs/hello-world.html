@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - HoloEasy Documentation</title>
+        <title>Hello World - HoloEasy Documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -152,31 +152,45 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p><em>Get familiar with HoloEasy.</em></p>
-<h2 id="what-is-holoeasy"><a class="header" href="#what-is-holoeasy">What is HoloEasy</a></h2>
-<p>HoloEasy is an open-source library for creating holograms in Minecraft that uses <a href="https://github.com/dmulloy2/ProtocolLib">ProtocolLib</a> (or <a href="https://github.com/retrooper/packetevents">PacketEvents</a>) to handle packets.
-This allows for greater performance as the server does not have to manage these entities.</p>
-<h2 id="frequently-asked-questions"><a class="header" href="#frequently-asked-questions">Frequently Asked Questions</a></h2>
-<h4 id="why"><a class="header" href="#why">Why?</a></h4>
-<ul>
-<li>HoloEasy only uses packets instead of registering the entity in the actual Minecraft server.</li>
-</ul>
-<h4 id="do-i-need-kotlin-with-holoeasy"><a class="header" href="#do-i-need-kotlin-with-holoeasy">Do I need Kotlin with HoloEasy?</a></h4>
-<ul>
-<li><strong>No</strong>, the API wasn't created for only Kotlin users, but rather to provide a clean, fluent API that works well in both Java and Kotlin environments.</li>
-</ul>
-<h4 id="who-is-holoeasy-designed-for"><a class="header" href="#who-is-holoeasy-designed-for">Who is HoloEasy designed for?</a></h4>
-<ul>
-<li>For library and plugin devs.</li>
-</ul>
+                        <h1 id="hello-world"><a class="header" href="#hello-world">Hello World</a></h1>
+<p><em>Your first hologram.</em></p>
+<h2 id="start-programming"><a class="header" href="#start-programming">Start programming</a></h2>
+<p><strong>1.</strong> Register HoloEasy api.</p>
+<pre><code class="language-java">@Override
+public void onEnable() {
+    HoloEasy.bind(plugin, PacketImpl.ProtocolLib /* PacketImpl.PacketEvents */ );
+}
+</code></pre>
+<br />
+<p><strong>2.</strong> Define your first Hologram class.</p>
+<pre><code class="language-java">public class HelloWorldHologram extends Hologram  {
+
+    Line&lt;String&gt; line = textLine("Hello World");
+
+    public HelloWorldHologram(@NotNull Location location) {
+        super(location);
+    }
+}
+</code></pre>
+<br />
+<p><strong>3.</strong> Now spawn a hologram.</p>
+<pre><code class="language-java">public void create(Location location) {
+    HelloWorldHologram hologram = new HelloWorldHologram(location);
+    hologram.show();
+}
+</code></pre>
+<br />
+<p><strong>4.</strong> Congratulations! You have created your first Hologram.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="concepts.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -186,8 +200,11 @@ This allows for greater performance as the server does not have to manage these 
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="concepts.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
