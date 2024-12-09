@@ -21,11 +21,19 @@ package org.holoeasy.util
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.holoeasy.HoloEasy
+import org.holoeasy.util.scheduler.SchedulerTask
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 import java.util.function.Supplier
 
 object BukkitFuture {
+
+    fun runTaskTimerAsynchronously(l: Long, l1: Long, task: () -> Unit): SchedulerTask {
+        return HoloEasy.scheduler().createAsyncRepeatingTask(HoloEasy.plugin(), java.lang.Runnable {
+            task.invoke()
+        }, l, l1)
+    }
+
     /**
      * Returns a new CompletableFuture that is asynchronously completed by Bukkit schedule with the
      * value obtained by calling the given Supplier.
@@ -60,14 +68,14 @@ object BukkitFuture {
         runnable: Runnable
     ): CompletableFuture<Void?> {
         val future = CompletableFuture<Void?>()
-        HoloEasy.scheduler().runAsyncTask(plugin) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
             try {
                 runnable.run()
                 future.complete(null)
             } catch (t: Throwable) {
                 future.completeExceptionally(t)
             }
-        }
+        })
         return future
     }
 
@@ -91,13 +99,13 @@ object BukkitFuture {
                 future.completeExceptionally(t)
             }
         } else {
-            HoloEasy.scheduler().runTask(plugin) {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 try {
                     future.complete(supplier.get())
                 } catch (t: Throwable) {
                     future.completeExceptionally(t)
                 }
-            }
+            })
         }
         return future
     }
@@ -121,14 +129,14 @@ object BukkitFuture {
                 future.completeExceptionally(t)
             }
         } else {
-            HoloEasy.scheduler().runTask(plugin) {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 try {
                     runnable.run()
                     future.complete(null)
                 } catch (t: Throwable) {
                     future.completeExceptionally(t)
                 }
-            }
+            })
         }
         return future
     }

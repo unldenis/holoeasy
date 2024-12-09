@@ -7,15 +7,15 @@ fun test() {
 
 }
 
-internal val BYTE_SERIALIZER : WrappedDataWatcher.Serializer
+internal val BYTE_SERIALIZER: WrappedDataWatcher.Serializer
     get() = WrappedDataWatcher.Registry.get(java.lang.Byte::class.java)
 
-internal val BOOL_SERIALIZER : WrappedDataWatcher.Serializer
+internal val BOOL_SERIALIZER: WrappedDataWatcher.Serializer
     get() = WrappedDataWatcher.Registry.get(java.lang.Boolean::class.java)
 
-internal val STRING_SERIALIZER : WrappedDataWatcher.Serializer
+internal val STRING_SERIALIZER: WrappedDataWatcher.Serializer
     get() = WrappedDataWatcher.Registry.get(java.lang.String::class.java)
 
-internal val ITEM_SERIALIZER : WrappedDataWatcher.Serializer
+internal val ITEM_SERIALIZER: WrappedDataWatcher.Serializer
     get() = WrappedDataWatcher.Registry.getItemStackSerializer(false)
 

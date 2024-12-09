@@ -8,8 +8,9 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.holoeasy.HoloEasy
 import org.holoeasy.action.ClickAction
 import org.holoeasy.hologram.Hologram
-import org.holoeasy.line.ILine
-import org.holoeasy.line.ITextLine
+import org.holoeasy.line.BlockLine
+import org.holoeasy.line.ItemLine
+import org.holoeasy.line.TextLine
 import org.holoeasy.util.AABB
 
 class InteractiveHologramPool<T : Hologram>(
@@ -67,34 +68,28 @@ class InteractiveHologramPool<T : Hologram>(
                     continue
                 }
                 for (line in hologram.lines) {
-                    when (line.type) {
-                        ILine.Type.TEXT_LINE -> {
-                            val iTextLine = line as ITextLine
-                            if (!iTextLine.clickable) {
+                    when (line) {
+                        is TextLine -> {
+                            if (!line.clickable) {
                                 continue
                             }
 
-                            val tL = iTextLine.textLine
-                            if (tL.hitbox == null) {
+                            if (line.hitbox == null) {
                                 continue
                             }
 
-                            val intersects = tL.hitbox!!.intersectsRay(
+                            val intersects = line.hitbox!!.intersectsRay(
                                 AABB.Ray3D(player.eyeLocation), minHitDistance, maxHitDistance
                             )
                             if (intersects == null) {
                                 continue
                             }
 
-                            tL.clickEvent?.onClick(player)
+                            line.clickEvent?.onClick(player)
                             break@FST
                         }
-
-                        ILine.Type.EXTERNAL -> {}
-                        ILine.Type.CLICKABLE_TEXT_LINE -> {}
-                        ILine.Type.ITEM_LINE -> {}
-                        ILine.Type.BLOCK_LINE -> {}
                     }
+
                 }
             }
         })

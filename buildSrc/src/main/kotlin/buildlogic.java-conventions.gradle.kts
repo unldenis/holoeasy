@@ -30,10 +30,6 @@ repositories {
     }
 
     maven {
-        url = uri("https://repo.dmulloy2.net/repository/public/")
-    }
-
-    maven {
         url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
 
@@ -50,7 +46,7 @@ repositories {
     }
 
     maven {
-        url = uri("https://jitpack.io")
+        url = uri("https://www.jitpack.io")
     }
 }
 
@@ -59,7 +55,7 @@ dependencies {
 }
 
 group = "org.holoeasy"
-version = "4.2.1"
+version = "4.3.2"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {

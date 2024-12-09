@@ -23,11 +23,20 @@ plugins {
     `kotlin-dsl`
 }
 
+repositories {
+    flatDir {
+        dirs("../libs")
+    }
+}
+
 dependencies {
     compileOnly(libs.org.jetbrains.kotlin.kotlin.stdlib)
     compileOnly(libs.org.spigotmc.spigot.api)
-    compileOnly(libs.com.comphenix.protocol.protocollib)
+//    compileOnly(libs.com.comphenix.protocol.protocollib)
     compileOnly(libs.com.github.retrooper.packetevents.spigot)
+
+    compileOnly(files("../libs/ProtocolLib.jar"))
+
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

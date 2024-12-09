@@ -1,8 +1,8 @@
 package org.holoeasy.hologram
 
 
-import org.holoeasy.line.ILine
-import org.holoeasy.line.ITextLine
+import org.holoeasy.line.LineImpl
+import org.holoeasy.line.TextLine
 import kotlin.math.abs
 
 enum class HologramLoader(
@@ -17,14 +17,14 @@ enum class HologramLoader(
 
         val cloned = hologram.location.clone()
 
-        val line: ILine<*> = hologram.lines[0]
+        val line = hologram.lines[0] as LineImpl
 
-        line.pvt.setLocation(cloned)
+        line.setCurrentLocation(cloned)
     }, teleport = { hologram ->
-        val line = hologram.lines[0]
+        val line = hologram.lines[0] as LineImpl
 
-        line.pvt.setLocation(hologram.location.clone())
-        hologram.pvt.seeingPlayers.forEach(line.pvt::teleport)
+        line.setCurrentLocation(hologram.location.clone())
+        hologram.pvt.seeingPlayers.forEach(line::teleport)
     }),
 
     TEXT_SEQUENTIAL(load = { hologram ->
@@ -39,9 +39,9 @@ enum class HologramLoader(
         val hologramLocation = hologram.location.clone()
 
         if (hologram.lines.size == 1) {
-            val line: ILine<*> = hologram.lines[0]
+            val line = hologram.lines[0] as LineImpl
 
-            line.pvt.setLocation(hologramLocation)
+            line.setCurrentLocation(hologramLocation)
         } else {
             // reverse A - B - C to C - B - A
             val lines = hologram.lines.reversed()
@@ -50,28 +50,28 @@ enum class HologramLoader(
             hologramLocation.subtract(0.0, LINE_HEIGHT, 0.0)
 
             for (j in lines.indices) {
-                val line = lines[j]
+                val line = lines[j] as LineImpl
 
                 var up = LINE_HEIGHT
 
                 if (j > 0) {
                     when (lines[j - 1].type) {
-                        ILine.Type.ITEM_LINE -> up = -1.5
-                        ILine.Type.BLOCK_LINE -> up = -0.19
-                        ILine.Type.EXTERNAL -> {}
-                        ILine.Type.TEXT_LINE -> {}
-                        ILine.Type.CLICKABLE_TEXT_LINE -> {}
+                        LineImpl.Type.ITEM_LINE -> up = -1.5
+                        LineImpl.Type.BLOCK_LINE -> up = -0.19
+                        LineImpl.Type.EXTERNAL -> {}
+                        LineImpl.Type.TEXT_LINE -> {}
+                        LineImpl.Type.CLICKABLE_TEXT_LINE -> {}
                     }
                 }
 
                 when (line.type) {
-                    ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE, ILine.Type.BLOCK_LINE -> {
-                        line.pvt.setLocation(hologramLocation.add(0.0, up, 0.0).clone())
+                    LineImpl.Type.TEXT_LINE, LineImpl.Type.CLICKABLE_TEXT_LINE, LineImpl.Type.BLOCK_LINE -> {
+                        line.setCurrentLocation(hologramLocation.add(0.0, up, 0.0).clone())
                         hologram.lines.add(0, line)
                     }
 
-                    ILine.Type.ITEM_LINE -> {
-                        line.pvt.setLocation(hologramLocation.add(0.0, 0.6, 0.0).clone())
+                    LineImpl.Type.ITEM_LINE -> {
+                        line.setCurrentLocation(hologramLocation.add(0.0, 0.6, 0.0).clone())
                         hologram.lines.add(0, line)
                     }
 
@@ -83,23 +83,24 @@ enum class HologramLoader(
 
 
     }, teleport = { hologram ->
-        val lines: List<ILine<*>> = hologram.lines
-        val firstLine: ILine<*> = lines[0]
+        val lines = hologram.lines
+        val firstLine = lines[0] as LineImpl
         // Obtain the Y position of the first line and then calculate the distance to all lines to maintain this distance
-        val baseY: kotlin.Double = firstLine.location?.y ?: throw RuntimeException("First line has not a location")
+        val baseY: Double =
+            firstLine.currentLocation()?.y ?: throw RuntimeException("First line has not a location")
         // Get position Y where to teleport the first line
         var destY = (hologram.location.y - LINE_HEIGHT)
 
         destY += when (firstLine.type) {
-            ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE, ILine.Type.BLOCK_LINE -> LINE_HEIGHT
+            LineImpl.Type.TEXT_LINE, LineImpl.Type.CLICKABLE_TEXT_LINE, LineImpl.Type.BLOCK_LINE -> LINE_HEIGHT
             else -> 0.6
         }
 
         // Teleport the first line
         teleportStandard(hologram, destY, firstLine)
-        var tempLine: ILine<*>
+        var tempLine: LineImpl<*>
         for (j in 1 until lines.size) {
-            tempLine = lines[j]
+            tempLine = lines[j] as LineImpl
             /*
             Teleport from the second line onwards.
             The final height is found by adding to that of the first line the difference that was present when it was already spawned
@@ -107,7 +108,8 @@ enum class HologramLoader(
             teleportStandard(
                 hologram, destY + abs(
                     baseY -
-                            (tempLine.location?.y ?: throw RuntimeException("Missing location of line $tempLine"))
+                            (tempLine.currentLocation()?.y
+                                ?: throw RuntimeException("Missing location of line $tempLine"))
                 ), tempLine
             )
         }
@@ -121,11 +123,11 @@ enum class HologramLoader(
 private const val LINE_HEIGHT = 0.28
 
 
-private fun teleportStandard(hologram: Hologram, destY: Double, tempLine: ILine<*>) {
+private fun teleportStandard(hologram: Hologram, destY: Double, tempLine: LineImpl<*>) {
     val dest = hologram.location.clone()
     dest.y = destY
-    tempLine.pvt.setLocation(dest)
-    hologram.pvt.seeingPlayers.forEach(tempLine.pvt::teleport)
+    tempLine.setCurrentLocation(dest)
+    hologram.pvt.seeingPlayers.forEach(tempLine::teleport)
 }
 
 
@@ -133,18 +135,18 @@ private fun textSequential(hologram: Hologram, add: Boolean) {
     val cloned = hologram.location.clone()
     for (line in hologram.lines) {
         when (line.type) {
-            ILine.Type.TEXT_LINE, ILine.Type.CLICKABLE_TEXT_LINE -> {
-                val tL = (line as ITextLine).textLine
+            LineImpl.Type.TEXT_LINE, LineImpl.Type.CLICKABLE_TEXT_LINE -> {
+                val tL = line as TextLine
 
                 // add to lines
-                tL.pvt.setLocation(cloned.clone())
+                tL.setCurrentLocation(cloned.clone())
 
                 if (add) {
 //                    hologram.lines.add(0, tL)
                 } else {
-                    hologram.pvt.seeingPlayers.forEach { tL.pvt.teleport(it) }
+                    hologram.pvt.seeingPlayers.forEach { tL.teleport(it) }
                 }
-                cloned.z += 0.175 * tL.pvt.obj.length
+                cloned.z += 0.175 * tL.value.length
             }
 
             else -> throw RuntimeException("This method load supports only TextLine & TextALine & ClickableTextLine.")

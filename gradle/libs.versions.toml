@@ -1,12 +1,12 @@
 [versions]
-com-comphenix-protocol-protocollib = "5.3.0"
-com-github-retrooper-packetevents-spigot = "2.6.0"
+#com-comphenix-protocol-protocollib = "5.2.0-SNAPSHOT"
+com-github-retrooper-packetevents-spigot = "2.5.0"
 org-jetbrains-kotlin-kotlin-stdlib = "1.9.21"
 org-spigotmc-spigot-api = "1.16.5-R0.1-SNAPSHOT"
 dev-folia-folia-api = "1.19.4-R0.1-SNAPSHOT"
 
 [libraries]
-com-comphenix-protocol-protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "com-comphenix-protocol-protocollib" }
+#com-comphenix-protocol-protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "com-comphenix-protocol-protocollib" }
 com-github-retrooper-packetevents-spigot = { module = "com.github.retrooper:packetevents-spigot", version.ref = "com-github-retrooper-packetevents-spigot" }
 org-jetbrains-kotlin-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "org-jetbrains-kotlin-kotlin-stdlib" }
 org-spigotmc-spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "org-spigotmc-spigot-api" }

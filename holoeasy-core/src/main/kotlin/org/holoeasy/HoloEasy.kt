@@ -18,33 +18,6 @@ import org.holoeasy.util.scheduler.MinecraftScheduler
 
 object HoloEasy {
 
-    private var PLUGIN: Plugin? = null
-
-    private var PACKET_IMPL: IPacket? = null
-
-    private var SCHEDULER: MinecraftScheduler<Plugin, Location, World, Chunk, Entity>? = null
-
-    fun plugin(): Plugin {
-        if (PLUGIN == null) {
-            throw IllegalStateException("HoloEasy Plugin is not set")
-        }
-        return PLUGIN!!
-    }
-
-    fun packetImpl(): IPacket {
-        if (PACKET_IMPL == null) {
-            throw IllegalStateException("HoloEasy PacketImpl is not set")
-        }
-        return PACKET_IMPL!!
-    }
-
-    fun scheduler(): MinecraftScheduler<Plugin, Location, World, Chunk, Entity> {
-        if (SCHEDULER == null) {
-            throw IllegalStateException("HoloEasy Scheduler is not set")
-        }
-        return SCHEDULER!!
-    }
-
     @JvmStatic
     @JvmOverloads
     fun bind(
@@ -87,6 +60,37 @@ object HoloEasy {
             clickAction = clickAction
         )
         return interactivepool
+    }
+
+
+    // Internal
+
+    private var PLUGIN: Plugin? = null
+
+    private var PACKET_IMPL: IPacket? = null
+
+    private var SCHEDULER: MinecraftScheduler<Plugin, Location, World, Chunk, Entity>? = null
+
+    fun plugin(): Plugin {
+        if (PLUGIN == null) {
+            throw IllegalStateException("HoloEasy Plugin is not set")
+        }
+        return PLUGIN!!
+    }
+
+    fun scheduler(): MinecraftScheduler<Plugin, Location, World, Chunk, Entity> {
+        if (SCHEDULER == null) {
+            throw IllegalStateException("HoloEasy Scheduler is not set")
+        }
+        return SCHEDULER!!
+    }
+
+
+    fun packetImpl(): IPacket {
+        if (PACKET_IMPL == null) {
+            throw IllegalStateException("HoloEasy PacketImpl is not set")
+        }
+        return PACKET_IMPL!!
     }
 
 

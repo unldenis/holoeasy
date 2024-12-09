@@ -6,10 +6,8 @@ import com.github.retrooper.packetevents.protocol.player.Equipment
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
-import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentSerializer
 import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
-import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -20,9 +18,6 @@ import java.util.*
 
 
 class PacketEventsPackets : IPacket {
-
-    val SERIALIZER: GsonComponentSerializer = GsonComponentSerializer.builder().build()
-
 
     override fun deletePacket(player: Player, entityId: Int) {
         val packet = WrapperPlayServerDestroyEntities(entityId)
@@ -202,7 +197,6 @@ class PacketEventsPackets : IPacket {
         val packet = WrapperPlayServerEntityVelocity(entityId, Vector3d(x, y, z))
         packet.send(player)
     }
-
 
 
 }

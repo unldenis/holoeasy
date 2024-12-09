@@ -1,0 +1,10 @@
+[book]
+authors = ["unldenis"]
+language = "en"
+multilingual = false
+src = "src"
+title = "HoloEasy Documentation"
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"

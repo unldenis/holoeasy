@@ -8,8 +8,8 @@ class TextLineModifiers() {
     internal var clickable: Boolean = false
     internal var minHitDistance: Float = 0.5f
     internal var maxHitDistance: Float = 5f
-    internal var clickableWithoutPool : Boolean = false
-    internal var clickEvent : ClickEvent? = null
+    internal var clickableWithoutPool: Boolean = false
+    internal var clickEvent: ClickEvent? = null
 
     fun args(vararg arguments: Any): TextLineModifiers {
         this.args = arrayOf(*arguments)

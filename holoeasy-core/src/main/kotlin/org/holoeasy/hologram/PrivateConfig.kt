@@ -7,14 +7,13 @@ data class PrivateConfig(
     private val hologram: Hologram,
     var showEvent: ShowEvent?,
     var hideEvent: HideEvent?
-    ) {
-        val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
+) {
+    val seeingPlayers: MutableSet<Player> = ConcurrentHashMap.newKeySet() // faster writes
 
-        fun load() {
-            if (hologram.lines.isEmpty()) {
-                throw RuntimeException("its not possible to create an empty hologram")
-            }
-            hologram.lines.forEach { it.pvt.hologram = hologram }
-            hologram.loader().load(hologram)
+    fun load() {
+        if (hologram.lines.isEmpty()) {
+            throw RuntimeException("its not possible to create an empty hologram")
         }
+        hologram.loader().load(hologram)
     }
+}
