@@ -19,47 +19,17 @@
  */
 
 plugins {
-    `java-library`
-    `maven-publish`
-}
-
-repositories {
-    mavenLocal()
-    maven {
-        url = uri("https://repo.maven.apache.org/maven2/")
-    }
-
-    maven {
-        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    }
-
-    maven {
-        url = uri("https://repo.codemc.io/repository/maven-releases/")
-    }
-
-    maven {
-        url = uri("https://repo.codemc.io/repository/maven-snapshots/")
-    }
-
-    maven {
-        url = uri("https://repo.papermc.io/repository/maven-public/")
-    }
-
-    maven {
-        url = uri("https://www.jitpack.io")
-    }
+    `kotlin-dsl`
+    id("buildlogic.java-conventions")
 }
 
 dependencies {
-    compileOnly("org.jetbrains:annotations:24.0.1")
+    compileOnly(project(":holoeasy-core"))
+    compileOnly(libs.org.jetbrains.kotlin.kotlin.stdlib)
+    compileOnly(libs.dev.folia.folia.api)
 }
 
-group = "org.holoeasy"
-version = "4.3.2"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+kotlin.jvmToolchain(17)
+java.sourceCompatibility = JavaVersion.VERSION_17
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-    }
-}
+description = "holoeasy-folia"

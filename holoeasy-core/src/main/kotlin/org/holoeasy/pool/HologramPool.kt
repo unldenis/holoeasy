@@ -43,7 +43,7 @@ class HologramPool<T : Hologram>(private val spawnDistance: Double) : Listener, 
      * Starts the hologram tick.
      */
     private fun hologramTick() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(HoloEasy.plugin(), Runnable {
+        HoloEasy.scheduler().createAsyncRepeatingTask(HoloEasy.plugin(), {
             for (player in ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
                 for (hologram in this.holograms) {
                     val holoLoc = hologram.location

@@ -1,11 +1,11 @@
 package org.holoeasy.animation
 
-import org.bukkit.scheduler.BukkitTask
 import org.holoeasy.HoloEasy
 import org.holoeasy.line.LineImpl
 import org.holoeasy.util.BukkitFuture
+import org.holoeasy.util.scheduler.SchedulerTask
 
-enum class Animations(val task: (LineImpl<*>) -> BukkitTask) {
+enum class Animations(val task: (LineImpl<*>) -> SchedulerTask) {
 
     CIRCLE({ line ->
         val holo = line.hologram

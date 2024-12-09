@@ -20,16 +20,16 @@ package org.holoeasy.util
 
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
-import org.bukkit.scheduler.BukkitTask
 import org.holoeasy.HoloEasy
+import org.holoeasy.util.scheduler.SchedulerTask
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 import java.util.function.Supplier
 
 object BukkitFuture {
 
-    fun runTaskTimerAsynchronously(l: Long, l1: Long, task: () -> Unit): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(HoloEasy.plugin(), java.lang.Runnable {
+    fun runTaskTimerAsynchronously(l: Long, l1: Long, task: () -> Unit): SchedulerTask {
+        return HoloEasy.scheduler().createAsyncRepeatingTask(HoloEasy.plugin(), java.lang.Runnable {
             task.invoke()
         }, l, l1)
     }
@@ -47,13 +47,13 @@ object BukkitFuture {
         supplier: Supplier<T>
     ): CompletableFuture<T> {
         val future = CompletableFuture<T>()
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+        HoloEasy.scheduler().runAsyncTask(plugin) {
             try {
                 future.complete(supplier.get())
             } catch (t: Throwable) {
                 future.completeExceptionally(t)
             }
-        })
+        }
         return future
     }
 

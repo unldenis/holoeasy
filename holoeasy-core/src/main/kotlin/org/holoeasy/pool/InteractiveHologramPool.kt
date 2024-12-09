@@ -39,7 +39,7 @@ class InteractiveHologramPool<T : Hologram>(
 
     @EventHandler
     fun handleInteract(e: PlayerInteractEvent) {
-        Bukkit.getScheduler().runTaskAsynchronously(HoloEasy.plugin(), Runnable {
+        HoloEasy.scheduler().runAsyncTask(HoloEasy.plugin(), Runnable {
             val player = e.player
 
             if (clickAction == null) {

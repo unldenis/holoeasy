@@ -8,6 +8,7 @@ import org.holoeasy.HoloEasy
 import org.holoeasy.animation.Animations
 import org.holoeasy.hologram.Hologram
 import org.holoeasy.reactive.Observer
+import org.holoeasy.util.scheduler.SchedulerTask
 import org.jetbrains.annotations.ApiStatus
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -33,7 +34,7 @@ sealed class LineImpl<T>(
     abstract override fun update(newValue: T)
 
 
-    private var animationTask: BukkitTask? = null
+    private var animationTask: SchedulerTask? = null
 
     override fun setAnimation(animation: Animations) {
         this.cancelAnimation()
