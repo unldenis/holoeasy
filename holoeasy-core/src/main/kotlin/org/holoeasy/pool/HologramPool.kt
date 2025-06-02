@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.bukkit.scheduler.BukkitTask
 import org.holoeasy.HoloEasy
 import org.holoeasy.hologram.Hologram
 import java.util.*
@@ -18,9 +19,22 @@ class HologramPool<T : Hologram>(override val lib : HoloEasy, private val spawnD
 
     override val holograms: Set<T> = ConcurrentHashMap.newKeySet()
 
+    override fun destroy() {
+        if(!tickTask.isCancelled) {
+            tickTask.cancel()
+        }
+
+        for (hologram in holograms.toList()) {
+            hologram.hide(this)
+        }
+        (holograms as MutableSet<Hologram>).clear()
+    }
+
+    private val tickTask : BukkitTask
+
     init {
         Bukkit.getPluginManager().registerEvents(this, lib.plugin)
-        hologramTick()
+        this.tickTask = hologramTick()
     }
 
     @EventHandler
@@ -42,8 +56,8 @@ class HologramPool<T : Hologram>(override val lib : HoloEasy, private val spawnD
     /**
      * Starts the hologram tick.
      */
-    private fun hologramTick() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(lib.plugin, Runnable {
+    private fun hologramTick() : BukkitTask {
+        return Bukkit.getScheduler().runTaskTimerAsynchronously(lib.plugin, Runnable {
             for (player in ImmutableList.copyOf(Bukkit.getOnlinePlayers())) {
                 for (hologram in this.holograms) {
                     val holoLoc = hologram.location

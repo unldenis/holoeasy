@@ -48,6 +48,10 @@ class ExamplePlugin : JavaPlugin() {
         }
     }
 
+    override fun onDisable() {
+        // Since 4.4.0: destroy pools
+        holoEasy.destroyPools()
+    }
 
     class MyHolo(lib : HoloEasy, location: Location) : Hologram(lib, location) {
 

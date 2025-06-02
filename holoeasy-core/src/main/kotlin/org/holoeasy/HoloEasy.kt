@@ -9,10 +9,13 @@ import org.holoeasy.packet.PacketImpl
 import org.holoeasy.pool.HologramPool
 import org.holoeasy.pool.IHologramPool
 import org.holoeasy.pool.InteractiveHologramPool
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.ApiStatus.Internal
 
 
 class HoloEasy(val plugin : Plugin, packetImpl: PacketImpl) {
+
+    private val pools = mutableListOf<IHologramPool<*>>()
 
     // Internal
     @Internal
@@ -40,4 +43,11 @@ class HoloEasy(val plugin : Plugin, packetImpl: PacketImpl) {
         return interactivepool
     }
 
+    @ApiStatus.Experimental
+    fun destroyPools() {
+        for (pool in pools) {
+            pool.destroy()
+        }
+        pools.clear()
+    }
 }

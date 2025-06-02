@@ -26,6 +26,10 @@ class InteractiveHologramPool<T : Hologram>(
     override val holograms: Set<T>
         get() = pool.holograms
 
+    override fun destroy() {
+        pool.destroy()
+    }
+
     val minHitDistance: Float
     val maxHitDistance: Float
 

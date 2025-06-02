@@ -36,6 +36,9 @@ public class ExamplePlugin extends JavaPlugin {
     public void onDisable() {
         //Terminate the instance (clean up process)
         PacketEvents.getAPI().terminate();
+
+        // Since 4.4.0: destroy pools
+        holoEasy.destroyPools();
     }
 
     @Override
@@ -75,6 +78,7 @@ public class ExamplePlugin extends JavaPlugin {
 
         }, 20L * 30);
     }
+
 
 
     public static class MyHolo extends Hologram {

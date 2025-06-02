@@ -88,7 +88,6 @@ open class Hologram @JvmOverloads constructor(
         return pvt.seeingPlayers.contains(player)
     }
 
-    @JvmOverloads
     fun show(pool: IHologramPool<*>) {
         if (pool.holograms.any { it.id == this.id }) {
             throw KeyAlreadyExistsException(this.id)
