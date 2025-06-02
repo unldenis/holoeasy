@@ -14,7 +14,7 @@ class ItemLine(
     hologram: Hologram,
 
     item: MutableState<ItemStack>
-) : LineImpl<ItemStack>(hologram, EntityType.DROPPED_ITEM) {
+) : LineImpl<ItemStack>(hologram, EntityType.ITEM) {
 
     private val _mutableStateOf = item
     private var firstRender = true

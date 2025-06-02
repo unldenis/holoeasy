@@ -99,7 +99,10 @@ sealed class LineImpl<T>(
         ITEM_LINE,
 
         @ApiStatus.Experimental
-        BLOCK_LINE
+        BLOCK_LINE,
+
+        @ApiStatus.Experimental
+        DISPLAY_BLOCK_LINE
     }
 
 

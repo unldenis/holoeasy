@@ -1,6 +1,7 @@
 package org.holoeasy.hologram
 
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.holoeasy.HoloEasy
@@ -9,6 +10,7 @@ import org.holoeasy.line.*
 import org.holoeasy.pool.IHologramPool
 import org.holoeasy.pool.KeyAlreadyExistsException
 import org.holoeasy.reactive.MutableState
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -75,6 +77,13 @@ open class Hologram @JvmOverloads constructor(
         } else {
             TextLine(hologram = this, text = text, clickable = false, args = modifiers.args)
         }
+        lines.add(line)
+        return line
+    }
+
+    @ApiStatus.Experimental
+    protected fun displayBlockLine(material : Material) : Line<Material> {
+        val line = DisplayBlockLine(hologram = this, material)
         lines.add(line)
         return line
     }
@@ -181,6 +190,11 @@ open class Hologram @JvmOverloads constructor(
                     LineImpl.Type.ITEM_LINE, LineImpl.Type.BLOCK_LINE -> {
                         val hologramLine = hologram.lines[i] as LineImpl<ItemStack>
                         hologramLine.value = value as ItemStack
+                    }
+
+                    LineImpl.Type.DISPLAY_BLOCK_LINE -> {
+                        val hologramLine = hologram.lines[i] as DisplayBlockLine
+                        hologramLine.value = value as Material
                     }
                 }
             }

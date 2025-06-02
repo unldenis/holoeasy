@@ -50,7 +50,7 @@ public class ExamplePlugin extends JavaPlugin {
         holoEasy = new HoloEasy(this, PacketImpl.PacketEvents);
 
         // ** Create a MyHolo Pool, why not?
-        IHologramPool<MyHolo> myPool = holoEasy.startInteractivePool(60);
+        IHologramPool<MyDisplayBlock> myPool = holoEasy.startInteractivePool(60);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
@@ -59,9 +59,11 @@ public class ExamplePlugin extends JavaPlugin {
 
 
             // ** Add holo to myPool
-            MyHolo hologram = new MyHolo(holoEasy, location);
-            hologram.show(myPool);
+//            MyHolo hologram = new MyHolo(holoEasy, location);
+//            hologram.show(myPool);
 
+            MyDisplayBlock hologram = new MyDisplayBlock(holoEasy, location);
+            hologram.show(myPool);
             return true;
         });
 
@@ -70,15 +72,22 @@ public class ExamplePlugin extends JavaPlugin {
         Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
 
 
-            for (MyHolo hologram : myPool.getHolograms()) {
-
+            for (MyDisplayBlock hologram : myPool.getHolograms()) {
                 // ** Updates the line
-                hologram.status.update(new ItemStack(Material.GREEN_DYE));
+                hologram.block.update(Material.GREEN_WOOL);
             }
 
         }, 20L * 30);
     }
 
+    public static class MyDisplayBlock extends Hologram {
+
+        public Line<Material> block = displayBlockLine(Material.RED_WOOL);
+
+        public MyDisplayBlock(@NotNull HoloEasy lib, @NotNull Location location) {
+            super(lib, location);
+        }
+    }
 
 
     public static class MyHolo extends Hologram {

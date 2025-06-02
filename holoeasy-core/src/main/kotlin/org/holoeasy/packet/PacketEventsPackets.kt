@@ -1,5 +1,6 @@
 package org.holoeasy.packet
 
+import com.github.retrooper.packetevents.manager.server.ServerVersion
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.player.Equipment
@@ -9,6 +10,7 @@ import com.github.retrooper.packetevents.wrapper.play.server.*
 import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -42,61 +44,66 @@ class PacketEventsPackets : IPacket {
         val entityData = mutableListOf<EntityData<*>>()
 
 
-        if (VersionUtil.CLEAN_VERSION in VersionEnum.V1_8..VersionEnum.V1_8) {
-            entityData.add(
-                EntityData(
-                    10,
-                    EntityDataTypes.ITEMSTACK,
-                    SpigotConversionUtil.fromBukkitItemStack(item)
+        when (VersionUtil.CLEAN_VERSION) {
+            in VersionEnum.V1_8..VersionEnum.V1_8 -> {
+                entityData.add(
+                    EntityData(
+                        10,
+                        EntityDataTypes.ITEMSTACK,
+                        SpigotConversionUtil.fromBukkitItemStack(item)
+                    )
                 )
-            )
 
-        } else if (VersionUtil.CLEAN_VERSION in VersionEnum.V1_9..VersionEnum.V1_12) {
-            entityData.add(
-                EntityData(
-                    5,
-                    EntityDataTypes.BOOLEAN,
-                    true
+            }
+            in VersionEnum.V1_9..VersionEnum.V1_12 -> {
+                entityData.add(
+                    EntityData(
+                        5,
+                        EntityDataTypes.BOOLEAN,
+                        true
+                    )
                 )
-            )
-            entityData.add(
-                EntityData(
-                    6,
-                    EntityDataTypes.ITEMSTACK,
-                    SpigotConversionUtil.fromBukkitItemStack(item)
+                entityData.add(
+                    EntityData(
+                        6,
+                        EntityDataTypes.ITEMSTACK,
+                        SpigotConversionUtil.fromBukkitItemStack(item)
+                    )
                 )
-            )
 
-        } else if (VersionUtil.CLEAN_VERSION in VersionEnum.V1_13..VersionEnum.V1_18) {
-            entityData.add(
-                EntityData(
-                    5,
-                    EntityDataTypes.BOOLEAN,
-                    true
+            }
+            in VersionEnum.V1_13..VersionEnum.V1_18 -> {
+                entityData.add(
+                    EntityData(
+                        5,
+                        EntityDataTypes.BOOLEAN,
+                        true
+                    )
                 )
-            )
-            entityData.add(
-                EntityData(
-                    7,
-                    EntityDataTypes.ITEMSTACK,
-                    SpigotConversionUtil.fromBukkitItemStack(item)
+                entityData.add(
+                    EntityData(
+                        7,
+                        EntityDataTypes.ITEMSTACK,
+                        SpigotConversionUtil.fromBukkitItemStack(item)
+                    )
                 )
-            )
-        } else {
-            entityData.add(
-                EntityData(
-                    5,
-                    EntityDataTypes.BOOLEAN,
-                    true
+            }
+            else -> {
+                entityData.add(
+                    EntityData(
+                        5,
+                        EntityDataTypes.BOOLEAN,
+                        true
+                    )
                 )
-            )
-            entityData.add(
-                EntityData(
-                    8,
-                    EntityDataTypes.ITEMSTACK,
-                    SpigotConversionUtil.fromBukkitItemStack(item)
+                entityData.add(
+                    EntityData(
+                        8,
+                        EntityDataTypes.ITEMSTACK,
+                        SpigotConversionUtil.fromBukkitItemStack(item)
+                    )
                 )
-            )
+            }
         }
 
         val packet = WrapperPlayServerEntityMetadata(entityId, entityData)
@@ -199,5 +206,38 @@ class PacketEventsPackets : IPacket {
         packet.send(player)
     }
 
+    override fun metadataDisplayBlock(player: Player, entityId: Int, material: Material) {
+        val entityData = mutableListOf<EntityData<*>>()
+
+        when (VersionUtil.CLEAN_VERSION) {
+            in VersionEnum.V1_8..VersionEnum.V1_18 -> {
+                throw RuntimeException("metadataDisplayBlock is available since 1.19.4")
+
+            }
+            VersionEnum.V1_19 -> {
+                entityData.add(
+                    EntityData(
+                        22,
+                        EntityDataTypes.BLOCK_STATE,
+                        SpigotConversionUtil.fromBukkitBlockData(material.createBlockData()).globalId
+                    )
+                )
+
+            }
+            else -> {
+                entityData.add(
+                    EntityData(
+                        23,
+                        EntityDataTypes.BLOCK_STATE,
+                        SpigotConversionUtil.fromBukkitBlockData(material.createBlockData()).globalId
+                    )
+                )
+
+            }
+        }
+
+        val packet = WrapperPlayServerEntityMetadata(entityId, entityData)
+        packet.send(player)
+    }
 
 }

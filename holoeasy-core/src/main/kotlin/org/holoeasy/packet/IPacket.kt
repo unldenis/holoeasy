@@ -2,10 +2,12 @@ package org.holoeasy.packet
 
 
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.holoeasy.HoloEasy
+import org.jetbrains.annotations.ApiStatus
 
 interface IPacket {
 
@@ -25,4 +27,6 @@ interface IPacket {
 
     fun velocity(player: Player, entityId: Int, x: Double, y: Double, z: Double)
 
+    @ApiStatus.Experimental
+    fun metadataDisplayBlock(player: Player, entityId: Int, material: Material)
 }

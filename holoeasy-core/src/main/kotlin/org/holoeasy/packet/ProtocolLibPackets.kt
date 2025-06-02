@@ -7,6 +7,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -344,7 +345,7 @@ class ProtocolLibPackets : IPacket {
 
                         integers[0] = entityId
 
-                        entityTypeModifier[0] = EntityType.DROPPED_ITEM
+                        entityTypeModifier[0] = EntityType.ITEM
 
                         uuiDs[0] = UUID.randomUUID()
 
@@ -419,6 +420,10 @@ class ProtocolLibPackets : IPacket {
             integers[2] = y.toInt()
             integers[3] = z.toInt()
         }.send(player)
+    }
+
+    override fun metadataDisplayBlock(player: Player, entityId: Int, material: Material) {
+        throw RuntimeException("metadataDisplayBlock Packet not implemented in ProtocolLib")
     }
 
     // 1.8
