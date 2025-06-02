@@ -15,6 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 
 open class Hologram @JvmOverloads constructor(
+    val lib: HoloEasy,
     location: Location,
     showEvent: ShowEvent? = null,
     hideEvent: HideEvent? = null
@@ -88,7 +89,7 @@ open class Hologram @JvmOverloads constructor(
     }
 
     @JvmOverloads
-    fun show(pool: IHologramPool<*> = HoloEasy.standardPool) {
+    fun show(pool: IHologramPool<*>) {
         if (pool.holograms.any { it.id == this.id }) {
             throw KeyAlreadyExistsException(this.id)
         }
@@ -118,8 +119,7 @@ open class Hologram @JvmOverloads constructor(
         pvt.hideEvent?.onHide(player)
     }
 
-    @JvmOverloads
-    fun hide(pool: IHologramPool<*> = HoloEasy.standardPool) {
+    fun hide(pool: IHologramPool<*>) {
         // if removed
         val removed = (pool.holograms as MutableSet<Hologram>).remove(this)
         if (removed) {

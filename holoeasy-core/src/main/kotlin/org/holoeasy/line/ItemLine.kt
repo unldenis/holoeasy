@@ -45,7 +45,7 @@ class ItemLine(
         spawn(player)
         this.update(player)
 
-        HoloEasy.packetImpl()
+        hologram.lib.packetImpl
             .velocity(player, entityID, 0.0, 0.0, 0.0)
 
         if (firstRender) {
@@ -62,7 +62,7 @@ class ItemLine(
 
 
     override fun update(player: Player) {
-        HoloEasy.packetImpl()
+        hologram.lib.packetImpl
             .metadataItem(player, entityID, item = value)
     }
 

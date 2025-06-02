@@ -33,7 +33,7 @@ class ClickableTextLine(
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
 
-        Bukkit.getPluginManager().registerEvents(this, HoloEasy.plugin())
+        Bukkit.getPluginManager().registerEvents(this, hologram.lib.plugin)
 
 //        if (location != null) {
 //            updateHitBox()

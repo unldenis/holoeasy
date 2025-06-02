@@ -30,7 +30,7 @@ class BlockLine(
     override fun show(player: Player) {
         spawn(player)
 
-        HoloEasy.packetImpl()
+        hologram.lib.packetImpl
             .metadataText(player, entityID, nameTag = null, invisible = true)
 
         this.update(player)
@@ -49,7 +49,7 @@ class BlockLine(
 
 
     override fun update(player: Player) {
-        HoloEasy.packetImpl()
+        hologram.lib.packetImpl
             .metadataItem(player, entityID, item = value)
     }
 

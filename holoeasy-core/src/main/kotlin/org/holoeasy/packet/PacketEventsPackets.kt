@@ -12,6 +12,7 @@ import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.holoeasy.HoloEasy
 import org.holoeasy.util.VersionEnum
 import org.holoeasy.util.VersionUtil
 import java.util.*
@@ -38,7 +39,7 @@ class PacketEventsPackets : IPacket {
 
     override fun metadataItem(player: Player, entityId: Int, item: ItemStack) {
 
-        val entityData = mutableListOf<EntityData>()
+        val entityData = mutableListOf<EntityData<*>>()
 
 
         if (VersionUtil.CLEAN_VERSION in VersionEnum.V1_8..VersionEnum.V1_8) {
@@ -103,7 +104,7 @@ class PacketEventsPackets : IPacket {
     }
 
     override fun metadataText(player: Player, entityId: Int, nameTag: String?, invisible: Boolean) {
-        val entityData = mutableListOf<EntityData>()
+        val entityData = mutableListOf<EntityData<*>>()
 
         if (VersionUtil.CLEAN_VERSION in VersionEnum.V1_8..VersionEnum.V1_8) {
 
@@ -175,7 +176,7 @@ class PacketEventsPackets : IPacket {
         packet.send(player)
     }
 
-    override fun spawn(player: Player, entityId: Int, entityType: EntityType, location: Location) {
+    override fun spawn(lib : HoloEasy, player: Player, entityId: Int, entityType: EntityType, location: Location) {
         val packet = WrapperPlayServerSpawnEntity(
             entityId,
             UUID.randomUUID(),

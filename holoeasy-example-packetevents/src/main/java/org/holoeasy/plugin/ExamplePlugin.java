@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExamplePlugin extends JavaPlugin {
 
+    private HoloEasy holoEasy;
+
     @Override
     public void onLoad() {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
@@ -42,10 +44,10 @@ public class ExamplePlugin extends JavaPlugin {
         PacketEvents.getAPI().init();
 
         // ** Bind the library
-        HoloEasy.bind(this, PacketImpl.PacketEvents);
+        holoEasy = new HoloEasy(this, PacketImpl.PacketEvents);
 
         // ** Create a MyHolo Pool, why not?
-        IHologramPool<MyHolo> myPool = HoloEasy.startInteractivePool(60);
+        IHologramPool<MyHolo> myPool = holoEasy.startInteractivePool(60);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
@@ -54,7 +56,7 @@ public class ExamplePlugin extends JavaPlugin {
 
 
             // ** Add holo to myPool
-            MyHolo hologram = new MyHolo(location);
+            MyHolo hologram = new MyHolo(holoEasy, location);
             hologram.show(myPool);
 
             return true;
@@ -84,8 +86,8 @@ public class ExamplePlugin extends JavaPlugin {
                 .clickable(player -> clickCount.update(it -> it + 1)));
         public Line<ItemStack> status = itemLine(new ItemStack(Material.RED_DYE));
 
-        public MyHolo(@NotNull Location location) {
-            super(location);
+        public MyHolo(@NotNull HoloEasy lib, @NotNull Location location) {
+            super(lib, location);
         }
 
     }

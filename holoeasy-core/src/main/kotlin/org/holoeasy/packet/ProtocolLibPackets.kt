@@ -282,7 +282,7 @@ class ProtocolLibPackets : IPacket {
         }.send(player)
     }
 
-    override fun spawn(player: Player, entityId: Int, entityType: EntityType, location: Location) {
+    override fun spawn(lib : HoloEasy, player: Player, entityId: Int, entityType: EntityType, location: Location) {
         val packet = when (VersionUtil.CLEAN_VERSION) {
             in VersionEnum.V1_8..VersionEnum.V1_8 -> {
                 packet(PacketType.Play.Server.SPAWN_ENTITY_LIVING) {
@@ -295,7 +295,7 @@ class ProtocolLibPackets : IPacket {
                     integers[4] = (location.z * 32).toInt()
 
                     if (defaultDataWatcher == null) {
-                        loadDefaultWatcher(HoloEasy.plugin()).join()
+                        loadDefaultWatcher(lib.plugin).join()
                     }
 
                     dataWatcherModifier[0] = defaultDataWatcher

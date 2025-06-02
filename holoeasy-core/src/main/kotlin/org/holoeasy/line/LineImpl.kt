@@ -57,18 +57,18 @@ sealed class LineImpl<T>(
 
 
     fun destroy(player: Player) {
-        HoloEasy.packetImpl().deletePacket(player, entityID)
+        hologram.lib.packetImpl.deletePacket(player, entityID)
     }
 
 
     fun spawn(player: Player): Boolean {
-        HoloEasy.packetImpl().spawn(player, entityID, entityType, location ?: return false)
+        hologram.lib.packetImpl.spawn(hologram.lib, player, entityID, entityType, location ?: return false)
         return true
     }
 
 
     fun teleport(player: Player): Boolean {
-        HoloEasy.packetImpl().teleport(player, entityID, location ?: return false)
+        hologram.lib.packetImpl.teleport(player, entityID, location ?: return false)
         return true
     }
 

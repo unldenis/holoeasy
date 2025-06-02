@@ -13,38 +13,43 @@ import org.holoeasy.packet.PacketImpl
 
 class ExamplePlugin : JavaPlugin() {
 
+    lateinit var holoEasy : HoloEasy
+
     override fun onEnable() {
 
         // ** Bind the library
-        HoloEasy.bind(this, PacketImpl.ProtocolLib)
+        holoEasy = HoloEasy(plugin = this, PacketImpl.ProtocolLib)
 
         getCommand("hologram")?.setExecutor { sender, _, _, _ ->
+            if(sender !is Player){
+                return@setExecutor true
+            }
 
-            val location = (sender as Player).location
+            val location = (sender).location
 
             // ** Create a basic hologram and add on the Standard Pool
-            val hologram = HelloWorldHologram(location)
-            hologram.show()
+            val hologram = HelloWorldHologram(holoEasy, location)
+            hologram.show(sender)
 
 
             //  ** Serialize
             val serialized: Map<String, Any> = hologram.serialize()
 
             // ** Now you can remove it from the Standard Pool
-            hologram.hide()
+            hologram.hide(sender)
 
             // ** Deserialize the previous hologram
             val deserialized : HelloWorldHologram = Hologram.deserialize(serialized)
 
             // ** Show it
-            deserialized.show()
+            deserialized.show(sender)
 
             true
         }
     }
 
 
-    class MyHolo(plugin: Plugin, location: Location) : Hologram(location) {
+    class MyHolo(lib : HoloEasy, location: Location) : Hologram(lib, location) {
 
         private val clickCount = mutableStateOf(0) // can be any type
 

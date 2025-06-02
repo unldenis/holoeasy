@@ -28,8 +28,8 @@ import java.util.function.Supplier
 
 object BukkitFuture {
 
-    fun runTaskTimerAsynchronously(l: Long, l1: Long, task: () -> Unit): BukkitTask {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(HoloEasy.plugin(), java.lang.Runnable {
+    fun runTaskTimerAsynchronously(plugin: Plugin, l: Long, l1: Long, task: () -> Unit): BukkitTask {
+        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, java.lang.Runnable {
             task.invoke()
         }, l, l1)
     }
@@ -42,7 +42,7 @@ object BukkitFuture {
      * CompletableFuture
      * @param <T>      the function's return type
     </T> */
-    fun <T> supplyAsync(
+    fun <T : Any> supplyAsync(
         plugin: Plugin,
         supplier: Supplier<T>
     ): CompletableFuture<T> {

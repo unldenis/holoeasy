@@ -5,6 +5,7 @@ import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.holoeasy.HoloEasy
 
 interface IPacket {
 
@@ -18,7 +19,7 @@ interface IPacket {
 
     fun rotate(player: Player, entityId: Int, yaw: Double)
 
-    fun spawn(player: Player, entityId: Int, entityType: EntityType, location: Location)
+    fun spawn(lib : HoloEasy, player: Player, entityId: Int, entityType: EntityType, location: Location)
 
     fun teleport(player: Player, entityId: Int, location: Location)
 

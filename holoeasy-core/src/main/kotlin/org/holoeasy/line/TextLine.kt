@@ -86,7 +86,7 @@ open class TextLine(
         if (!isEmpty) {
             spawn(player)
 
-            HoloEasy.packetImpl()
+            hologram.lib.packetImpl
                 .metadataText(player, entityID, nameTag = parse(player))
         }
     }
@@ -115,12 +115,12 @@ open class TextLine(
                 spawn(player)
                 isEmpty = false
 
-                HoloEasy.packetImpl()
+                hologram.lib.packetImpl
                     .metadataText(player, entityID, nameTag = parse(player))
             }
 
             0x00 ->
-                HoloEasy.packetImpl()
+                hologram.lib.packetImpl
                     .metadataText(player, entityID, nameTag = parse(player), invisible = false)
         }
     }

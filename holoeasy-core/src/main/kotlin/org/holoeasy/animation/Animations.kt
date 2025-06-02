@@ -11,10 +11,9 @@ enum class Animations(val task: (LineImpl<*>) -> BukkitTask) {
         val holo = line.hologram
         var yaw = 0.0
 
-        BukkitFuture.runTaskTimerAsynchronously(2, 2) {
+        BukkitFuture.runTaskTimerAsynchronously(holo.lib.plugin, 2, 2) {
             holo.pvt.seeingPlayers.forEach { player ->
-                HoloEasy.packetImpl()
-                    .rotate(player, line.entityID, yaw = yaw)
+                holo.lib.packetImpl.rotate(player, line.entityID, yaw = yaw)
             }
 
             yaw += 10

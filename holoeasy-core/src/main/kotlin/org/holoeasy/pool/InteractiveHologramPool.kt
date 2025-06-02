@@ -18,8 +18,10 @@ class InteractiveHologramPool<T : Hologram>(
     minHitDistance: Float,
     maxHitDistance: Float,
     val clickAction: ClickAction?
-) : Listener,
-    IHologramPool<T> {
+) : Listener, IHologramPool<T> {
+
+    override val lib: HoloEasy
+        get() = pool.lib
 
     override val holograms: Set<T>
         get() = pool.holograms
@@ -33,13 +35,13 @@ class InteractiveHologramPool<T : Hologram>(
         this.minHitDistance = minHitDistance
         this.maxHitDistance = maxHitDistance
 
-        Bukkit.getPluginManager().registerEvents(this, HoloEasy.plugin())
+        Bukkit.getPluginManager().registerEvents(this, lib.plugin)
     }
 
 
     @EventHandler
     fun handleInteract(e: PlayerInteractEvent) {
-        Bukkit.getScheduler().runTaskAsynchronously(HoloEasy.plugin(), Runnable {
+        Bukkit.getScheduler().runTaskAsynchronously(lib.plugin, Runnable {
             val player = e.player
 
             if (clickAction == null) {
