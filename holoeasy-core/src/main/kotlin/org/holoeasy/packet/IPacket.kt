@@ -1,6 +1,7 @@
 package org.holoeasy.packet
 
 
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
@@ -29,4 +30,7 @@ interface IPacket {
 
     @ApiStatus.Experimental
     fun metadataDisplayBlock(player: Player, entityId: Int, material: Material)
+
+    @ApiStatus.Experimental
+    fun metadataDisplayText(player: Player, entityId: Int, text: String, lineWidth : Int, backgroundColor : Int, textOpacity : Byte)
 }

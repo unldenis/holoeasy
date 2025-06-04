@@ -4,10 +4,8 @@ import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
-import org.holoeasy.HoloEasy
 import org.holoeasy.animation.Animations
 import org.holoeasy.hologram.Hologram
-import org.holoeasy.reactive.Observer
 import org.jetbrains.annotations.ApiStatus
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -15,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger
 sealed class LineImpl<T>(
     val hologram: Hologram,
     val entityType: EntityType
-) : Observer, Line<T> {
+) : Line<T> {
 
  private var location: Location? = null
 
@@ -78,7 +76,7 @@ sealed class LineImpl<T>(
     }
 
 
-    override fun observerUpdate() {
+    fun observerUpdate() {
         for (player in hologram.pvt.seeingPlayers) {
             update(player)
         }
@@ -92,17 +90,14 @@ sealed class LineImpl<T>(
         EXTERNAL,
 
         TEXT_LINE,
-
-        @ApiStatus.Experimental
         CLICKABLE_TEXT_LINE,
-
         ITEM_LINE,
-
-        @ApiStatus.Experimental
         BLOCK_LINE,
 
         @ApiStatus.Experimental
-        DISPLAY_BLOCK_LINE
+        DISPLAY_BLOCK_LINE,
+        @ApiStatus.Experimental
+        DISPLAY_TEXT_LINE
     }
 
 

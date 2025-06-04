@@ -426,6 +426,17 @@ class ProtocolLibPackets : IPacket {
         throw RuntimeException("metadataDisplayBlock Packet not implemented in ProtocolLib")
     }
 
+    override fun metadataDisplayText(
+        player: Player,
+        entityId: Int,
+        text: String,
+        lineWidth: Int,
+        backgroundColor: Int,
+        textOpacity: Byte
+    ) {
+        throw RuntimeException("metadataDisplayText Packet not implemented in ProtocolLib")
+    }
+
     // 1.8
     private var defaultDataWatcher: WrappedDataWatcher? = null
 

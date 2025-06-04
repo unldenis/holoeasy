@@ -1,14 +1,15 @@
 package org.holoeasy.packet
 
-import com.github.retrooper.packetevents.manager.server.ServerVersion
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.player.Equipment
 import com.github.retrooper.packetevents.protocol.player.EquipmentSlot
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
+import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentSerializer
 import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
+import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
@@ -55,6 +56,7 @@ class PacketEventsPackets : IPacket {
                 )
 
             }
+
             in VersionEnum.V1_9..VersionEnum.V1_12 -> {
                 entityData.add(
                     EntityData(
@@ -72,6 +74,7 @@ class PacketEventsPackets : IPacket {
                 )
 
             }
+
             in VersionEnum.V1_13..VersionEnum.V1_18 -> {
                 entityData.add(
                     EntityData(
@@ -88,6 +91,7 @@ class PacketEventsPackets : IPacket {
                     )
                 )
             }
+
             else -> {
                 entityData.add(
                     EntityData(
@@ -183,7 +187,7 @@ class PacketEventsPackets : IPacket {
         packet.send(player)
     }
 
-    override fun spawn(lib : HoloEasy, player: Player, entityId: Int, entityType: EntityType, location: Location) {
+    override fun spawn(lib: HoloEasy, player: Player, entityId: Int, entityType: EntityType, location: Location) {
         val packet = WrapperPlayServerSpawnEntity(
             entityId,
             UUID.randomUUID(),
@@ -212,8 +216,8 @@ class PacketEventsPackets : IPacket {
         when (VersionUtil.CLEAN_VERSION) {
             in VersionEnum.V1_8..VersionEnum.V1_18 -> {
                 throw RuntimeException("metadataDisplayBlock is available since 1.19.4")
-
             }
+
             VersionEnum.V1_19 -> {
                 entityData.add(
                     EntityData(
@@ -224,6 +228,7 @@ class PacketEventsPackets : IPacket {
                 )
 
             }
+
             else -> {
                 entityData.add(
                     EntityData(
@@ -233,6 +238,67 @@ class PacketEventsPackets : IPacket {
                     )
                 )
 
+            }
+        }
+
+        val packet = WrapperPlayServerEntityMetadata(entityId, entityData)
+        packet.send(player)
+    }
+
+    val SERIALIZER = GsonComponentSerializer.builder().build()
+
+    override fun metadataDisplayText(
+        player: Player,
+        entityId: Int,
+        text: String,
+        lineWidth: Int,
+        backgroundColor: Int,
+        textOpacity: Byte
+    ) {
+        val entityData = mutableListOf<EntityData<*>>()
+
+        when (VersionUtil.CLEAN_VERSION) {
+            in VersionEnum.V1_8..VersionEnum.V1_18 -> {
+                throw RuntimeException("metadataDisplayText is available since 1.19.4")
+            }
+
+            VersionEnum.V1_19 -> {
+                entityData.add(
+                    EntityData(
+                        22,
+                        EntityDataTypes.OPTIONAL_ADV_COMPONENT,
+                        Optional.of(LegacyComponentSerializer.legacyAmpersand().deserialize(text))
+                    )
+                )
+                entityData.add(
+                    EntityData(23, EntityDataTypes.INT, lineWidth)
+                )
+                entityData.add(
+                    EntityData(24, EntityDataTypes.INT, backgroundColor)
+                )
+                entityData.add(
+                    EntityData(25, EntityDataTypes.BYTE, textOpacity)
+                )
+
+            }
+
+            else -> {
+                entityData.add(
+                    EntityData(
+                        23,
+                        EntityDataTypes.COMPONENT,
+                        SERIALIZER.serialize(Component.text(text))
+                    )
+                )
+                entityData.add(
+                    EntityData(24, EntityDataTypes.INT, lineWidth)
+                )
+                entityData.add(
+                    EntityData(25, EntityDataTypes.INT, backgroundColor)
+                )
+                entityData.add(
+                    EntityData(26, EntityDataTypes.BYTE, textOpacity)
+                )
             }
         }
 

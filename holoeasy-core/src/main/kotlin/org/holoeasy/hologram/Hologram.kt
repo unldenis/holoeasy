@@ -5,11 +5,10 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.holoeasy.HoloEasy
-import org.holoeasy.builder.TextLineModifiers
+import org.holoeasy.builder.DisplayTextLineModifiers
 import org.holoeasy.line.*
 import org.holoeasy.pool.IHologramPool
 import org.holoeasy.pool.KeyAlreadyExistsException
-import org.holoeasy.reactive.MutableState
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.ApiStatus.Internal
 import java.util.*
@@ -28,7 +27,6 @@ open class Hologram @JvmOverloads constructor(
     val id = UUID.randomUUID()!!
     var location: Location = location
         private set
-    private val stateVars = mutableListOf<MutableState<*>>()
     val lines: MutableList<Line<*>> = CopyOnWriteArrayList() // writes are slow and Iterators are fast and consistent.
 
     // if is first loaded
@@ -36,47 +34,36 @@ open class Hologram @JvmOverloads constructor(
 
     open fun loader(): HologramLoader = HologramLoader.TEXT_BLOCK_STANDARD
 
-    protected fun <T : Any> mutableStateOf(value: T): MutableState<T> {
-        val state = MutableState(value)
-        stateVars.add(state)
-        return state
-    }
-
     protected fun blockLine(item: ItemStack): Line<ItemStack> {
-        val line = BlockLine(hologram = this, obj = item)
+        val line = BlockLine(hologram = this, value = item)
         lines.add(line)
         return line
     }
 
     protected fun itemLine(item: ItemStack): Line<ItemStack> {
-        val line = ItemLine(hologram = this, obj = item)
+        val line = ItemLine(hologram = this, value = item)
+        lines.add(line)
+        return line
+    }
+
+    protected fun textLine(text: String): Line<String> {
+        val line = TextLine(hologram = this, value = text)
         lines.add(line)
         return line
     }
 
     @JvmOverloads
-    protected fun textLine(text: String, modifiers: TextLineModifiers = TextLineModifiers()): Line<String> {
-        val line = if (modifiers.clickable) {
-            if (modifiers.clickableWithoutPool) {
-                val clickableTextLine =
-                    ClickableTextLine(
-                        hologram = this,
-                        text = text,
-                        args = modifiers.args,
-                        clickable = false,
-                        minHitDistance = modifiers.minHitDistance,
-                        maxHitDistance = modifiers.maxHitDistance,
-                    )
-                modifiers.clickEvent?.let { clickableTextLine.clickEvent = it }
-                clickableTextLine
-            } else {
-                val textLine = TextLine(hologram = this, text = text, clickable = true, args = modifiers.args)
-                modifiers.clickEvent?.let { textLine.clickEvent = it }
-                textLine
-            }
-        } else {
-            TextLine(hologram = this, text = text, clickable = false, args = modifiers.args)
-        }
+    protected fun displayTextLine(
+        text: String,
+        modifiers: DisplayTextLineModifiers = DisplayTextLineModifiers(),
+    ): Line<String> {
+        val line = DisplayTextLine(
+            hologram = this,
+            value = text,
+            lineWidth = modifiers.lineWidth,
+            backgroundColor = modifiers.backgroundColor,
+            textOpacity = modifiers.textOpacity
+        )
         lines.add(line)
         return line
     }
@@ -156,7 +143,6 @@ open class Hologram @JvmOverloads constructor(
         result["location"] = location
         result["lines"] = lines
             .map { mapOf("type" to it.type.name, "value" to it.value) }
-        result["stateVars"] = stateVars.map { it.get() }
         return result
     }
 
@@ -196,14 +182,13 @@ open class Hologram @JvmOverloads constructor(
                         val hologramLine = hologram.lines[i] as DisplayBlockLine
                         hologramLine.value = value as Material
                     }
+
+                    LineImpl.Type.DISPLAY_TEXT_LINE -> {
+                        val hologramLine = hologram.lines[i] as DisplayTextLine
+                        hologramLine.value = value as String
+                    }
                 }
             }
-            for (i in stateVars.indices) {
-                val hologramState = hologram.stateVars[i] as MutableState<Any>
-                hologramState.set(stateVars[i])
-            }
-
-
             return hologram
         }
 

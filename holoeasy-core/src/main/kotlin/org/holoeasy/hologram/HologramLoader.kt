@@ -61,7 +61,8 @@ enum class HologramLoader(
                         LineImpl.Type.EXTERNAL -> {}
                         LineImpl.Type.TEXT_LINE -> {}
                         LineImpl.Type.CLICKABLE_TEXT_LINE -> {}
-                        org.holoeasy.line.LineImpl.Type.DISPLAY_BLOCK_LINE -> {}
+                        LineImpl.Type.DISPLAY_BLOCK_LINE -> {}
+                        org.holoeasy.line.LineImpl.Type.DISPLAY_TEXT_LINE -> TODO()
                     }
                 }
 

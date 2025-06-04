@@ -4,10 +4,8 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.holoeasy.HoloEasy
-import org.holoeasy.builder.TextLineModifiers
 import org.holoeasy.hologram.Hologram
 import org.holoeasy.packet.PacketImpl
 
@@ -55,13 +53,19 @@ class ExamplePlugin : JavaPlugin() {
 
     class MyHolo(lib : HoloEasy, location: Location) : Hologram(lib, location) {
 
-        private val clickCount = mutableStateOf(0) // can be any type
 
-        val counter = textLine("Clicked {} times", TextLineModifiers()
-            .args(clickCount)
-            .clickable { _ -> clickCount.update { it + 1 } })
+        var clickCount = 0
 
-        var status= blockLine(ItemStack(Material.RED_DYE))
+        val counter = textLine("Clicked $clickCount time")
+
+        val status= blockLine(ItemStack(Material.RED_DYE))
+
+
+        fun onClick() {
+            clickCount++
+            counter.update("Clicked $clickCount times")
+            status.update(ItemStack(if (clickCount % 2 == 0) Material.GREEN_DYE else Material.RED_DYE))
+        }
 
     }
 

@@ -36,7 +36,8 @@ dependencies {
     compileOnly(libs.com.github.retrooper.packetevents.spigot)
 
     compileOnly(files("../libs/ProtocolLib.jar"))
-
+// https://mvnrepository.com/artifact/net.kyori/adventure-text-serializer-gson
+    compileOnly(libs.adventure.text.serializer.gson)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

@@ -31,6 +31,8 @@ dependencies {
     }
     implementation(libs.com.github.retrooper.packetevents.spigot)
     compileOnly(libs.org.spigotmc.spigot.api)
+    implementation(libs.adventure.text.serializer.gson)
+
 }
 
 description = "holoeasy-example-packetevents"

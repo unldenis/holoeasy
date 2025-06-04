@@ -3,9 +3,11 @@
 com-github-retrooper-packetevents-spigot = "2.8.0"
 org-jetbrains-kotlin-kotlin-stdlib = "1.9.21"
 org-spigotmc-spigot-api = "1.21.1-R0.1-SNAPSHOT"
+adventure-text-serializer-gson = "4.21.0"
 
 [libraries]
 #com-comphenix-protocol-protocollib = { module = "com.comphenix.protocol:ProtocolLib", version.ref = "com-comphenix-protocol-protocollib" }
 com-github-retrooper-packetevents-spigot = { module = "com.github.retrooper:packetevents-spigot", version.ref = "com-github-retrooper-packetevents-spigot" }
 org-jetbrains-kotlin-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "org-jetbrains-kotlin-kotlin-stdlib" }
 org-spigotmc-spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "org-spigotmc-spigot-api" }
+adventure-text-serializer-gson = { module = "net.kyori:adventure-text-serializer-gson", version.ref = "adventure-text-serializer-gson" }
