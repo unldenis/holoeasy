@@ -24,7 +24,6 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.org.jetbrains.kotlin.kotlin.stdlib)
     implementation(project(":holoeasy-core")) {
         // Set the transitive dependency to false to avoid shading HoloEasy dependencies
         isTransitive = false

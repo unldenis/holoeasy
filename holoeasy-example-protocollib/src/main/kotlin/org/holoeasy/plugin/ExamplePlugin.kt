@@ -16,7 +16,7 @@ class ExamplePlugin : JavaPlugin() {
     override fun onEnable() {
 
         // ** Bind the library
-        holoEasy = HoloEasy(plugin = this, PacketImpl.ProtocolLib)
+        holoEasy = HoloEasy(this, PacketImpl.PacketEvents)
 
         getCommand("hologram")?.setExecutor { sender, _, _, _ ->
             if(sender !is Player){

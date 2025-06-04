@@ -30,7 +30,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.org.jetbrains.kotlin.kotlin.stdlib)
     compileOnly(libs.org.spigotmc.spigot.api)
 //    compileOnly(libs.com.comphenix.protocol.protocollib)
     compileOnly(libs.com.github.retrooper.packetevents.spigot)
@@ -39,13 +38,6 @@ dependencies {
 // https://mvnrepository.com/artifact/net.kyori/adventure-text-serializer-gson
     compileOnly(libs.adventure.text.serializer.gson)
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
 
 tasks.register("printVersion") {
     doLast {
