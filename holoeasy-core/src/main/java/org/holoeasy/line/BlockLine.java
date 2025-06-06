@@ -16,29 +16,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class BlockLine extends Line<ItemStack> {
 
-    private ItemStack value;
 
-    public BlockLine(Hologram hologram, ItemStack value) {
-        super(hologram, EntityTypes.FALLING_BLOCK);
-        this.value = value;
+    public BlockLine(Hologram hologram, Function<Player, ItemStack> valueSupplier) {
+        super(hologram, EntityTypes.FALLING_BLOCK, valueSupplier);
     }
 
     @Override
     public @NotNull Type getType() {
         return Type.BLOCK_LINE;
-    }
-
-    @Override
-    public @NotNull ItemStack getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(ItemStack value) {
-        this.value = value;
     }
 
     @Override
@@ -62,17 +51,10 @@ public class BlockLine extends Line<ItemStack> {
     @Override
     public void update(@NotNull Player player) {
         List<Equipment> equipmentList = new ArrayList<>();
-        equipmentList.add(new Equipment(EquipmentSlot.HELMET, SpigotConversionUtil.fromBukkitItemStack(value)));
+        equipmentList.add(new Equipment(EquipmentSlot.HELMET, SpigotConversionUtil.fromBukkitItemStack(getValue(player))));
         WrapperPlayServerEntityEquipment packet = new WrapperPlayServerEntityEquipment(entityID, equipmentList);
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
     }
-
-    @Override
-    public void update(@NotNull ItemStack newValue) {
-        this.value = newValue;
-        updateAll();
-    }
-
 
     // Builder
 

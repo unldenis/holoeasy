@@ -6,19 +6,21 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
 import org.holoeasy.event.AsyncHologramInteractEvent;
 import org.holoeasy.hologram.Hologram;
-
+import org.holoeasy.line.DisplayTextLine;
 import org.holoeasy.line.Line;
+import org.holoeasy.line.TextLine;
 import org.holoeasy.pool.IHologramPool;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.UUID;
 
 
 public class ExamplePlugin extends JavaPlugin implements Listener {
@@ -27,12 +29,10 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
     public void onClick(AsyncHologramInteractEvent event) {
         // ** Handle click on hologram line
         Hologram hologram = event.getLine().getHologram();
-        if(hologram instanceof MyDisplayTextHolo) {
+        if (hologram instanceof MyDisplayTextHolo) {
             MyDisplayTextHolo myHolo = (MyDisplayTextHolo) hologram;
 
-            myHolo.onClick(); // Increment click count
-            event.getPlayer().sendMessage("You clicked on hologram: " + myHolo.counter.getValue());
-
+            myHolo.onClick(event.getPlayer()); // Increment click count
         }
     }
 
@@ -71,11 +71,6 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
             Player player = ((Player) sender);
             Location location = player.getLocation();
 
-
-            // ** Add holo to myPool
-//            MyHolo hologram = new MyHolo(holoEasy, location);
-//            hologram.show(myPool);
-
             MyDisplayTextHolo hologram = new MyDisplayTextHolo(holoEasy, location);
             hologram.show(myPool);
             return true;
@@ -83,29 +78,25 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
 
 
-        // ** Why not update all holograms 'status' item after 30 seconds?
-//        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
-//
-//
-//            for (MyDisplayTextHolo hologram : myPool.getHolograms()) {
-//                // ** Updates the line
-//                hologram.onClick();
-//            }
-//
-//        }, 20L * 30);
     }
 
     public static class MyDisplayTextHolo extends Hologram {
 
-        private int clickCount = 0; // can be any type
+        private int clickCount = 0;
+        private final Map<UUID, Integer> playerClickCounts = new java.util.HashMap<>();
 
-        private final Line<String> counter = displayTextLine("Clicked 0 times")
+        private final DisplayTextLine global_counter = displayTextLine(player -> "Clicked " + (++clickCount) + " times")
                 .backgroundColor(Color.GREEN);
+
+        private final TextLine player_counter = textLine(player ->
+                "Clicked " + playerClickCounts.compute(player.getUniqueId(), (uuid, count) -> count == null ? 1 : count + 1) + " times by " + player.getName());
+
         private final Line<?> interactionLine = interactionLine();
 
 
-        public void onClick() {
-            counter.update("Clicked " + (++clickCount) + " times");
+        public void onClick(@NotNull Player player) {
+            global_counter.updateAll();
+            player_counter.update(player);
         }
 
         public MyDisplayTextHolo(@NotNull HoloEasy lib, @NotNull Location location) {
@@ -114,27 +105,7 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
 
     }
 
-    public static class MyDisplayBlock extends Hologram {
 
-        public Line<Material> block = displayBlockLine(Material.RED_WOOL);
-
-        public MyDisplayBlock(@NotNull HoloEasy lib, @NotNull Location location) {
-            super(lib, location);
-        }
-    }
-
-
-    public static class MyHolo extends Hologram {
-
-
-        public Line<String> counter = textLine("Clicked {} times");
-        public Line<ItemStack> status = itemLine(new ItemStack(Material.RED_DYE));
-
-        public MyHolo(@NotNull HoloEasy lib, @NotNull Location location) {
-            super(lib, location);
-        }
-
-    }
 
 
 }

@@ -15,15 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class TextLine extends Line<String> {
 
-    private String value;
-    private boolean isEmpty = false;
 
-    public TextLine(Hologram hologram, String value) {
-        super(hologram, EntityTypes.ARMOR_STAND);
-        this.value = value;
+    public TextLine(Hologram hologram, Function<Player, String> valueSupplier) {
+        super(hologram, EntityTypes.ARMOR_STAND, valueSupplier);
     }
 
     @Override
@@ -31,23 +29,11 @@ public class TextLine extends Line<String> {
         return Type.TEXT_LINE;
     }
 
-    @Override
-    public @NotNull String getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     @Override
     public void show(@NotNull Player player) {
-        isEmpty = value.isEmpty();
-        if (!isEmpty) {
-            spawn(player);
-            sendTo(player, true);
-        }
+        spawn(player);
+        update(player);
     }
 
     @Override
@@ -57,55 +43,20 @@ public class TextLine extends Line<String> {
 
     @Override
     public void update(@NotNull Player player) {
-        int spawnBefore = ((isEmpty ? 1 : 0) | ((value.isEmpty() ? 1 : 0) << 1));
-        // 0x00 = già mostrato
-        // 0x01 = era nascosto ma ora è cambiato
-        // 0x02 = già mostrato ma ora è vuoto
-        // 0x03 = era nascosto e non è cambiato
-        switch (spawnBefore) {
-            case 0x03:
-                break;
-            case 0x02:
-                destroy(player);
-                isEmpty = true;
-                break;
-            case 0x01:
-                spawn(player);
-                isEmpty = false;
-                sendTo(player, true);
-                break;
-            case 0x00:
-                sendTo(player, false);
-                break;
-        }
-    }
-
-    @Override
-    public void update(@NotNull String newValue) {
-        this.value = newValue;
-        updateAll();
-    }
-
-    private void sendTo(Player player, boolean invisible) {
         List<EntityData<?>> entityData = new ArrayList<>();
         VersionEnum version = VersionUtil.CLEAN_VERSION;
 
         if (version == VersionEnum.V1_8) {
-            if (invisible) {
-                entityData.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0x20));
-            }
-            if (value != null) {
-                entityData.add(new EntityData<>(2, EntityDataTypes.STRING, value));
-                entityData.add(new EntityData<>(3, EntityDataTypes.BYTE, (byte) 1));
-            }
+            entityData.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0x20));
+
+            entityData.add(new EntityData<>(2, EntityDataTypes.STRING, getValue(player)));
+            entityData.add(new EntityData<>(3, EntityDataTypes.BYTE, (byte) 1));
         } else {
-            if (invisible) {
-                entityData.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0x20));
-            }
-            if (value != null) {
-                entityData.add(new EntityData<>(2, EntityDataTypes.OPTIONAL_ADV_COMPONENT, Optional.of(LegacyComponentSerializer.legacyAmpersand().deserialize(value))));
-                entityData.add(new EntityData<>(3, EntityDataTypes.BOOLEAN, true));
-            }
+            entityData.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0x20));
+
+            entityData.add(new EntityData<>(2, EntityDataTypes.OPTIONAL_ADV_COMPONENT,
+                    Optional.of(LegacyComponentSerializer.legacyAmpersand().deserialize(getValue(player)))));
+            entityData.add(new EntityData<>(3, EntityDataTypes.BOOLEAN, true));
         }
 
         WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);

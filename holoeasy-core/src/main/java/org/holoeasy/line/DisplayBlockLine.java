@@ -16,30 +16,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @ApiStatus.Experimental
 public class DisplayBlockLine extends Line<Material> {
 
-    private Material value;
 
-    public DisplayBlockLine(Hologram hologram, Material value) {
-        super(hologram, EntityTypes.BLOCK_DISPLAY);
-        this.value = value;
+    public DisplayBlockLine(Hologram hologram, Function<Player, Material> valueSupplier) {
+        super(hologram, EntityTypes.BLOCK_DISPLAY, valueSupplier);
     }
 
     @Override
     public @NotNull Type getType() {
         return Type.DISPLAY_BLOCK_LINE;
-    }
-
-    @Override
-    public @NotNull Material getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(Material value) {
-        this.value = value;
     }
 
     @Override
@@ -55,7 +44,7 @@ public class DisplayBlockLine extends Line<Material> {
 
     @Override
     public void update(@NotNull Player player) {
-        WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(value.createBlockData());
+        WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(getValue(player).createBlockData());
 
         List<EntityData<?>> entityData = new ArrayList<>();
 
@@ -82,12 +71,6 @@ public class DisplayBlockLine extends Line<Material> {
 
         WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
-    }
-
-    @Override
-    public void update(@NotNull Material newValue) {
-        this.value = newValue;
-        updateAll();
     }
 
     // Builder

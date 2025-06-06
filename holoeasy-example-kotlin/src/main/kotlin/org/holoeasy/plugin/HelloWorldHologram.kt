@@ -5,5 +5,5 @@ import org.holoeasy.HoloEasy
 import org.holoeasy.hologram.Hologram
 
 class HelloWorldHologram(lib : HoloEasy, location: Location) : Hologram(lib, location) {
-    var line = textLine("Hello World")
+    var line = textLine { "Hello World" }
 }

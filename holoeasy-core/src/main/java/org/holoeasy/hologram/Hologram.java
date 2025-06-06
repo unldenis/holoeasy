@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 public class Hologram {
 
@@ -54,34 +55,34 @@ public class Hologram {
         return lines;
     }
 
-    protected BlockLine blockLine(@NotNull ItemStack item) {
-        BlockLine line = new BlockLine(this, item);
+    protected BlockLine blockLine(@NotNull Function<Player, ItemStack> blockSupplier) {
+        BlockLine line = new BlockLine(this, blockSupplier);
         lines.add(line);
         return line;
     }
 
-    protected ItemLine itemLine(@NotNull ItemStack item) {
-        ItemLine line = new ItemLine(this, item);
+    protected ItemLine itemLine(@NotNull Function<Player, ItemStack> itemSupplier) {
+        ItemLine line = new ItemLine(this, itemSupplier);
         lines.add(line);
         return line;
     }
 
-    protected TextLine textLine(@NotNull String text) {
-        TextLine line = new TextLine(this, text);
-        lines.add(line);
-        return line;
-    }
-
-    @ApiStatus.Experimental
-    protected DisplayTextLine displayTextLine(@NotNull String text) {
-        DisplayTextLine line = new DisplayTextLine(this, text);
+    protected TextLine textLine(@NotNull Function<Player, String> textSupplier) {
+        TextLine line = new TextLine(this, textSupplier);
         lines.add(line);
         return line;
     }
 
     @ApiStatus.Experimental
-    protected DisplayBlockLine displayBlockLine(@NotNull Material material) {
-        DisplayBlockLine line = new DisplayBlockLine(this, material);
+    protected DisplayTextLine displayTextLine(@NotNull Function<Player, String> textSupplier) {
+        DisplayTextLine line = new DisplayTextLine(this, textSupplier);
+        lines.add(line);
+        return line;
+    }
+
+    @ApiStatus.Experimental
+    protected DisplayBlockLine displayBlockLine(@NotNull Function<Player, Material> materialSupplier) {
+        DisplayBlockLine line = new DisplayBlockLine(this, materialSupplier);
         lines.add(line);
         return line;
     }
@@ -157,61 +158,5 @@ public class Hologram {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public Map<String, Object> serialize() {
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("location", location);
-        List<Map<String, Object>> serializedLines = new ArrayList<>();
-        for (Line<?> line : lines) {
-            Map<String, Object> lineData = new HashMap<>();
-            lineData.put("type", line.getType().name());
-            lineData.put("value", line.getValue());
-            serializedLines.add(lineData);
-        }
-        result.put("lines", serializedLines);
-        return result;
-    }
-
-    public static <T extends Hologram> T deserialize(Map<String, Object> args, Class<T> clazz) throws Exception {
-        Location location = (Location) args.get("location");
-        List<Map<String, Object>> lines = (List<Map<String, Object>>) args.get("lines");
-
-        T hologram = clazz.getDeclaredConstructor(Location.class).newInstance(location);
-
-        for (int i = 0; i < lines.size(); i++) {
-            Line.Type type = Line.Type.valueOf((String) lines.get(i).get("type"));
-            Object value = lines.get(i).get("value");
-
-            switch (type) {
-                case EXTERNAL:
-                    Line<Object> externalLine = (Line<Object>) hologram.getLines().get(i);
-                    externalLine.setValue(value);
-                    break;
-                case TEXT_LINE:
-                case CLICKABLE_TEXT_LINE:
-                    TextLine textLine = (TextLine) hologram.getLines().get(i);
-                    textLine.setValue((String) value);
-                    break;
-                case ITEM_LINE:
-                case BLOCK_LINE:
-                    Line<ItemStack> itemLine = (Line<ItemStack>) hologram.getLines().get(i);
-                    itemLine.setValue((ItemStack) value);
-                    break;
-                case DISPLAY_BLOCK_LINE:
-                    DisplayBlockLine displayBlockLine = (DisplayBlockLine) hologram.getLines().get(i);
-                    displayBlockLine.setValue((Material) value);
-                    break;
-                case DISPLAY_TEXT_LINE:
-                    DisplayTextLine displayTextLine = (DisplayTextLine) hologram.getLines().get(i);
-                    displayTextLine.setValue((String) value);
-                    break;
-            }
-        }
-        return hologram;
-    }
-
-    public static <T extends Hologram> T deserialize(Map<String, Object> args) throws Exception {
-        return (T) deserialize(args, Hologram.class);
     }
 }

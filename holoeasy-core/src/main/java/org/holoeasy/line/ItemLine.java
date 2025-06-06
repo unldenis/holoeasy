@@ -17,32 +17,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ItemLine extends Line<ItemStack> {
 
-    private ItemStack value;
-
-    public ItemLine(Hologram hologram, ItemStack value) {
-        super(hologram, EntityTypes.ITEM);
+    public ItemLine(Hologram hologram, Function<Player, ItemStack> valueSupplier) {
+        super(hologram, EntityTypes.ITEM, valueSupplier);
         if (VersionUtil.isCompatible(VersionEnum.V1_8)) {
             throw new IllegalStateException("This version does not support item lines");
         }
-        this.value = value;
     }
 
     @Override
     public @NotNull Type getType() {
         return Type.ITEM_LINE;
-    }
-
-    @Override
-    public @NotNull ItemStack getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(ItemStack value) {
-        this.value = value;
     }
 
     @Override
@@ -63,7 +51,7 @@ public class ItemLine extends Line<ItemStack> {
     public void update(@NotNull Player player) {
         List<EntityData<?>> entityData = new ArrayList<>();
 
-        com.github.retrooper.packetevents.protocol.item.ItemStack item = SpigotConversionUtil.fromBukkitItemStack(value);
+        com.github.retrooper.packetevents.protocol.item.ItemStack item = SpigotConversionUtil.fromBukkitItemStack(getValue(player));
 
         switch (VersionUtil.CLEAN_VERSION) {
             case V1_8:
@@ -95,14 +83,7 @@ public class ItemLine extends Line<ItemStack> {
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
     }
 
-    @Override
-    public void update(@NotNull ItemStack newValue) {
-        this.value = newValue;
-        updateAll();
-    }
-
     // Builder
-
 
     public ItemLine yOffset(double yOffset) {
         super.setYOffset(yOffset);

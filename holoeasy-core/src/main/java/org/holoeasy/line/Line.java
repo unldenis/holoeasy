@@ -18,12 +18,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 public abstract class Line<T> {
     protected static final AtomicInteger IDs_COUNTER = new AtomicInteger(500 + new Random().nextInt());
 
     protected final Hologram hologram;
     protected final EntityType entityType;
+    protected final Function<Player, T> valueFunction;
     protected final int entityID;
 
     protected double yOffset = 0.28;
@@ -31,19 +33,18 @@ public abstract class Line<T> {
     private Location location;
     private BukkitTask animationTask;
 
-    public Line(Hologram hologram, EntityType entityType) {
+    public Line(Hologram hologram, EntityType entityType, Function<Player, T> valueFunction) {
         this.hologram = hologram;
         this.entityType = entityType;
+        this.valueFunction = valueFunction;
         this.entityID = IDs_COUNTER.getAndIncrement();
     }
 
     public abstract @NotNull Type getType();
 
-    public abstract void setValue(@NotNull T value);
-
-    public abstract @NotNull T getValue();
-
-    public abstract void update(@NotNull T newValue);
+    public @NotNull T getValue(@NotNull Player player) {
+        return valueFunction.apply(player);
+    }
 
     @ApiStatus.Internal
     public abstract void show(@NotNull Player player);

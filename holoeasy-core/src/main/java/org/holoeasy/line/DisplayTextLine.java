@@ -15,23 +15,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class DisplayTextLine extends Line<String> {
     private static final GsonComponentSerializer SERIALIZER = GsonComponentSerializer.builder().build();
 
-    private String value;
 
     private int lineWidth = 200;
     private int backgroundColor = 0x40000000;
     private byte textOpacity = -1;
 
-    public DisplayTextLine(Hologram hologram, String value) {
-        super(hologram, EntityTypes.TEXT_DISPLAY);
-        this.value = value;
-    }
-
-    public String parse(Player player) {
-        return value;
+    public DisplayTextLine(Hologram hologram, Function<Player, String> valueSupplier) {
+        super(hologram, EntityTypes.TEXT_DISPLAY, valueSupplier);
     }
 
     @Override
@@ -39,22 +34,11 @@ public class DisplayTextLine extends Line<String> {
         return Type.DISPLAY_TEXT_LINE;
     }
 
-    @Override
-    public @NotNull String getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     @Override
     public void show(@NotNull Player player) {
-        if (!value.isEmpty()) {
-            spawn(player);
-            this.update(player);
-        }
+        spawn(player);
+        this.update(player);
     }
 
     @Override
@@ -80,13 +64,13 @@ public class DisplayTextLine extends Line<String> {
             case V1_18:
                 throw new RuntimeException("DisplayTextLine is available since 1.19.4");
             case V1_19:
-                entityData.add(new EntityData<>(22, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(value))));
+                entityData.add(new EntityData<>(22, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(getValue(player)))));
                 entityData.add(new EntityData<>(23, EntityDataTypes.INT, lineWidth));
                 entityData.add(new EntityData<>(24, EntityDataTypes.INT, backgroundColor));
                 entityData.add(new EntityData<>(25, EntityDataTypes.BYTE, textOpacity));
                 break;
             default:
-                entityData.add(new EntityData<>(23, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(value))));
+                entityData.add(new EntityData<>(23, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(getValue(player)))));
                 entityData.add(new EntityData<>(24, EntityDataTypes.INT, lineWidth));
                 entityData.add(new EntityData<>(25, EntityDataTypes.INT, backgroundColor));
                 entityData.add(new EntityData<>(26, EntityDataTypes.BYTE, textOpacity));
@@ -95,12 +79,6 @@ public class DisplayTextLine extends Line<String> {
 
         WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
-    }
-
-    @Override
-    public void update(@NotNull String newValue) {
-        this.value = newValue;
-        updateAll();
     }
 
     // Builder
