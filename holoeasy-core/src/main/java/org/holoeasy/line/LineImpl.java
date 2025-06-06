@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class LineImpl<T> implements Line<T> {
+    private static final AtomicInteger IDs_COUNTER = new AtomicInteger(500 + new Random().nextInt());
 
     protected final Hologram hologram;
     protected final EntityType entityType;
@@ -125,7 +126,6 @@ public abstract class LineImpl<T> implements Line<T> {
         }
     }
 
-    public static final AtomicInteger IDs_COUNTER = new AtomicInteger(500 + new Random().nextInt());
 
     public enum Type {
         EXTERNAL,

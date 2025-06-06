@@ -21,14 +21,23 @@ public class HologramPool<T extends Hologram> implements Listener, IHologramPool
 
     private final HoloEasy lib;
     private final double spawnDistance;
+    private final boolean isInteractive;
+
     private final Set<T> holograms = ConcurrentHashMap.newKeySet();
     private final BukkitTask tickTask;
 
-    public HologramPool(@NotNull HoloEasy lib, double spawnDistance) {
+    public HologramPool(@NotNull HoloEasy lib, double spawnDistance, boolean isInteractive) {
         this.lib = lib;
         this.spawnDistance = spawnDistance;
+        this.isInteractive = isInteractive;
+
         Bukkit.getPluginManager().registerEvents(this, lib.getPlugin());
         this.tickTask = hologramTick();
+    }
+
+    @Override
+    public boolean isInteractive() {
+        return isInteractive;
     }
 
     @Override

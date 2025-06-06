@@ -9,6 +9,8 @@ import java.util.Set;
 
 public interface IHologramPool<T extends Hologram> {
 
+    boolean isInteractive();
+
     @NotNull HoloEasy getLib();
 
     @NotNull Set<T> getHolograms();

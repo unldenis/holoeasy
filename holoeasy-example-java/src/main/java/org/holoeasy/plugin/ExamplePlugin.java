@@ -27,6 +27,9 @@ public class ExamplePlugin extends JavaPlugin {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         //On Bukkit, calling this here is essential, hence the name "load"
         PacketEvents.getAPI().load();
+
+        // ** Bind the library
+        holoEasy = new HoloEasy(this);
     }
 
     @Override
@@ -43,11 +46,8 @@ public class ExamplePlugin extends JavaPlugin {
         //Initialize!
         PacketEvents.getAPI().init();
 
-        // ** Bind the library
-        holoEasy = new HoloEasy(this);
-
         // ** Create a MyHolo Pool, why not?
-        IHologramPool<MyDisplayTextHolo> myPool = holoEasy.startPool(60);
+        IHologramPool<MyDisplayTextHolo> myPool = holoEasy.startPool(60, true);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
