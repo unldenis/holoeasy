@@ -55,19 +55,6 @@ public abstract class Line<T> {
     @ApiStatus.Internal
     public abstract void update(@NotNull Player player);
 
-    @ApiStatus.Internal
-    private void teleport(Player player) {
-        Location loc = location;
-        if (loc == null) return;
-
-        WrapperPlayServerEntityTeleport packet = new WrapperPlayServerEntityTeleport(
-                entityID,
-                SpigotConversionUtil.fromBukkitLocation(location),
-                false
-        );
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
-    }
-
     public void updateAll() {
         for (Player player : hologram.getPvt().getSeeingPlayers()) {
             update(player);

@@ -1,5 +1,8 @@
 package org.holoeasy.hologram;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -94,10 +97,24 @@ public class Hologram {
         return line;
     }
 
-    public void teleport(Location to) {
+    public void teleport(@NotNull Location to) {
         this.location = to.clone();
-//        loader().teleport(this);
-        // TODO: Implement teleport logic
+
+        // update the location of all lines
+        pvt.updateLinesLocation();
+
+        // send teleport packets to all players seeing this hologram
+        for (Player seeingPlayer : pvt.getSeeingPlayers()) {
+            for (Line<?> line : lines) {
+
+                WrapperPlayServerEntityTeleport packet = new WrapperPlayServerEntityTeleport(
+                        line.getEntityID(),
+                        SpigotConversionUtil.fromBukkitLocation(line.getLocation()),
+                        false
+                );
+                PacketEvents.getAPI().getPlayerManager().sendPacket(seeingPlayer, packet);
+            }
+        }
     }
 
     public boolean isShownFor(Player player) {
@@ -113,7 +130,10 @@ public class Hologram {
 
     public void show(Player player) {
         if (!loaded) {
-            pvt.load();
+            if(lines.isEmpty()) {
+                throw new IllegalStateException("Cannot show hologram with no lines.");
+            }
+            pvt.updateLinesLocation();
             loaded = true;
         }
 

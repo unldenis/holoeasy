@@ -20,10 +20,7 @@ public class PrivateConfig {
         this.hideEvent = hideEvent;
     }
 
-    public void load() {
-        if(hologram.getLines().isEmpty()) {
-            throw new IllegalStateException("Cannot show hologram with no lines.");
-        }
+    void updateLinesLocation() {
         Location loc = hologram.getLocation().clone();
         Line<?> firstLine = hologram.getLines().get(0);
         firstLine.setCurrentLocation(loc);
