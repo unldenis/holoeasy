@@ -41,7 +41,8 @@ public class HoloEasy {
 
                 WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(event);
 
-                Bukkit.broadcastMessage("Received interact packet for entity ID: " + packet.getEntityId());
+//                Bukkit.broadcastMessage("Received interact packet for entity ID: " + packet.getEntityId());
+
                 // TODO: Optimize entity ID lookup
                 for (IHologramPool<?> pool : pools) {
                     if(!pool.isInteractive()) {

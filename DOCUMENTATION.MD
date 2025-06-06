@@ -39,7 +39,8 @@ HoloEasy is an open-source library for creating holograms in Minecraft that uses
     </dependency>
     ```
    
-3. Make sure you have Bukkit/Spigot and PacketEvents as dependencies.
+3. The `PacketEvents` dependency is not included by HoloEasy and neither is the instance registration. You need to add it manually to your project. 
+   You can find the latest version of PacketEvents [here](https://docs.packetevents.com/getting-started). 
 
 4. Once you’re done, you may now proceed creating your first hologram.
 
