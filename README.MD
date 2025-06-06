@@ -7,7 +7,7 @@ HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Holog
 Click [here](DOCUMENTATION.MD) to view the documentation.
 
 ## History
-<a href="https://unldenis.github.io/holoeasy/>">v4.X.X</a> documentation.
+<a href="https://unldenis.github.io/holoeasy/">v4.X.X</a> documentation.
 
 <a href="https://github.com/unldenis/holoeasy/tree/3.4.4">v3.X.X</a> documentation. 
 
