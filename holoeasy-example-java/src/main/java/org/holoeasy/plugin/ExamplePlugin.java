@@ -29,8 +29,8 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
     public void onClick(AsyncHologramInteractEvent event) {
         // ** Handle click on hologram line
         Hologram hologram = event.getLine().getHologram();
-        if (hologram instanceof MyDisplayTextHolo) {
-            MyDisplayTextHolo myHolo = (MyDisplayTextHolo) hologram;
+        if (hologram instanceof MyCounterHolo) {
+            MyCounterHolo myHolo = (MyCounterHolo) hologram;
 
             myHolo.onClick(event.getPlayer()); // Increment click count
         }
@@ -51,11 +51,10 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        holoEasy.destroyPools();
+
         //Terminate the instance (clean up process)
         PacketEvents.getAPI().terminate();
-
-        // Since 4.4.0: destroy pools
-        holoEasy.destroyPools();
     }
 
     @Override
@@ -64,14 +63,14 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
         PacketEvents.getAPI().init();
 
         // ** Create a MyHolo Pool, why not?
-        IHologramPool<MyDisplayTextHolo> myPool = holoEasy.startPool(60, true);
+        IHologramPool<MyCounterHolo> myPool = holoEasy.startPool(60, true);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
             Player player = ((Player) sender);
             Location location = player.getLocation();
 
-            MyDisplayTextHolo hologram = new MyDisplayTextHolo(holoEasy, location);
+            MyCounterHolo hologram = new MyCounterHolo(holoEasy, location);
             hologram.show(myPool);
             return true;
         });
@@ -80,7 +79,7 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
 
     }
 
-    public static class MyDisplayTextHolo extends Hologram {
+    public static class MyCounterHolo extends Hologram {
 
         private int clickCount = 0;
         private final Map<UUID, Integer> playerClickCounts = new java.util.HashMap<>();
@@ -99,7 +98,7 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
             player_counter.update(player);
         }
 
-        public MyDisplayTextHolo(@NotNull HoloEasy lib, @NotNull Location location) {
+        public MyCounterHolo(@NotNull HoloEasy lib, @NotNull Location location) {
             super(lib, location);
         }
 
