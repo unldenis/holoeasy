@@ -1,5 +1,7 @@
 package org.holoeasy.animation;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityRotation;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -19,7 +21,8 @@ public enum Animations {
             @Override
             public void run() {
                 for (Player seeingPlayer : holo.getPvt().getSeeingPlayers()) {
-                    holo.getLib().getPacketImpl().rotate(seeingPlayer, line.getEntityID(),yaw );
+                    WrapperPlayServerEntityRotation packet = new WrapperPlayServerEntityRotation(line.getEntityID(), (float) yaw, 0f, false);
+                    PacketEvents.getAPI().getPlayerManager().sendPacket(seeingPlayer, packet);
                 }
             }
         }.runTaskTimerAsynchronously(holo.getLib().getPlugin(), 2, 2);

@@ -1,24 +1,34 @@
 package org.holoeasy.line;
 
-import org.bukkit.entity.EntityType;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.player.Equipment;
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEquipment;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.holoeasy.hologram.Hologram;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BlockLine extends LineImpl<ItemStack> {
 
     private ItemStack value;
-    private final Type type = Type.BLOCK_LINE;
 
     public BlockLine(Hologram hologram, ItemStack value) {
-        super(hologram, EntityType.FALLING_BLOCK);
+        super(hologram, EntityTypes.FALLING_BLOCK);
         this.value = value;
     }
 
     @Override
     public @NotNull Type getType() {
-        return type;
+        return Type.BLOCK_LINE;
     }
 
     @Override
@@ -34,6 +44,13 @@ public class BlockLine extends LineImpl<ItemStack> {
     @Override
     public void show(Player player) {
         spawn(player);
+
+        List<EntityData<?>> entityData = new ArrayList<>();
+        entityData.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0x20));
+
+        WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
+
         this.update(player);
     }
 
@@ -44,8 +61,10 @@ public class BlockLine extends LineImpl<ItemStack> {
 
     @Override
     public void update(Player player) {
-        hologram.getLib().getPacketImpl()
-            .metadataItem(player, entityID, value);
+        List<Equipment> equipmentList = new ArrayList<>();
+        equipmentList.add(new Equipment(EquipmentSlot.HELMET, SpigotConversionUtil.fromBukkitItemStack(value)));
+        WrapperPlayServerEntityEquipment packet = new WrapperPlayServerEntityEquipment(entityID, equipmentList);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
     }
 
     @Override

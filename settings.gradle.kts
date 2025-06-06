@@ -21,5 +21,5 @@
 
 rootProject.name = "holoeasy"
 include(":holoeasy-core")
-include(":holoeasy-example-packetevents")
-include(":holoeasy-example-protocollib")
+include(":holoeasy-example-java")
+include(":holoeasy-example-kotlin")

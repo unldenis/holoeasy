@@ -1,5 +1,13 @@
 package org.holoeasy.line;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.util.Vector3d;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityVelocity;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -8,12 +16,15 @@ import org.holoeasy.util.VersionEnum;
 import org.holoeasy.util.VersionUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemLine extends LineImpl<ItemStack> {
 
     private ItemStack value;
 
     public ItemLine(Hologram hologram, ItemStack value) {
-        super(hologram, EntityType.ITEM);
+        super(hologram, EntityTypes.ITEM);
         if (VersionUtil.isCompatible(VersionEnum.V1_8)) {
             throw new IllegalStateException("This version does not support item lines");
         }
@@ -39,8 +50,9 @@ public class ItemLine extends LineImpl<ItemStack> {
     public void show(Player player) {
         spawn(player);
         this.update(player);
-        hologram.getLib().getPacketImpl()
-            .velocity(player, entityID, 0.0, 0.0, 0.0);
+
+        WrapperPlayServerEntityVelocity packet = new WrapperPlayServerEntityVelocity(entityID, new Vector3d(0, 0, 0));
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
     }
 
     @Override
@@ -50,8 +62,38 @@ public class ItemLine extends LineImpl<ItemStack> {
 
     @Override
     public void update(Player player) {
-        hologram.getLib().getPacketImpl()
-            .metadataItem(player, entityID, value);
+        List<EntityData<?>> entityData = new ArrayList<>();
+
+        com.github.retrooper.packetevents.protocol.item.ItemStack item = SpigotConversionUtil.fromBukkitItemStack(value);
+
+        switch (VersionUtil.CLEAN_VERSION) {
+            case V1_8:
+                entityData.add(new EntityData<>(10, EntityDataTypes.ITEMSTACK, item));
+                break;
+            case V1_9:
+            case V1_10:
+            case V1_11:
+            case V1_12:
+                entityData.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, true));
+                entityData.add(new EntityData<>(6, EntityDataTypes.ITEMSTACK, item));
+                break;
+            case V1_13:
+            case V1_14:
+            case V1_15:
+            case V1_16:
+            case V1_17:
+            case V1_18:
+                entityData.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, true));
+                entityData.add(new EntityData<>(7, EntityDataTypes.ITEMSTACK, item));
+                break;
+            default:
+                entityData.add(new EntityData<>(5, EntityDataTypes.BOOLEAN, true));
+                entityData.add(new EntityData<>(8, EntityDataTypes.ITEMSTACK, item));
+                break;
+        }
+
+        WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
     }
 
     @Override

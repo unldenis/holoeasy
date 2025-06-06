@@ -1,7 +1,12 @@
 package org.holoeasy.line;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.holoeasy.animation.Animations;
@@ -10,6 +15,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class LineImpl<T> implements Line<T> {
@@ -20,7 +26,7 @@ public abstract class LineImpl<T> implements Line<T> {
 
     public abstract @NotNull Type getType();
 
-    public final int entityID;
+    protected final int entityID;
 
     @Override
     public int getEntityID() {
@@ -73,20 +79,39 @@ public abstract class LineImpl<T> implements Line<T> {
     public abstract void update(Player player);
 
     public void destroy(Player player) {
-        hologram.getLib().getPacketImpl().deletePacket(player, entityID);
+        WrapperPlayServerDestroyEntities packet = new WrapperPlayServerDestroyEntities(entityID);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
     }
 
     public boolean spawn(Player player) {
         Location loc = location;
         if (loc == null) return false;
-        hologram.getLib().getPacketImpl().spawn(hologram.getLib(), player, entityID, entityType, loc);
+
+        WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(
+                entityID,
+                UUID.randomUUID(),
+                entityType,
+                SpigotConversionUtil.fromBukkitLocation(location),
+                location.getYaw(),
+                0,
+                null
+        );
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
+
         return true;
     }
 
     public boolean teleport(Player player) {
         Location loc = location;
         if (loc == null) return false;
-        hologram.getLib().getPacketImpl().teleport(player, entityID, loc);
+
+        WrapperPlayServerEntityTeleport packet = new WrapperPlayServerEntityTeleport(
+                entityID,
+                SpigotConversionUtil.fromBukkitLocation(location),
+                false
+        );
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
+
         return true;
     }
 

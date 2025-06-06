@@ -1,7 +1,0 @@
-name: ExamplePlugin
-main: org.holoeasy.plugin.ExamplePlugin
-version: 1.0
-depend: [ProtocolLib]
-api-version: 1.13
-commands:
-  hologram:

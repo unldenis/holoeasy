@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.holoeasy.HoloEasy;
-import org.holoeasy.builder.DisplayTextLineModifiers;
 import org.holoeasy.line.*;
 import org.holoeasy.pool.IHologramPool;
 import org.holoeasy.pool.KeyAlreadyExistsException;
@@ -21,7 +20,7 @@ public class Hologram {
     private final PrivateConfig pvt;
     private final UUID id = UUID.randomUUID();
     private Location location;
-    private final List<Line<?>> lines = new CopyOnWriteArrayList();
+    private final List<Line<?>> lines = new CopyOnWriteArrayList<>();
     private boolean loaded = false;
 
     public Hologram(@NotNull HoloEasy lib, @NotNull Location location, ShowEvent showEvent, HideEvent hideEvent) {
@@ -59,36 +58,33 @@ public class Hologram {
         return HologramLoader.TEXT_BLOCK_STANDARD;
     }
 
-    protected Line<ItemStack> blockLine(ItemStack item) {
+    protected BlockLine blockLine(@NotNull ItemStack item) {
         BlockLine line = new BlockLine(this, item);
         lines.add(line);
         return line;
     }
 
-    protected Line<ItemStack> itemLine(ItemStack item) {
+    protected ItemLine itemLine(@NotNull ItemStack item) {
         ItemLine line = new ItemLine(this, item);
         lines.add(line);
         return line;
     }
 
-    protected Line<String> textLine(String text) {
+    protected TextLine textLine(@NotNull String text) {
         TextLine line = new TextLine(this, text);
         lines.add(line);
         return line;
     }
 
-    protected Line<String> displayTextLine(String text, DisplayTextLineModifiers modifiers) {
-        DisplayTextLine line = new DisplayTextLine(this, text, modifiers.getLineWidth(), modifiers.getBackgroundColor(), modifiers.getTextOpacity());
+    @ApiStatus.Experimental
+    protected DisplayTextLine displayTextLine(@NotNull String text) {
+        DisplayTextLine line = new DisplayTextLine(this, text);
         lines.add(line);
         return line;
     }
 
-    protected Line<String> displayTextLine(String text) {
-        return displayTextLine(text, new DisplayTextLineModifiers());
-    }
-
     @ApiStatus.Experimental
-    protected Line<Material> displayBlockLine(Material material) {
+    protected DisplayBlockLine displayBlockLine(@NotNull Material material) {
         DisplayBlockLine line = new DisplayBlockLine(this, material);
         lines.add(line);
         return line;
