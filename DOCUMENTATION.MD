@@ -8,13 +8,41 @@ HoloEasy is a library for managing holograms on Minecraft servers via Bukkit/Spi
 
 ## Installation
 
-1. Add the dependency to your `build.gradle`:
+1. Add the Jitpack repository to your `build.gradle`:
    ```groovy
-   dependencies {
-       implementation 'org.holoeasy:holoeasy:<version>'
+   repositories {
+       maven { url 'https://jitpack.io' }
    }
    ```
-2. Make sure you have Bukkit/Spigot and PacketEvents as dependencies.
+   
+    Or if you are using Maven, add the following to your `pom.xml`:
+    ```xml
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+    ```
+   
+2. Add the dependency to your `build.gradle`:
+   ```groovy
+   dependencies {
+      implementation 'com.github.unldenis.holoeasy:holoeasy-core:<version>'
+   }
+   ```
+   
+    Or if you are using Maven, add the following to your `pom.xml`:
+    ```xml
+    <dependency>
+        <groupId>com.github.unldenis.holoeasy</groupId>
+        <artifactId>holoeasy-core</artifactId>
+        <version>${version}</version>
+    </dependency>
+    ```
+   
+3. Make sure you have Bukkit/Spigot and PacketEvents as dependencies.
+
+4. Once you’re done, you may now proceed creating your first hologram.
+
 
 ---
 
@@ -166,4 +194,3 @@ You can combine these lines in a single hologram to create rich and interactive 
 ## Support
 
 For questions or issues, see the official documentation or open an issue on the project's GitHub repository.
-```
