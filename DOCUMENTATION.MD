@@ -2,7 +2,7 @@
 
 ## Introduction
 
-HoloEasy is a library for managing holograms on Minecraft servers via Bukkit/Spigot plugins. It allows you to easily create, display, and interact with holograms, supporting both Java and Kotlin.
+HoloEasy is an open-source library for creating holograms in Minecraft that uses PacketEvents to handle packets. This allows for greater performance as the server does not have to manage these entities.
 
 ---
 
