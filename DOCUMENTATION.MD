@@ -141,27 +141,34 @@ public void onClick(AsyncHologramInteractEvent event) {
 
 ## Line Types Explained
 
-A hologram is made up of one or more **Lines**. Each line can display text or items, react to player actions, or show dynamic content. The main types are:
+A hologram is made up of one or more **Lines**. Each line can display text or items, react to player actions, or show dynamic content.
+Lines `yOffset` method can be used to adjust the vertical position of each line in the hologram, allowing for flexible layouts.
+
+The main types are:
 
 - **TextLine**: Displays a line of text, it's based on a fake armor stand, and it is supported from the Minecraft version 1.8 and above.
+  
   *Java Example:*
   ```java
   TextLine playerCounter = textLine(player -> "Clicked " + getClicks(player) + " times by " + player.getName());
   ```
 
 - **BlockLine**: Displays a block item, it's based on a fake armor stand, and it is supported from the Minecraft version 1.8 and above. 
+  
   *Java Example:*
   ```java
   BlockLine blockLine = blockLine(new ItemStack(Material.DIAMOND_BLOCK));
   ```
 
 - **ItemLine**: Displays a general item, it's based on a dropped item, and it is supported from the Minecraft version 1.9 and above.
+  
   *Java Example:*
   ```java
   ItemLine itemLine = itemLine(new ItemStack(Material.APPLE));
   ```
 
 - **DisplayTextLine**: Displays a line of text, it's based on a Display entity, and it is supported from the Minecraft version 1.19.4 and above. 
+
   *Java Example:*
   ```java
   DisplayTextLine globalCounter = displayTextLine(player -> "Clicked " + (++clickCount) + " times")
@@ -169,12 +176,14 @@ A hologram is made up of one or more **Lines**. Each line can display text or it
   ```
 
 - **DisplayBlockLine**: Displays a block item, it's based on a Display entity, and it is supported from the Minecraft version 1.19.4 and above.
+  
   *Java Example:*
   ```java
   DisplayBlockLine displayBlockLine = displayBlockLine(Material.DIAMOND_BLOCK);
   ```
 
 - **InteractionLine**: An invisible line used to detect player interactions (like clicks) without displaying text. It is supported from the Minecraft version 1.19.4 and above.   
+  
   *Java Example:*
   ```java
   InteractionLine interactionLine = interactionLine();
