@@ -25,12 +25,13 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.org.jetbrains.kotlin.kotlin.stdlib)
     implementation(project(":holoeasy-core")) {
         // Set the transitive dependency to false to avoid shading HoloEasy dependencies
         isTransitive = false
     }
+    implementation(libs.com.github.retrooper.packetevents.spigot)
     compileOnly(libs.org.spigotmc.spigot.api)
+    implementation(libs.adventure.text.serializer.gson)
 }
 
 description = "holoeasy-example-kotlin"
@@ -48,6 +49,8 @@ tasks {
 
         // It is important to relocate org.holoeasy to avoid conflicts with other plugins
         //relocate("org.holoeasy", "<your package name>.holoeasy")
+        relocate("io.github.retrooper.packetevents", "org.holoeasy.plugin.packetevents")
+        relocate("com.github.retrooper.packetevents", "org.holoeasy.plugin.packetevents")
         relocate("net.kyori", "org.holoeasy.plugin.kyori")
     }
 }

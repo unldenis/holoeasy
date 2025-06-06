@@ -20,9 +20,8 @@ import java.util.function.Function;
 
 public class BlockLine extends Line<ItemStack> {
 
-
     public BlockLine(Hologram hologram, Function<Player, ItemStack> valueSupplier) {
-        super(hologram, EntityTypes.FALLING_BLOCK, valueSupplier);
+        super(hologram, EntityTypes.ARMOR_STAND, valueSupplier);
     }
 
     @Override
