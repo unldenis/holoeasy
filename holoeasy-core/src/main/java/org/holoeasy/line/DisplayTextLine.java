@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayTextLine extends LineImpl<String> {
+public class DisplayTextLine extends Line<String> {
     private static final GsonComponentSerializer SERIALIZER = GsonComponentSerializer.builder().build();
 
     private String value;
@@ -50,7 +50,7 @@ public class DisplayTextLine extends LineImpl<String> {
     }
 
     @Override
-    public void show(Player player) {
+    public void show(@NotNull Player player) {
         if (!value.isEmpty()) {
             spawn(player);
             this.update(player);
@@ -58,12 +58,12 @@ public class DisplayTextLine extends LineImpl<String> {
     }
 
     @Override
-    public void hide(Player player) {
+    public void hide(@NotNull Player player) {
         destroy(player);
     }
 
     @Override
-    public void update(Player player) {
+    public void update(@NotNull Player player) {
         List<EntityData<?>> entityData = new ArrayList<>();
 
         switch (VersionUtil.CLEAN_VERSION) {
@@ -100,10 +100,15 @@ public class DisplayTextLine extends LineImpl<String> {
     @Override
     public void update(@NotNull String newValue) {
         this.value = newValue;
-        observerUpdate();
+        updateAll();
     }
 
     // Builder
+
+    public DisplayTextLine yOffset(double yOffset) {
+        super.setYOffset(yOffset);
+        return this;
+    }
 
     public DisplayTextLine lineWidth(int lineWidth) {
         this.lineWidth = lineWidth;
@@ -124,4 +129,5 @@ public class DisplayTextLine extends LineImpl<String> {
         this.textOpacity = textOpacity;
         return this;
     }
+
 }

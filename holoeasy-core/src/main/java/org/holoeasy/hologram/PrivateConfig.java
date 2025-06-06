@@ -1,8 +1,9 @@
 package org.holoeasy.hologram;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.holoeasy.line.Line;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,10 +21,18 @@ public class PrivateConfig {
     }
 
     public void load() {
-        if (hologram.getLines().isEmpty()) {
-            throw new RuntimeException("its not possible to create an empty hologram");
+        if(hologram.getLines().isEmpty()) {
+            throw new IllegalStateException("Cannot show hologram with no lines.");
         }
-        hologram.loader().load(hologram);
+        Location loc = hologram.getLocation().clone();
+        Line<?> firstLine = hologram.getLines().get(0);
+        firstLine.setCurrentLocation(loc);
+
+        for (int i = 1; i < hologram.getLines().size(); i++) {
+            Line<?> tempLine = hologram.getLines().get(i);
+            loc = loc.clone().subtract(0, tempLine.yOffset(), 0);
+            tempLine.setCurrentLocation(loc);
+        }
     }
 
     public Hologram getHologram() {

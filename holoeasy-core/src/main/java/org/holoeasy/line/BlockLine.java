@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockLine extends LineImpl<ItemStack> {
+public class BlockLine extends Line<ItemStack> {
 
     private ItemStack value;
 
@@ -42,7 +42,7 @@ public class BlockLine extends LineImpl<ItemStack> {
     }
 
     @Override
-    public void show(Player player) {
+    public void show(@NotNull Player player) {
         spawn(player);
 
         List<EntityData<?>> entityData = new ArrayList<>();
@@ -55,12 +55,12 @@ public class BlockLine extends LineImpl<ItemStack> {
     }
 
     @Override
-    public void hide(Player player) {
+    public void hide(@NotNull Player player) {
         destroy(player);
     }
 
     @Override
-    public void update(Player player) {
+    public void update(@NotNull Player player) {
         List<Equipment> equipmentList = new ArrayList<>();
         equipmentList.add(new Equipment(EquipmentSlot.HELMET, SpigotConversionUtil.fromBukkitItemStack(value)));
         WrapperPlayServerEntityEquipment packet = new WrapperPlayServerEntityEquipment(entityID, equipmentList);
@@ -70,6 +70,14 @@ public class BlockLine extends LineImpl<ItemStack> {
     @Override
     public void update(@NotNull ItemStack newValue) {
         this.value = newValue;
-        observerUpdate();
+        updateAll();
+    }
+
+
+    // Builder
+
+    public BlockLine yOffset(double yOffset) {
+        super.setYOffset(yOffset);
+        return this;
     }
 }

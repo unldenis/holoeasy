@@ -8,7 +8,6 @@ import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityVelocity;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.holoeasy.hologram.Hologram;
@@ -19,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemLine extends LineImpl<ItemStack> {
+public class ItemLine extends Line<ItemStack> {
 
     private ItemStack value;
 
@@ -47,7 +46,7 @@ public class ItemLine extends LineImpl<ItemStack> {
     }
 
     @Override
-    public void show(Player player) {
+    public void show(@NotNull Player player) {
         spawn(player);
         this.update(player);
 
@@ -56,12 +55,12 @@ public class ItemLine extends LineImpl<ItemStack> {
     }
 
     @Override
-    public void hide(Player player) {
+    public void hide(@NotNull Player player) {
         destroy(player);
     }
 
     @Override
-    public void update(Player player) {
+    public void update(@NotNull Player player) {
         List<EntityData<?>> entityData = new ArrayList<>();
 
         com.github.retrooper.packetevents.protocol.item.ItemStack item = SpigotConversionUtil.fromBukkitItemStack(value);
@@ -99,6 +98,14 @@ public class ItemLine extends LineImpl<ItemStack> {
     @Override
     public void update(@NotNull ItemStack newValue) {
         this.value = newValue;
-        observerUpdate();
+        updateAll();
+    }
+
+    // Builder
+
+
+    public ItemLine yOffset(double yOffset) {
+        super.setYOffset(yOffset);
+        return this;
     }
 }

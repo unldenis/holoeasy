@@ -54,10 +54,6 @@ public class Hologram {
         return lines;
     }
 
-    public HologramLoader loader() {
-        return HologramLoader.TEXT_BLOCK_STANDARD;
-    }
-
     protected BlockLine blockLine(@NotNull ItemStack item) {
         BlockLine line = new BlockLine(this, item);
         lines.add(line);
@@ -90,9 +86,17 @@ public class Hologram {
         return line;
     }
 
+    @ApiStatus.Experimental
+    protected InteractionLine interactionLine() {
+        InteractionLine line = new InteractionLine(this);
+        lines.add(line);
+        return line;
+    }
+
     public void teleport(Location to) {
         this.location = to.clone();
-        loader().teleport(this);
+//        loader().teleport(this);
+        // TODO: Implement teleport logic
     }
 
     public boolean isShownFor(Player player) {
@@ -114,7 +118,7 @@ public class Hologram {
 
         pvt.getSeeingPlayers().add(player);
         for (Line<?> line : lines) {
-            ((LineImpl<?>) line).show(player);
+            (line).show(player);
         }
 
         if (pvt.getShowEvent() != null) {
@@ -124,7 +128,7 @@ public class Hologram {
 
     public void hide(Player player) {
         for (Line<?> line : lines) {
-            ((LineImpl<?>) line).hide(player);
+            (line).hide(player);
         }
         pvt.getSeeingPlayers().remove(player);
 
@@ -176,12 +180,12 @@ public class Hologram {
         T hologram = clazz.getDeclaredConstructor(Location.class).newInstance(location);
 
         for (int i = 0; i < lines.size(); i++) {
-            LineImpl.Type type = LineImpl.Type.valueOf((String) lines.get(i).get("type"));
+            Line.Type type = Line.Type.valueOf((String) lines.get(i).get("type"));
             Object value = lines.get(i).get("value");
 
             switch (type) {
                 case EXTERNAL:
-                    LineImpl<Object> externalLine = (LineImpl<Object>) hologram.getLines().get(i);
+                    Line<Object> externalLine = (Line<Object>) hologram.getLines().get(i);
                     externalLine.setValue(value);
                     break;
                 case TEXT_LINE:
@@ -191,7 +195,7 @@ public class Hologram {
                     break;
                 case ITEM_LINE:
                 case BLOCK_LINE:
-                    LineImpl<ItemStack> itemLine = (LineImpl<ItemStack>) hologram.getLines().get(i);
+                    Line<ItemStack> itemLine = (Line<ItemStack>) hologram.getLines().get(i);
                     itemLine.setValue((ItemStack) value);
                     break;
                 case DISPLAY_BLOCK_LINE:

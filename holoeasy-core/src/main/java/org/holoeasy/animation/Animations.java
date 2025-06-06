@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.holoeasy.hologram.Hologram;
-import org.holoeasy.line.LineImpl;
+import org.holoeasy.line.Line;
 
 import java.util.function.Function;
 
@@ -29,14 +29,14 @@ public enum Animations {
     });
 
 
-    private final Function<LineImpl<?>, BukkitTask> task;
+    private final Function<Line<?>, BukkitTask> task;
 
 
-    Animations(Function<LineImpl<?>, BukkitTask> task) {
+    Animations(Function<Line<?>, BukkitTask> task) {
         this.task = task;
     }
 
-    public Function<LineImpl<?>, BukkitTask> getTask() {
+    public Function<Line<?>, BukkitTask> getTask() {
         return task;
     }
 }

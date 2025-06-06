@@ -4,47 +4,45 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
-import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
-import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.holoeasy.hologram.Hologram;
 import org.holoeasy.util.VersionUtil;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiStatus.Experimental
-public class DisplayBlockLine extends Line<Material> {
+public class InteractionLine extends Line<Object> {
 
-    private Material value;
+    private Object value = new Object();
 
-    public DisplayBlockLine(Hologram hologram, Material value) {
-        super(hologram, EntityTypes.BLOCK_DISPLAY);
-        this.value = value;
+    private float width = 1.0f;
+    private float height = 1.0f;
+
+    public InteractionLine(Hologram hologram) {
+        super(hologram, EntityTypes.INTERACTION);
     }
 
     @Override
     public @NotNull Type getType() {
-        return Type.DISPLAY_BLOCK_LINE;
+        return Type.INTERACTION_LINE;
     }
 
     @Override
-    public @NotNull Material getValue() {
+    public @NotNull Object getValue() {
         return value;
     }
 
     @Override
-    public void setValue(Material value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
     @Override
     public void show(@NotNull Player player) {
         spawn(player);
+
         this.update(player);
     }
 
@@ -55,11 +53,9 @@ public class DisplayBlockLine extends Line<Material> {
 
     @Override
     public void update(@NotNull Player player) {
-        WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(value.createBlockData());
-
         List<EntityData<?>> entityData = new ArrayList<>();
 
-        switch ( VersionUtil.CLEAN_VERSION) {
+        switch (VersionUtil.CLEAN_VERSION) {
             case V1_8:
             case V1_9:
             case V1_10:
@@ -71,12 +67,11 @@ public class DisplayBlockLine extends Line<Material> {
             case V1_16:
             case V1_17:
             case V1_18:
-                throw new RuntimeException("DisplayBlockLine is available since 1.19.4");
+                throw new RuntimeException("InteractionLine is available since 1.19.4");
             case V1_19:
-                entityData.add(new EntityData<>(22, EntityDataTypes.BLOCK_STATE, blockState.getGlobalId()));
-                break;
             default:
-                entityData.add(new EntityData<>(23, EntityDataTypes.BLOCK_STATE, blockState.getGlobalId()));
+                entityData.add(new EntityData<>(8, EntityDataTypes.FLOAT, width));
+                entityData.add(new EntityData<>(9, EntityDataTypes.FLOAT, height));
                 break;
         }
 
@@ -85,15 +80,27 @@ public class DisplayBlockLine extends Line<Material> {
     }
 
     @Override
-    public void update(@NotNull Material newValue) {
+    public void update(@NotNull Object newValue) {
         this.value = newValue;
         updateAll();
     }
 
     // Builder
 
-    public DisplayBlockLine yOffset(double yOffset) {
+    public InteractionLine yOffset(double yOffset) {
         super.setYOffset(yOffset);
         return this;
     }
+
+    public InteractionLine width(float width) {
+        this.width = width;
+        return this;
+    }
+
+    public InteractionLine height(float height) {
+        this.height = height;
+        return this;
+    }
+
+
 }

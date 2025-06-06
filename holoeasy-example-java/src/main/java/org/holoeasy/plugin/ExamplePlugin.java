@@ -8,9 +8,12 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.holoeasy.HoloEasy;
+import org.holoeasy.event.AsyncHologramInteractEvent;
 import org.holoeasy.hologram.Hologram;
 
 import org.holoeasy.line.Line;
@@ -18,7 +21,21 @@ import org.holoeasy.pool.IHologramPool;
 import org.jetbrains.annotations.NotNull;
 
 
-public class ExamplePlugin extends JavaPlugin {
+public class ExamplePlugin extends JavaPlugin implements Listener {
+
+    @EventHandler
+    public void onClick(AsyncHologramInteractEvent event) {
+        // ** Handle click on hologram line
+        Hologram hologram = event.getLine().getHologram();
+        if(hologram instanceof MyDisplayTextHolo) {
+            MyDisplayTextHolo myHolo = (MyDisplayTextHolo) hologram;
+
+            myHolo.onClick(); // Increment click count
+            event.getPlayer().sendMessage("You clicked on hologram: " + myHolo.counter.getValue());
+
+        }
+    }
+
 
     private HoloEasy holoEasy;
 
@@ -63,18 +80,19 @@ public class ExamplePlugin extends JavaPlugin {
             hologram.show(myPool);
             return true;
         });
+        Bukkit.getPluginManager().registerEvents(this, this);
 
 
         // ** Why not update all holograms 'status' item after 30 seconds?
-        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
-
-
-            for (MyDisplayTextHolo hologram : myPool.getHolograms()) {
-                // ** Updates the line
-                hologram.onClick();
-            }
-
-        }, 20L * 30);
+//        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+//
+//
+//            for (MyDisplayTextHolo hologram : myPool.getHolograms()) {
+//                // ** Updates the line
+//                hologram.onClick();
+//            }
+//
+//        }, 20L * 30);
     }
 
     public static class MyDisplayTextHolo extends Hologram {
@@ -82,7 +100,9 @@ public class ExamplePlugin extends JavaPlugin {
         private int clickCount = 0; // can be any type
 
         private final Line<String> counter = displayTextLine("Clicked 0 times")
-                .backgroundColor(Color.AQUA);
+                .backgroundColor(Color.GREEN);
+        private final Line<?> interactionLine = interactionLine();
+
 
         public void onClick() {
             counter.update("Clicked " + (++clickCount) + " times");

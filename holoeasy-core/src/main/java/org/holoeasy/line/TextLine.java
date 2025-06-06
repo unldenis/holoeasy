@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TextLine extends LineImpl<String> {
+public class TextLine extends Line<String> {
 
     private String value;
     private boolean isEmpty = false;
@@ -42,7 +42,7 @@ public class TextLine extends LineImpl<String> {
     }
 
     @Override
-    public void show(Player player) {
+    public void show(@NotNull Player player) {
         isEmpty = value.isEmpty();
         if (!isEmpty) {
             spawn(player);
@@ -51,12 +51,12 @@ public class TextLine extends LineImpl<String> {
     }
 
     @Override
-    public void hide(Player player) {
+    public void hide(@NotNull Player player) {
         destroy(player);
     }
 
     @Override
-    public void update(Player player) {
+    public void update(@NotNull Player player) {
         int spawnBefore = ((isEmpty ? 1 : 0) | ((value.isEmpty() ? 1 : 0) << 1));
         // 0x00 = già mostrato
         // 0x01 = era nascosto ma ora è cambiato
@@ -83,7 +83,7 @@ public class TextLine extends LineImpl<String> {
     @Override
     public void update(@NotNull String newValue) {
         this.value = newValue;
-        observerUpdate();
+        updateAll();
     }
 
     private void sendTo(Player player, boolean invisible) {
@@ -110,5 +110,12 @@ public class TextLine extends LineImpl<String> {
 
         WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
+    }
+
+    // Builder
+
+    public TextLine yOffset(double yOffset) {
+        super.setYOffset(yOffset);
+        return this;
     }
 }
