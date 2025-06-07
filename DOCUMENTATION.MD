@@ -26,7 +26,7 @@ HoloEasy is an open-source library for creating holograms in Minecraft that uses
 2. Add the dependency to your `build.gradle`:
    ```groovy
    dependencies {
-      implementation 'com.github.unldenis.holoeasy:holoeasy-core:<version>'
+      implementation 'com.github.unldenis.holoeasy:holoeasy-core:5.0.0-rc.1'
    }
    ```
    
@@ -35,7 +35,7 @@ HoloEasy is an open-source library for creating holograms in Minecraft that uses
     <dependency>
         <groupId>com.github.unldenis.holoeasy</groupId>
         <artifactId>holoeasy-core</artifactId>
-        <version>${version}</version>
+        <version>5.0.0-rc.1</version>
     </dependency>
     ```
    
