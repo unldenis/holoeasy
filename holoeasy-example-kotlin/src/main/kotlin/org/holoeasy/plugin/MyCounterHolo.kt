@@ -16,12 +16,15 @@ class MyCounterHolo( lib: HoloEasy, location: Location) : Hologram(lib, location
         .backgroundColor(Color.GREEN)
 
     private val player_counter =
-        textLine { ("Clicked " + playerClickCounts.compute(it.uniqueId) { _, count -> if (count == null) 1 else count + 1 }) + " times by ${it.name}" }
+        textLine { "Clicked ${playerClickCounts.getOrDefault(it.uniqueId, 0)} times by ${it.name}" }
 
     private val interactionLine = interactionLine()
 
 
     fun onClick(player: Player) {
+        clickCount++
+        playerClickCounts.compute(player.uniqueId) { _, count -> if (count == null) 1 else count + 1 }
+
         global_counter.updateAll()
         player_counter.update(player)
     }

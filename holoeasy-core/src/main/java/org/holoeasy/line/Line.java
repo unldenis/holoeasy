@@ -28,7 +28,7 @@ public abstract class Line<T> {
     protected final Function<Player, T> valueFunction;
     protected final int entityID;
 
-    protected double yOffset = 0.28;
+    protected double yOffset = 0;
 
     private Location location;
     private BukkitTask animationTask;

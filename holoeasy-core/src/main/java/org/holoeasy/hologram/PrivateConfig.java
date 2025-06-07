@@ -21,13 +21,11 @@ public class PrivateConfig {
     }
 
     void updateLinesLocation() {
-        Location loc = hologram.getLocation().clone();
-        Line<?> firstLine = hologram.getLines().get(0);
-        firstLine.setCurrentLocation(loc);
 
-        for (int i = 1; i < hologram.getLines().size(); i++) {
+        for (int i = 0; i < hologram.getLines().size(); i++) {
             Line<?> tempLine = hologram.getLines().get(i);
-            loc = loc.clone().subtract(0, tempLine.yOffset(), 0);
+            Location loc = hologram.getLocation().clone();
+            loc = loc.clone().add(0, tempLine.yOffset(), 0);
             tempLine.setCurrentLocation(loc);
         }
     }
