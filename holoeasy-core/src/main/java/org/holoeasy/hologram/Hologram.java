@@ -19,7 +19,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 public class Hologram {
-
     private final HoloEasy lib;
     private final PrivateConfig pvt;
     private final UUID id = UUID.randomUUID();
@@ -168,12 +167,18 @@ public class Hologram {
     }
 
     public void updateLines() {
-        lines.forEach(Line::updateAll);
+        for (Line<?> line : lines) {
+            line.updateAll();
+        }
     }
 
     public void replaceLines(@NotNull List<? extends Line<?>> newLines) {
         // hide current lines from all players
-        pvt.getSeeingPlayers().forEach(player -> lines.forEach(line -> line.hide(player)));
+        for (Player player : pvt.getSeeingPlayers()) {
+            for (Line<?> line : lines) {
+                line.hide(player);
+            }
+        }
 
         lines.clear();
         loaded = false;
@@ -181,7 +186,11 @@ public class Hologram {
         pvt.updateLinesLocation();
 
         // show new lines to all players
-        pvt.getSeeingPlayers().forEach(player -> lines.forEach(line -> line.show(player)));
+        for (Player player : pvt.getSeeingPlayers()) {
+            for (Line<?> line : lines) {
+                line.show(player);
+            }
+        }
     }
 
     @Override
