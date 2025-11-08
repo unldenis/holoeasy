@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentSerializer;
+import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
@@ -50,6 +51,9 @@ public class DisplayTextLine extends Line<String> {
     public void update(@NotNull Player player) {
         List<EntityData<?>> entityData = new ArrayList<>();
 
+        String rawText = getValue(player);
+        Component textComponent = LegacyComponentSerializer.legacySection().deserialize(rawText);
+
         switch (VersionUtil.CLEAN_VERSION) {
             case V1_8:
             case V1_9:
@@ -65,14 +69,14 @@ public class DisplayTextLine extends Line<String> {
                 throw new RuntimeException("DisplayTextLine is available since 1.19.4");
             case V1_19:
                 entityData.add(new EntityData<>(15, EntityDataTypes.BYTE, billboard));
-                entityData.add(new EntityData<>(22, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(getValue(player)))));
+                entityData.add(new EntityData<>(22, EntityDataTypes.COMPONENT, SERIALIZER.serialize(textComponent)));
                 entityData.add(new EntityData<>(23, EntityDataTypes.INT, lineWidth));
                 entityData.add(new EntityData<>(24, EntityDataTypes.INT, backgroundColor));
                 entityData.add(new EntityData<>(25, EntityDataTypes.BYTE, textOpacity));
                 break;
             default:
                 entityData.add(new EntityData<>(15, EntityDataTypes.BYTE, billboard));
-                entityData.add(new EntityData<>(23, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(getValue(player)))));
+                entityData.add(new EntityData<>(23, EntityDataTypes.COMPONENT, SERIALIZER.serialize(textComponent)));
                 entityData.add(new EntityData<>(24, EntityDataTypes.INT, lineWidth));
                 entityData.add(new EntityData<>(25, EntityDataTypes.INT, backgroundColor));
                 entityData.add(new EntityData<>(26, EntityDataTypes.BYTE, textOpacity));
