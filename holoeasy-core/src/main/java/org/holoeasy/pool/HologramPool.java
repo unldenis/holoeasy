@@ -14,13 +14,13 @@ import org.holoeasy.hologram.Hologram;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HologramPool<T extends Hologram> implements Listener, IHologramPool<T> {
 
     private final HoloEasy lib;
     private final double spawnDistance;
+
     private final boolean isInteractive;
 
     private final Set<T> holograms = ConcurrentHashMap.newKeySet();
@@ -99,7 +99,7 @@ public class HologramPool<T extends Hologram> implements Listener, IHologramPool
                         hologram.hide(player);
                         continue;
                     }
-                    boolean inRange = holoLoc.distanceSquared(playerLoc) <= this.spawnDistance;
+                    boolean inRange = holoLoc.distanceSquared(playerLoc) <= this.spawnDistance * this.spawnDistance;
 
                     if (!inRange && isShown) {
                         hologram.hide(player);
