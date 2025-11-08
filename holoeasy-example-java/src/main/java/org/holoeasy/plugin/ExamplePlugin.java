@@ -55,7 +55,7 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
         PacketEvents.getAPI().init();
 
         // ** Create a MyHolo Pool, why not?
-        IHologramPool<MyCounterHolo> myPool = holoEasy.startPool(60, true);
+        IHologramPool<MyCounterHolo> myPool = holoEasy.startPool(60, true, false);
 
         getCommand("hologram").setExecutor((sender, cmd, s, args) -> {
 
