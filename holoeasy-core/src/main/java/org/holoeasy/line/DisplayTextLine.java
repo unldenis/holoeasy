@@ -116,7 +116,7 @@ public class DisplayTextLine extends Line<String> {
 
     /**
      * Set billboard constraint (rotation behavior)
-     * @param billboard 0=FIXED, 1=VERTICAL, 2=HORIZONTAL, 3=CENTER (default, faces player)
+     * @param billboard 0=FIXED, 1=VERTICAL, 2=HORIZONTAL, 3=CENTER
      */
     public DisplayTextLine billboard(byte billboard) {
         this.billboard = billboard;
