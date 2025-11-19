@@ -19,7 +19,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 public class Hologram {
-
     private final HoloEasy lib;
     private final PrivateConfig pvt;
     private final UUID id = UUID.randomUUID();
@@ -37,61 +36,61 @@ public class Hologram {
         this(lib, location, null, null);
     }
 
-    public HoloEasy getLib() {
+    public @NotNull HoloEasy getLib() {
         return lib;
     }
 
     @ApiStatus.Internal
-    public PrivateConfig getPvt() {
+    public @NotNull PrivateConfig getPvt() {
         return pvt;
     }
 
-    public UUID getId() {
+    public @NotNull UUID getId() {
         return id;
     }
 
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return location;
     }
 
-    public List<Line<?>> getLines() {
+    public @NotNull List<Line<?>> getLines() {
         return lines;
     }
 
-    protected BlockLine blockLine(@NotNull Function<Player, ItemStack> blockSupplier) {
+    protected @NotNull BlockLine blockLine(@NotNull Function<@NotNull Player, @NotNull ItemStack> blockSupplier) {
         BlockLine line = new BlockLine(this, blockSupplier);
         lines.add(line);
         return line;
     }
 
-    protected ItemLine itemLine(@NotNull Function<Player, ItemStack> itemSupplier) {
+    protected @NotNull ItemLine itemLine(@NotNull Function<@NotNull Player, @NotNull ItemStack> itemSupplier) {
         ItemLine line = new ItemLine(this, itemSupplier);
         lines.add(line);
         return line;
     }
 
-    protected TextLine textLine(@NotNull Function<Player, String> textSupplier) {
+    protected @NotNull TextLine textLine(@NotNull Function<@NotNull Player, @NotNull String> textSupplier) {
         TextLine line = new TextLine(this, textSupplier);
         lines.add(line);
         return line;
     }
 
     @ApiStatus.Experimental
-    protected DisplayTextLine displayTextLine(@NotNull Function<Player, String> textSupplier) {
+    protected @NotNull DisplayTextLine displayTextLine(@NotNull Function<@NotNull Player, @NotNull String> textSupplier) {
         DisplayTextLine line = new DisplayTextLine(this, textSupplier);
         lines.add(line);
         return line;
     }
 
     @ApiStatus.Experimental
-    protected DisplayBlockLine displayBlockLine(@NotNull Function<Player, Material> materialSupplier) {
+    protected @NotNull DisplayBlockLine displayBlockLine(@NotNull Function<@NotNull Player, @NotNull Material> materialSupplier) {
         DisplayBlockLine line = new DisplayBlockLine(this, materialSupplier);
         lines.add(line);
         return line;
     }
 
     @ApiStatus.Experimental
-    protected InteractionLine interactionLine() {
+    protected @NotNull InteractionLine interactionLine() {
         InteractionLine line = new InteractionLine(this);
         lines.add(line);
         return line;
@@ -117,18 +116,18 @@ public class Hologram {
         }
     }
 
-    public boolean isShownFor(Player player) {
+    public boolean isShownFor(@NotNull Player player) {
         return pvt.getSeeingPlayers().contains(player);
     }
 
-    public <T extends Hologram> void show(IHologramPool<T> pool) {
+    public <T extends Hologram> void show(@NotNull IHologramPool<T> pool) {
         if (pool.getHolograms().stream().anyMatch(h -> h.getId().equals(this.id))) {
             throw new KeyAlreadyExistsException(this.id);
         }
         pool.getHolograms().add((T) this);
     }
 
-    public void show(Player player) {
+    public void show(@NotNull Player player) {
         if (!loaded) {
             if(lines.isEmpty()) {
                 throw new IllegalStateException("Cannot show hologram with no lines.");
@@ -147,7 +146,7 @@ public class Hologram {
         }
     }
 
-    public void hide(Player player) {
+    public void hide(@NotNull Player player) {
         for (Line<?> line : lines) {
             (line).hide(player);
         }
@@ -158,11 +157,38 @@ public class Hologram {
         }
     }
 
-    public void hide(IHologramPool<?> pool) {
+    public void hide(@NotNull IHologramPool<?> pool) {
         boolean removed = pool.getHolograms().remove(this);
         if (removed) {
             for (Player player : pvt.getSeeingPlayers()) {
                 hide(player);
+            }
+        }
+    }
+
+    public void updateLines() {
+        for (Line<?> line : lines) {
+            line.updateAll();
+        }
+    }
+
+    public void replaceLines(@NotNull List<? extends Line<?>> newLines) {
+        // hide current lines from all players
+        for (Player player : pvt.getSeeingPlayers()) {
+            for (Line<?> line : lines) {
+                line.hide(player);
+            }
+        }
+
+        lines.clear();
+        loaded = false;
+        lines.addAll(newLines);
+        pvt.updateLinesLocation();
+
+        // show new lines to all players
+        for (Player player : pvt.getSeeingPlayers()) {
+            for (Line<?> line : lines) {
+                line.show(player);
             }
         }
     }
