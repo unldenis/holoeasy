@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentSerializer;
+import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
@@ -20,10 +21,10 @@ import java.util.function.Function;
 public class DisplayTextLine extends Line<String> {
     private static final GsonComponentSerializer SERIALIZER = GsonComponentSerializer.builder().build();
 
-
     private int lineWidth = 200;
     private int backgroundColor = 0x40000000;
     private byte textOpacity = -1;
+    private byte billboard = 0;
 
     public DisplayTextLine(Hologram hologram, Function<Player, String> valueSupplier) {
         super(hologram, EntityTypes.TEXT_DISPLAY, valueSupplier);
@@ -50,6 +51,9 @@ public class DisplayTextLine extends Line<String> {
     public void update(@NotNull Player player) {
         List<EntityData<?>> entityData = new ArrayList<>();
 
+        String rawText = getValue(player);
+        Component textComponent = LegacyComponentSerializer.legacySection().deserialize(rawText);
+
         switch (VersionUtil.CLEAN_VERSION) {
             case V1_8:
             case V1_9:
@@ -64,13 +68,15 @@ public class DisplayTextLine extends Line<String> {
             case V1_18:
                 throw new RuntimeException("DisplayTextLine is available since 1.19.4");
             case V1_19:
-                entityData.add(new EntityData<>(22, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(getValue(player)))));
+                entityData.add(new EntityData<>(15, EntityDataTypes.BYTE, billboard));
+                entityData.add(new EntityData<>(22, EntityDataTypes.COMPONENT, SERIALIZER.serialize(textComponent)));
                 entityData.add(new EntityData<>(23, EntityDataTypes.INT, lineWidth));
                 entityData.add(new EntityData<>(24, EntityDataTypes.INT, backgroundColor));
                 entityData.add(new EntityData<>(25, EntityDataTypes.BYTE, textOpacity));
                 break;
             default:
-                entityData.add(new EntityData<>(23, EntityDataTypes.COMPONENT, SERIALIZER.serialize(Component.text(getValue(player)))));
+                entityData.add(new EntityData<>(15, EntityDataTypes.BYTE, billboard));
+                entityData.add(new EntityData<>(23, EntityDataTypes.COMPONENT, SERIALIZER.serialize(textComponent)));
                 entityData.add(new EntityData<>(24, EntityDataTypes.INT, lineWidth));
                 entityData.add(new EntityData<>(25, EntityDataTypes.INT, backgroundColor));
                 entityData.add(new EntityData<>(26, EntityDataTypes.BYTE, textOpacity));
@@ -108,4 +114,12 @@ public class DisplayTextLine extends Line<String> {
         return this;
     }
 
+    /**
+     * Set billboard constraint (rotation behavior)
+     * @param billboard 0=FIXED, 1=VERTICAL, 2=HORIZONTAL, 3=CENTER
+     */
+    public DisplayTextLine billboard(byte billboard) {
+        this.billboard = billboard;
+        return this;
+    }
 }

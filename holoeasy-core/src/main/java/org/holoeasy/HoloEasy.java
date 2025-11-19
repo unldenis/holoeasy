@@ -65,8 +65,8 @@ public class HoloEasy {
         }, PacketListenerPriority.NORMAL);
     }
 
-    public <T extends Hologram> IHologramPool<T> startPool(double spawnDistance, boolean isInteractive) {
-        HologramPool<T> simplepool = new HologramPool<>(this, spawnDistance, isInteractive);
+    public <T extends Hologram> IHologramPool<T> startPool(double spawnDistance, boolean isInteractive, boolean checkLineOfSight) {
+        HologramPool<T> simplepool = new HologramPool<>(this, spawnDistance, isInteractive, checkLineOfSight);
         pools.add(simplepool);
         return simplepool;
     }
