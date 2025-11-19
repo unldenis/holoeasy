@@ -26,7 +26,7 @@ HoloEasy is an open-source library for creating holograms in Minecraft that uses
 2. Add the dependency to your `build.gradle`:
    ```groovy
    dependencies {
-      implementation 'com.github.unldenis.holoeasy:holoeasy-core:5.0.0-rc.1'
+      implementation 'com.github.unldenis.holoeasy:holoeasy-core:5.0.0-rc.2'
    }
    ```
    
@@ -35,7 +35,7 @@ HoloEasy is an open-source library for creating holograms in Minecraft that uses
     <dependency>
         <groupId>com.github.unldenis.holoeasy</groupId>
         <artifactId>holoeasy-core</artifactId>
-        <version>5.0.0-rc.1</version>
+        <version>5.0.0-rc.2</version>
     </dependency>
     ```
    
@@ -101,7 +101,7 @@ To efficiently manage multiple holograms, you can use hologram pools.
 This allows you to create and manage groups of holograms that can be shown or hidden together and cleaned up automatically.
 
 ```java
-IHologramPool<MyHologram> pool = holoEasy.startPool(60, true);
+IHologramPool<MyHologram> pool = holoEasy.startPool(60, true, false);
 ```
 
 ### Adding Holograms to a Pool
