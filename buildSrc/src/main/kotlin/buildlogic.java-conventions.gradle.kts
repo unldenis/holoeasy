@@ -52,7 +52,10 @@ dependencies {
 
 group = "org.holoeasy"
 version = "5.0.0"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 publishing {
     publications.create<MavenPublication>("maven") {

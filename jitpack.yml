@@ -1,0 +1,4 @@
+# Gradle 9+ needs JDK 17 to run the build.
+# Library bytecode stays Java 8 (see buildlogic.java-conventions).
+jdk:
+  - openjdk17
