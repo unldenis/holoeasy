@@ -10,6 +10,7 @@ out/
 
 # Gradle
 */build/
+/build/
 .gradle/
 
 # Compiled class file
