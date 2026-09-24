@@ -118,4 +118,9 @@ run/
 /example-plugin/build/
 /api/build/
 
+# VitePress / Node
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
 

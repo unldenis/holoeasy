@@ -1,6 +1,7 @@
 package org.holoeasy.line;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
@@ -10,7 +11,6 @@ import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.holoeasy.hologram.Hologram;
-import org.holoeasy.util.VersionUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,30 +44,18 @@ public class DisplayBlockLine extends Line<Material> {
 
     @Override
     public void update(@NotNull Player player) {
+        ServerVersion version = PacketEvents.getAPI().getServerManager().getVersion();
+        if (version.isOlderThan(ServerVersion.V_1_19_4)) {
+            throw new RuntimeException("DisplayBlockLine is available since 1.19.4");
+        }
+
         WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(getValue(player).createBlockData());
 
-        List<EntityData<?>> entityData = new ArrayList<>();
+        // Block state index is 22 before 1.20.2, 23 on 1.20.2+ (EntityLib BlockDisplayMeta).
+        int blockIndex = version.isOlderThan(ServerVersion.V_1_20_2) ? 22 : 23;
 
-        switch ( VersionUtil.CLEAN_VERSION) {
-            case V1_8:
-            case V1_9:
-            case V1_10:
-            case V1_11:
-            case V1_12:
-            case V1_13:
-            case V1_14:
-            case V1_15:
-            case V1_16:
-            case V1_17:
-            case V1_18:
-                throw new RuntimeException("DisplayBlockLine is available since 1.19.4");
-            case V1_19:
-                entityData.add(new EntityData<>(22, EntityDataTypes.BLOCK_STATE, blockState.getGlobalId()));
-                break;
-            default:
-                entityData.add(new EntityData<>(23, EntityDataTypes.BLOCK_STATE, blockState.getGlobalId()));
-                break;
-        }
+        List<EntityData<?>> entityData = new ArrayList<>();
+        entityData.add(new EntityData<>(blockIndex, EntityDataTypes.BLOCK_STATE, blockState.getGlobalId()));
 
         WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);

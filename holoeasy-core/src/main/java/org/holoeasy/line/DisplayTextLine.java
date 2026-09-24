@@ -1,17 +1,17 @@
 package org.holoeasy.line;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
-import io.github.retrooper.packetevents.adventure.serializer.gson.GsonComponentSerializer;
 import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.holoeasy.hologram.Hologram;
-import org.holoeasy.util.VersionUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.function.Function;
 
 public class DisplayTextLine extends Line<String> {
-    private static final GsonComponentSerializer SERIALIZER = GsonComponentSerializer.builder().build();
 
     private int lineWidth = 200;
     private int backgroundColor = 0x40000000;
     private byte textOpacity = -1;
-    private byte billboard = 0;
+    /** Default CENTER — FIXED (0) is often invisible depending on view angle. */
+    private byte billboard = 3;
 
     public DisplayTextLine(Hologram hologram, Function<Player, String> valueSupplier) {
         super(hologram, EntityTypes.TEXT_DISPLAY, valueSupplier);
@@ -49,39 +49,37 @@ public class DisplayTextLine extends Line<String> {
 
     @Override
     public void update(@NotNull Player player) {
-        List<EntityData<?>> entityData = new ArrayList<>();
-
-        String rawText = getValue(player);
-        Component textComponent = LegacyComponentSerializer.legacySection().deserialize(rawText);
-
-        switch (VersionUtil.CLEAN_VERSION) {
-            case V1_8:
-            case V1_9:
-            case V1_10:
-            case V1_11:
-            case V1_12:
-            case V1_13:
-            case V1_14:
-            case V1_15:
-            case V1_16:
-            case V1_17:
-            case V1_18:
-                throw new RuntimeException("DisplayTextLine is available since 1.19.4");
-            case V1_19:
-                entityData.add(new EntityData<>(15, EntityDataTypes.BYTE, billboard));
-                entityData.add(new EntityData<>(22, EntityDataTypes.COMPONENT, SERIALIZER.serialize(textComponent)));
-                entityData.add(new EntityData<>(23, EntityDataTypes.INT, lineWidth));
-                entityData.add(new EntityData<>(24, EntityDataTypes.INT, backgroundColor));
-                entityData.add(new EntityData<>(25, EntityDataTypes.BYTE, textOpacity));
-                break;
-            default:
-                entityData.add(new EntityData<>(15, EntityDataTypes.BYTE, billboard));
-                entityData.add(new EntityData<>(23, EntityDataTypes.COMPONENT, SERIALIZER.serialize(textComponent)));
-                entityData.add(new EntityData<>(24, EntityDataTypes.INT, lineWidth));
-                entityData.add(new EntityData<>(25, EntityDataTypes.INT, backgroundColor));
-                entityData.add(new EntityData<>(26, EntityDataTypes.BYTE, textOpacity));
-                break;
+        ServerVersion version = PacketEvents.getAPI().getServerManager().getVersion();
+        if (version.isOlderThan(ServerVersion.V_1_19_4)) {
+            throw new RuntimeException("DisplayTextLine is available since 1.19.4");
         }
+
+        // Official entity metadata (minecraft.wiki / PrismarineJS 26.1 entities.json):
+        // Display starts at index 8; since 1.20.2 billboard=15, text=23, line_width=24,
+        // background_color=25, text_opacity=26, style_flags=27.
+        // Before 1.20.2 those are -1 (billboard=14, text=22, ...).
+        boolean pre1202 = version.isOlderThan(ServerVersion.V_1_20_2);
+        int interpolationDelayIndex = 8;
+        int scaleIndex = pre1202 ? 11 : 12;
+        int billboardIndex = pre1202 ? 14 : 15;
+        int textIndex = pre1202 ? 22 : 23;
+        int lineWidthIndex = textIndex + 1;
+        int backgroundIndex = textIndex + 2;
+        int opacityIndex = textIndex + 3;
+        int styleFlagsIndex = textIndex + 4;
+
+        Component textComponent = LegacyComponentSerializer.legacySection().deserialize(getValue(player));
+
+        List<EntityData<?>> entityData = new ArrayList<>();
+        // Apply transform immediately (same approach as HologramLib / EntityLib users).
+        entityData.add(new EntityData<>(interpolationDelayIndex, EntityDataTypes.INT, -1));
+        entityData.add(new EntityData<>(scaleIndex, EntityDataTypes.VECTOR3F, new Vector3f(1f, 1f, 1f)));
+        entityData.add(new EntityData<>(billboardIndex, EntityDataTypes.BYTE, billboard));
+        entityData.add(new EntityData<>(textIndex, EntityDataTypes.ADV_COMPONENT, textComponent));
+        entityData.add(new EntityData<>(lineWidthIndex, EntityDataTypes.INT, lineWidth));
+        entityData.add(new EntityData<>(backgroundIndex, EntityDataTypes.INT, backgroundColor));
+        entityData.add(new EntityData<>(opacityIndex, EntityDataTypes.BYTE, textOpacity));
+        entityData.add(new EntityData<>(styleFlagsIndex, EntityDataTypes.BYTE, (byte) 0));
 
         WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(entityID, entityData);
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);

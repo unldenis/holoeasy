@@ -2,29 +2,41 @@
 
 [![](https://jitpack.io/v/denmeh/holoeasy.svg)](https://jitpack.io/#denmeh/holoeasy)
 
-HoloEasy is a simple, modern and high-performant Java and Kotlin Minecraft Hologram library for 1.8-1.21.5 servers.
+HoloEasy is a simple, modern, high-performance Java and Kotlin Minecraft hologram library for Spigot / Paper servers (1.8 through current releases, including Display entities on 1.19.4+).
 
 ## Documentation
 
-Click [here](DOCUMENTATION.MD) to view the documentation.
+Full guide (install, first hologram, lines, pools, clicks):
 
-## History
-<a href="https://unldenis.github.io/holoeasy/">v4.X.X</a> documentation.
+**https://denmeh.github.io/holoeasy/**
 
-<a href="https://github.com/unldenis/holoeasy/tree/3.4.4">v3.X.X</a> documentation. 
+## Quick install
 
-<a href="https://unldenis.github.io/hologramlib/">v2.X.X</a> documentation.
+JitPack + CodeMC repositories, then:
+
+```groovy
+dependencies {
+    compileOnly 'com.github.denmeh.holoeasy:holoeasy-core:5.0.0'
+    compileOnly 'com.github.retrooper:packetevents-spigot:2.14.0'
+}
+```
+
+HoloEasy does not bundle PacketEvents — you must load and init it in your plugin. See the docs for the full lifecycle.
+
+## Build the example plugins
+
+```bash
+just example          # Java → holoeasy-example-java/build/libs/*-shadow.jar
+just example-kotlin   # Kotlin equivalent
+```
 
 ## Preview
 
-Since 5.X.X version, added support for Display entities: 
-Code for this example can be found in the `holoeasy-example-java` folder.
+Display-entity counter example (`holoeasy-example-java`):
 
 ![MyCounterHolo](preview/MyCounterHolo.gif)
 
 ---
-
-Other examples:
 
 ![gif](preview/gif.gif)
 
@@ -32,6 +44,6 @@ Other examples:
 
 ![blockline-and-animation](preview/blockline-and-animations.gif)
 
-
 ## Stargazers over time
+
 [![Stargazers over time](https://starchart.cc/denmeh/holoeasy.svg?variant=adaptive)](https://starchart.cc/denmeh/holoeasy)

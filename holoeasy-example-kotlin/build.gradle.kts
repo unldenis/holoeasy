@@ -18,10 +18,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("buildlogic.java-conventions")
     `kotlin-dsl`
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.6.1"
 }
 
 dependencies {
@@ -36,9 +38,9 @@ dependencies {
 
 description = "holoeasy-example-kotlin"
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 

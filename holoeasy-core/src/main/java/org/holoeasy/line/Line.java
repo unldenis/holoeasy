@@ -2,6 +2,7 @@ package org.holoeasy.line;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
+import com.github.retrooper.packetevents.util.Vector3d;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
@@ -106,14 +107,16 @@ public abstract class Line<T> {
         Location loc = location;
         if (loc == null) return false;
 
+        // Pass explicit zero velocity. null becomes (-1,-1,-1) on pre-1.21.9 writers
+        // and can fling entities; 1.21.9+ / 26.x write LpVec3 before pitch/yaw.
         WrapperPlayServerSpawnEntity packet = new WrapperPlayServerSpawnEntity(
                 entityID,
                 UUID.randomUUID(),
                 entityType,
-                SpigotConversionUtil.fromBukkitLocation(location),
-                location.getYaw(),
+                SpigotConversionUtil.fromBukkitLocation(loc),
+                loc.getYaw(),
                 0,
-                null
+                Vector3d.zero()
         );
         PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
 
